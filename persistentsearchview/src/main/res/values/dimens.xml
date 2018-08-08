@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="persistent_search_view_card_view_corner_radius">2dp</dimen>
+    <dimen name="persistent_search_view_card_view_elevation">2dp</dimen>
+
+    <dimen name="persistent_search_view_divider_size">0.75dp</dimen>
+
+    <dimen name="persistent_search_view_input_bar_height">48dp</dimen>
+    <dimen name="persistent_search_view_input_et_horizontal_margin">16dp</dimen>
+    <dimen name="persistent_search_view_input_text_size">16sp</dimen>
+    <dimen name="persistent_search_view_input_cursor_caret_width">1dp</dimen>
+    <dimen name="persistent_search_view_input_bar_button_size">30dp</dimen>
+    <dimen name="persistent_search_view_input_bar_progress_bar_size">24dp</dimen>
+
+    <dimen name="persistent_search_view_item_height">48dp</dimen>
+    <dimen name="persistent_search_view_item_title_text_size">14sp</dimen>
+    <dimen name="persistent_search_view_item_divider_height">1dp</dimen>
+    <dimen name="persistent_search_view_item_button_size">30dp</dimen>
+
+</resources>

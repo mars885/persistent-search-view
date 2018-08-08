@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    tools:parentTag="android.widget.FrameLayout"
+    tools:background="#000000">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        app:cardUseCompatPadding="true"
+        tools:cardBackgroundColor="#FFFFFFFF"
+        tools:cardCornerRadius="2dp"
+        tools:cardElevation="2dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/persistent_search_view_input_bar_height">
+
+            <FrameLayout
+                android:id="@+id/leftContainerFl"
+                android:layout_width="@dimen/persistent_search_view_input_bar_height"
+                android:layout_height="@dimen/persistent_search_view_input_bar_height"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true">
+
+                <ImageView
+                    android:id="@+id/leftBtnIv"
+                    android:layout_width="@dimen/persistent_search_view_input_bar_button_size"
+                    android:layout_height="@dimen/persistent_search_view_input_bar_button_size"
+                    android:layout_gravity="center"
+                    android:scaleType="centerInside"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    tools:src="@drawable/ic_arrow_left_black_24dp"/>
+
+                <ProgressBar
+                    android:id="@+id/progressBar"
+                    android:layout_width="@dimen/persistent_search_view_input_bar_progress_bar_size"
+                    android:layout_height="@dimen/persistent_search_view_input_bar_progress_bar_size"
+                    android:layout_gravity="center"
+                    android:visibility="gone"
+                    style="?android:attr/progressBarStyle"/>
+
+            </FrameLayout>
+
+            <com.paulrybitskyi.persistentsearchview.widgets.AdvancedEditText
+                android:id="@+id/inputEt"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_toLeftOf="@+id/inputBtnsContainerFl"
+                android:layout_toStartOf="@+id/inputBtnsContainerFl"
+                android:layout_toRightOf="@+id/leftContainerFl"
+                android:layout_toEndOf="@+id/leftContainerFl"
+                android:layout_marginLeft="@dimen/persistent_search_view_input_et_horizontal_margin"
+                android:layout_marginStart="@dimen/persistent_search_view_input_et_horizontal_margin"
+                android:layout_marginRight="@dimen/persistent_search_view_input_et_horizontal_margin"
+                android:layout_marginEnd="@dimen/persistent_search_view_input_et_horizontal_margin"
+                android:gravity="start|center"
+                android:textSize="@dimen/persistent_search_view_input_text_size"
+                android:inputType="textNoSuggestions"
+                android:imeOptions="actionSearch|flagNoExtractUi"
+                android:minLines="1"
+                android:maxLines="1"
+                android:lines="1"
+                android:textStyle="bold"
+                android:background="@null"
+                tools:textColor="#212121"
+                tools:hint="Search"/>
+
+            <FrameLayout
+                android:id="@+id/inputBtnsContainerFl"
+                android:layout_width="@dimen/persistent_search_view_input_bar_height"
+                android:layout_height="@dimen/persistent_search_view_input_bar_height"
+                android:layout_toLeftOf="@+id/rightBtnContainerFl"
+                android:layout_toStartOf="@+id/rightBtnContainerFl"
+                android:layout_alignWithParentIfMissing="true">
+
+                <ImageView
+                    android:id="@+id/clearInputBtnIv"
+                    android:layout_width="@dimen/persistent_search_view_input_bar_button_size"
+                    android:layout_height="@dimen/persistent_search_view_input_bar_button_size"
+                    android:layout_gravity="center"
+                    android:scaleType="centerInside"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    tools:src="@drawable/ic_close_black_24dp"/>
+
+                <ImageView
+                    android:id="@+id/voiceInputBtnIv"
+                    android:layout_width="@dimen/persistent_search_view_input_bar_button_size"
+                    android:layout_height="@dimen/persistent_search_view_input_bar_button_size"
+                    android:layout_gravity="center"
+                    android:scaleType="centerInside"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    tools:src="@drawable/ic_microphone_black_24dp"/>
+
+            </FrameLayout>
+
+            <FrameLayout
+                android:id="@+id/rightBtnContainerFl"
+                android:layout_width="@dimen/persistent_search_view_input_bar_height"
+                android:layout_height="@dimen/persistent_search_view_input_bar_height"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignWithParentIfMissing="true"
+                android:visibility="gone">
+
+                <ImageView
+                    android:id="@+id/rightBtnIv"
+                    android:layout_width="@dimen/persistent_search_view_input_bar_button_size"
+                    android:layout_height="@dimen/persistent_search_view_input_bar_button_size"
+                    android:layout_gravity="center"
+                    android:scaleType="centerInside"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    tools:src="@drawable/ic_filter_variant_black_24dp"/>
+
+            </FrameLayout>
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/suggestionsContainerLl"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/persistent_search_view_input_bar_height"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <View
+                android:id="@+id/divider"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/persistent_search_view_divider_size"
+                android:background="#BCBCBC"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/suggestionsRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:overScrollMode="never"
+                android:scrollbars="none"/>
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</merge>

@@ -1,0 +1,17 @@
+project.ext {
+
+    projectName = "persistentsearchview"
+    group = "com.paulrybitskyi"
+    versionCode = 1
+    version = "1.0.0"
+
+    compileSdk = 28
+    targetSdk = 27
+    minSdk = 21
+
+    supportLibraryVersion = "1.0.0-beta01"
+    adapsterLibraryVersion = "1.0.1"
+    jUnitVersion = "4.12"
+    testRunnerVersion = "1.1.0-alpha4"
+
+}

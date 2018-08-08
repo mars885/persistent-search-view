@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+
+    <color name="persistent_search_view_background_dim_color">#000000</color>
+    <color name="persistent_search_view_card_background_color">#ffffff</color>
+    <color name="persistent_search_view_query_input_hint_color">#b6b6b6</color>
+    <color name="persistent_search_view_query_input_text_color">#a0a0a0</color>
+    <color name="persistent_search_view_query_input_cursor_color">#212121</color>
+    <color name="persistent_search_view_query_input_bar_icon_color">#a0a0a0</color>
+    <color name="persistent_search_view_divider_color">#a0a0a0</color>
+    <color name="persistent_search_view_progress_bar_color">#FF4081</color>
+    <color name="persistent_search_view_suggestion_item_icon_color">#a0a0a0</color>
+    <color name="persistent_search_view_suggestion_item_search_suggestion_icon_color">#212121</color>
+    <color name="persistent_search_view_suggestion_item_recent_search_icon_color">#a0a0a0</color>
+    <color name="persistent_search_view_suggestion_item_text_color">#212121</color>
+    <color name="persistent_search_view_suggestion_item_selected_text_color">#a0a0a0</color>
+
+</resources>

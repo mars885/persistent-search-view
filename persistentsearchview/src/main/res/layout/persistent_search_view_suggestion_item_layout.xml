@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/persistent_search_view_item_height"
+    android:foreground="?attr/selectableItemBackground">
+
+    <ImageView
+        android:id="@+id/iconIv"
+        android:layout_width="@dimen/persistent_search_view_item_height"
+        android:layout_height="@dimen/persistent_search_view_item_height"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
+        android:scaleType="centerInside"
+        android:cropToPadding="false"
+        tools:src="@drawable/ic_history_black_24dp"/>
+
+    <TextView
+        android:id="@+id/textTv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_toLeftOf="@+id/removeBtnWrapperFl"
+        android:layout_toStartOf="@+id/removeBtnWrapperFl"
+        android:layout_toRightOf="@id/iconIv"
+        android:layout_toEndOf="@id/iconIv"
+        android:layout_marginLeft="@dimen/persistent_search_view_input_et_horizontal_margin"
+        android:layout_marginStart="@dimen/persistent_search_view_input_et_horizontal_margin"
+        android:layout_marginRight="@dimen/persistent_search_view_input_et_horizontal_margin"
+        android:layout_marginEnd="@dimen/persistent_search_view_input_et_horizontal_margin"
+        android:gravity="center_vertical"
+        android:scaleType="centerInside"
+        android:textSize="@dimen/persistent_search_view_item_title_text_size"
+        android:lines="1"
+        android:minLines="1"
+        android:maxLines="1"
+        android:singleLine="true"
+        android:ellipsize="end"
+        tools:text="Suggestion Suggestion Suggestion Suggestion"
+        tools:textColor="#000000"/>
+
+    <FrameLayout
+        android:id="@+id/removeBtnWrapperFl"
+        android:layout_width="@dimen/persistent_search_view_input_bar_height"
+        android:layout_height="@dimen/persistent_search_view_input_bar_height"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true">
+
+        <ImageView
+            android:id="@+id/removeBtnIv"
+            android:layout_width="@dimen/persistent_search_view_item_button_size"
+            android:layout_height="@dimen/persistent_search_view_item_button_size"
+            android:layout_gravity="center"
+            android:scaleType="centerInside"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            tools:src="@drawable/ic_close_black_24dp"/>
+
+    </FrameLayout>
+
+</RelativeLayout>

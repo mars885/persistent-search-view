@@ -1,0 +1,5 @@
+<resources>
+
+    <string name="persistent_search_view_query_input_hint">Search</string>
+
+</resources>

@@ -1,0 +1,37 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion rootProject.compileSdk
+
+    defaultConfig {
+        minSdkVersion rootProject.minSdk
+        targetSdkVersion rootProject.targetSdk
+        versionCode rootProject.versionCode
+        versionName rootProject.version
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    implementation "androidx.appcompat:appcompat:${rootProject.supportLibraryVersion}"
+    implementation "androidx.recyclerview:recyclerview:${rootProject.supportLibraryVersion}"
+    implementation "androidx.cardview:cardview:${rootProject.supportLibraryVersion}"
+    implementation "androidx.annotation:annotation:${rootProject.supportLibraryVersion}"
+    implementation "com.arthurivanets.adapster:adapster:${rootProject.adapsterLibraryVersion}"
+
+    testImplementation "junit:junit:${rootProject.jUnitVersion}"
+
+    androidTestImplementation "androidx.test:runner:${rootProject.testRunnerVersion}"
+}

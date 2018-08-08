@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="PersistentSearchView">
+
+        <attr name="dimColor" format="color"/>
+        <attr name="dimAmount" format="float"/>
+
+        <attr name="cardBackgroundColor" format="color"/>
+        <attr name="cardCornerRadius" format="dimension"/>
+        <attr name="cardElevation" format="dimension"/>
+
+        <attr name="queryInputHint" format="string"/>
+        <attr name="queryInputHintColor" format="color"/>
+        <attr name="queryInputTextColor" format="color"/>
+        <attr name="queryInputCursorDrawable" format="reference"/>
+        <attr name="queryInputCursorColor" format="color"/>
+        <attr name="queryInputBarIconColor" format="color"/>
+
+        <attr name="leftButtonDrawable" format="reference"/>
+        <attr name="rightButtonDrawable" format="reference"/>
+        <attr name="clearInputButtonDrawable" format="reference"/>
+        <attr name="voiceInputButtonDrawable" format="reference"/>
+
+        <attr name="dividerColor" format="color"/>
+        <attr name="progressBarColor" format="color"/>
+
+        <attr name="suggestionRecentSearchIconColor" format="color"/>
+        <attr name="suggestionSearchSuggestionIconColor" format="color"/>
+        <attr name="suggestionIconColor" format="color"/>
+        <attr name="suggestionTextColor" format="color"/>
+        <attr name="suggestionSelectedTextColor" format="color"/>
+
+    </declare-styleable>
+
+</resources>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <item name="visibility_marker" type="id"/>
+    <item name="animation_marker" type="id"/>
+
+</resources>
