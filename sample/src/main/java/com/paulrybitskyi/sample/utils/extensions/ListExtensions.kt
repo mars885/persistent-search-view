@@ -1,6 +1,6 @@
 package com.paulrybitskyi.sample.utils.extensions
 
-import java.util.Random
+import java.util.*
 
 
 fun <E> List<E>.random(random: Random): E? {

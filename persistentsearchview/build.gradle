@@ -6,8 +6,8 @@ android {
     defaultConfig {
         minSdkVersion rootProject.minSdk
         targetSdkVersion rootProject.targetSdk
-        versionCode rootProject.versionCode
-        versionName rootProject.version
+        versionCode rootProject.releaseVersionCode
+        versionName rootProject.releaseVersion
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
@@ -35,3 +35,6 @@ dependencies {
 
     androidTestImplementation "androidx.test:runner:${rootProject.testRunnerVersion}"
 }
+
+apply from: "../common/constants.gradle"
+apply from: "../gradle/script/publish.gradle"

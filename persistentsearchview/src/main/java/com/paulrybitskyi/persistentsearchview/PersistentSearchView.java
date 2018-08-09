@@ -49,12 +49,12 @@ import com.paulrybitskyi.persistentsearchview.adapters.SuggestionsRecyclerViewAd
 import com.paulrybitskyi.persistentsearchview.adapters.model.SuggestionItem;
 import com.paulrybitskyi.persistentsearchview.adapters.resources.SuggestionItemResources;
 import com.paulrybitskyi.persistentsearchview.animations.BackgroundDimmingAnimation;
-import com.paulrybitskyi.persistentsearchview.listeners.OnSearchConfirmedListener;
-import com.paulrybitskyi.persistentsearchview.listeners.OnSuggestionChangeListener;
-import com.paulrybitskyi.persistentsearchview.listeners.QueryListener;
-import com.paulrybitskyi.persistentsearchview.listeners.OnSearchQueryChangeListener;
 import com.paulrybitskyi.persistentsearchview.listeners.AnimatorListenerAdapter;
 import com.paulrybitskyi.persistentsearchview.listeners.AnimatorListenerDecorator;
+import com.paulrybitskyi.persistentsearchview.listeners.OnSearchConfirmedListener;
+import com.paulrybitskyi.persistentsearchview.listeners.OnSearchQueryChangeListener;
+import com.paulrybitskyi.persistentsearchview.listeners.OnSuggestionChangeListener;
+import com.paulrybitskyi.persistentsearchview.listeners.QueryListener;
 import com.paulrybitskyi.persistentsearchview.utils.AnimationType;
 import com.paulrybitskyi.persistentsearchview.utils.KeyboardManagingUtil;
 import com.paulrybitskyi.persistentsearchview.utils.Preconditions;
@@ -92,8 +92,8 @@ import static com.paulrybitskyi.persistentsearchview.utils.ViewUtils.updateHeigh
 
 /**
  * A search view designed to simplify the process of implementing
- * search related functionality within the app that also comes with a large
- * set of useful features.
+ * search-related functionality that also comes with a large set
+ * of useful features.
  */
 public class PersistentSearchView extends FrameLayout {
 

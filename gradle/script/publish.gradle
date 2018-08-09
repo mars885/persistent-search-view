@@ -1,0 +1,169 @@
+import java.util.zip.ZipFile
+
+apply plugin: "maven-publish"
+apply plugin: "com.github.dcendents.android-maven"
+apply plugin: "com.jfrog.bintray"
+
+
+group = releaseGroupId
+version = releaseVersion
+
+task androidSourcesJar(type: Jar) {
+    classifier = 'sources'
+    from android.sourceSets.main.java.srcDirs
+}
+
+publishing {
+    publications {
+        aar(MavenPublication) {
+            groupId = releaseGroupId
+            artifactId = releaseArtifact
+            version = releaseVersion
+
+            // Tell maven to prepare the generated "*.aar" file for publishing
+            artifact(androidSourcesJar)
+            artifact("$buildDir/outputs/aar/${project.archivesBaseName}-release.aar")
+        }
+    }
+}
+
+install {
+    repositories.mavenInstaller {
+        pom.project {
+            packaging "aar"
+            groupId releaseGroupId
+            artifactId releaseArtifact
+
+            name releaseArtifact
+            description releaseDescription
+            url releaseWebsite
+
+            licenses {
+                license {
+                    name licenseName
+                    url licenseUrl
+                }
+            }
+
+            developers {
+                developer {
+                    id developerId
+                    name developerName
+                    email developerEmail
+                }
+            }
+
+            scm {
+                connection gitUrl
+                developerConnection gitUrl
+                url siteUrl
+            }
+        }
+    }
+}
+
+task sourcesJar(type: Jar) {
+    classifier = "sources"
+    from android.sourceSets.main.java.srcDirs
+}
+
+// a temporary replacement
+task javadoc(type: Javadoc) {
+    failOnError false
+    source = android.sourceSets.main.java.srcDirs
+    // Also add the generated R class to avoid errors...
+    // TODO: debug is hard-coded
+    source += "$buildDir/generated/source/r/debug/"
+    // ... but exclude the R classes from the docs
+    excludes += "**/R.java"
+
+    // TODO: "compile" is deprecated in Gradle 4.1,
+    // but "implementation" and "api" are not resolvable :(
+    classpath += configurations.compile
+
+    afterEvaluate {
+        // Wait after evaluation to add the android classpath
+        // to avoid "buildToolsVersion is not specified" error
+        classpath += files(android.getBootClasspath())
+
+        // Process AAR dependencies
+        def aarDependencies = classpath.filter { it.name.endsWith('.aar') }
+        classpath -= aarDependencies
+        aarDependencies.each { aar ->
+            System.out.println("Adding classpath for aar: " + aar.name)
+            // Extract classes.jar from the AAR dependency, and add it to the javadoc classpath
+            def outputPath = "$buildDir/tmp/exploded-aar/${aar.name.replace('.aar', '.jar')}"
+            classpath += files(outputPath)
+
+            // Use a task so the actual extraction only happens before the javadoc task is run
+            dependsOn task(name: "extract ${aar.name}").doLast {
+                extractZipEntry(aar, 'classes.jar', outputPath)
+            }
+        }
+    }
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = "javadoc"
+    from javadoc.destinationDir
+}
+
+artifacts {
+    archives javadocJar
+    archives sourcesJar
+}
+
+bintray {
+    user = propertyOrDefault("bintrayUser")
+    key = propertyOrDefault("bintrayApiKey")
+
+    configurations = ["archives"]
+
+    pkg {
+        repo = releaseRepoName
+        //userOrg = releaseUserOrg
+        name = releaseArtifact
+        desc = releaseDescription
+        websiteUrl = siteUrl
+        vcsUrl = gitUrl
+        issueTrackerUrl = issueTracker
+        githubReleaseNotesFile = releaseNotesFile
+        licenses = allLicenses
+        dryRun = false
+        publish = true
+        override = false
+        publicDownloadNumbers = false
+
+        version {
+            desc = releaseDescription
+        }
+    }
+}
+
+bintrayUpload.dependsOn("install")
+
+// Utility method to extract a single entry from a Zip Archive
+private def extractZipEntry(File archiveFile, String entryPath, String outputPath) {
+    if(!archiveFile.exists()) {
+        throw new GradleException("Archive File $archiveFile not found")
+    }
+
+    def zipFile = new ZipFile(archiveFile)
+
+    zipFile.entries().each {
+        if(it.name == entryPath) {
+            def path = Paths.get(outputPath)
+
+            if(!Files.exists(path)) {
+                Files.createDirectories(path.getParent())
+                Files.copy(zip.getInputStream(it), path)
+            }
+        }
+    }
+    zip.close()
+}
+
+String propertyOrDefault(String propertyName, String defaultValue = "") {
+    def propertyValue = project.properties[propertyName]
+    return ((propertyValue != null) ? propertyValue : defaultValue)
+}

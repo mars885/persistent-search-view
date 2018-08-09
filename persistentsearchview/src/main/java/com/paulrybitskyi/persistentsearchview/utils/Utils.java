@@ -30,7 +30,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.speech.RecognizerIntent;
 import android.util.DisplayMetrics;
-import android.util.TypedValue;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -42,7 +41,6 @@ import java.util.Locale;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.FloatRange;
 import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -226,7 +224,7 @@ public final class Utils {
      * @param context The context
      *
      * @return The integer array in the following format:
-     * int[2] => int[0] -> width, int[1] -> height
+     * int[2] = int[0] - width, int[1] - height
      */
     public static int[] getScreenSize(Context context) {
         final DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();

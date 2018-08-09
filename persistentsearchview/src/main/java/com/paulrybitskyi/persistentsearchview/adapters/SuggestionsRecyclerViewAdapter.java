@@ -31,7 +31,6 @@ import com.paulrybitskyi.persistentsearchview.utils.Preconditions;
 import java.util.List;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * A recycler view adapter implementation for suggestion items.

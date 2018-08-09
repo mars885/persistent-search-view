@@ -10,8 +10,8 @@ android {
         applicationId "com.paulrybitskyi.sample"
         minSdkVersion 21
         targetSdkVersion rootProject.targetSdk
-        versionCode rootProject.versionCode
-        versionName rootProject.version
+        versionCode rootProject.releaseVersionCode
+        versionName rootProject.releaseVersion
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
@@ -22,6 +22,9 @@ android {
         }
     }
 
+    lintOptions {
+        abortOnError false
+    }
 }
 
 dependencies {
