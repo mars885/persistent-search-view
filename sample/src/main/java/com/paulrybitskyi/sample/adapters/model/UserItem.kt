@@ -32,7 +32,7 @@ class UserItem(itemModel: User): BaseItem<User, UserItem.ViewHolder, UserResourc
 
 
 
-    override fun init(adapter: Adapter<out Item<RecyclerView.ViewHolder, ItemResources>>,
+    override fun init(adapter: Adapter<out Item<RecyclerView.ViewHolder, ItemResources>>?,
                       parent: ViewGroup, inflater: LayoutInflater, resources: UserResources?): ViewHolder {
         return ViewHolder(inflater.inflate(
             MAIN_LAYOUT,
@@ -42,8 +42,10 @@ class UserItem(itemModel: User): BaseItem<User, UserItem.ViewHolder, UserResourc
     }
 
 
-    override fun bind(adapter: Adapter<out Item<RecyclerView.ViewHolder, ItemResources>>,
+    override fun bind(adapter: Adapter<out Item<RecyclerView.ViewHolder, ItemResources>>?,
                       viewHolder: ViewHolder, resources: UserResources?) {
+        super.bind(adapter, viewHolder, resources)
+
         val user = itemModel
         val context = viewHolder.itemView.context
         val drawables = resources!!.drawables

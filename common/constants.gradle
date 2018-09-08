@@ -4,8 +4,8 @@ project.ext {
     targetSdk = 27
     minSdk = 21
 
-    supportLibraryVersion = "1.0.0-beta01"
-    adapsterLibraryVersion = "1.0.1"
+    supportLibraryVersion = "1.0.0-rc02"
+    adapsterLibraryVersion = "1.0.3"
     jUnitVersion = "4.12"
     testRunnerVersion = "1.1.0-alpha4"
 
@@ -13,8 +13,8 @@ project.ext {
     releaseGroupId = "com.paulrybitskyi.persistentsearchview"
     releaseArtifact = "persistentsearchview"
     releaseDescription = " Android library designed to simplify the process of implementing search-related functionality."
-    releaseVersion = "1.0.0"
-    releaseVersionCode = 1
+    releaseVersion = "1.0.1"
+    releaseVersionCode = 2
     releaseWebsite = "https://github.com/mars885/persistentsearchview"
     releaseLicense = ["Apache-2.0"]
 

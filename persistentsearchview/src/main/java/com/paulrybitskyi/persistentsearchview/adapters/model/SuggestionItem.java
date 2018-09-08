@@ -41,6 +41,7 @@ import com.paulrybitskyi.persistentsearchview.utils.Preconditions;
 import com.paulrybitskyi.persistentsearchview.utils.Utils;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import static com.paulrybitskyi.persistentsearchview.utils.ViewUtils.makeGone;
 import static com.paulrybitskyi.persistentsearchview.utils.ViewUtils.makeVisible;
@@ -114,9 +115,11 @@ public class SuggestionItem extends BaseItem<Suggestion, SuggestionItem.ViewHold
 
 
     @Override
-    public void bind(Adapter adapter,
-                     ViewHolder viewHolder,
-                     SuggestionItemResources resources) {
+    public void bind(@Nullable Adapter adapter,
+                     @NonNull ViewHolder viewHolder,
+                     @Nullable SuggestionItemResources resources) {
+        super.bind(adapter, viewHolder, resources);
+
         final Suggestion suggestion = getItemModel();
         final boolean isRecentSearchSuggestion = Suggestion.TYPE_RECENT_SEARCH_SUGGESTION.equals(suggestion.getType());
 

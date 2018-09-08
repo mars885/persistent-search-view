@@ -26,7 +26,6 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation "androidx.appcompat:appcompat:${rootProject.supportLibraryVersion}"
-    implementation "androidx.recyclerview:recyclerview:${rootProject.supportLibraryVersion}"
     implementation "androidx.cardview:cardview:${rootProject.supportLibraryVersion}"
     implementation "androidx.annotation:annotation:${rootProject.supportLibraryVersion}"
     implementation "com.arthurivanets.adapster:adapster:${rootProject.adapsterLibraryVersion}"
