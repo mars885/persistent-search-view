@@ -2,6 +2,7 @@
 Android library designed to simplify the process of implementing search-related functionality.
 
 [ ![Download](https://api.bintray.com/packages/mars885/maven/persistentsearchview/images/download.svg) ](https://bintray.com/mars885/maven/persistentsearchview/_latestVersion)
+[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-PersistentSearchView-brightgreen.svg?style=flat)](https://android-arsenal.com/details/1/7102)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Platform](https://img.shields.io/badge/platform-Android-green.svg)](http://developer.android.com/index.html)
 
