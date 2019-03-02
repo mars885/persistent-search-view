@@ -471,7 +471,7 @@ See the [CONTRIBUTING.md](CONTRIBUTING.md) file.
         <tr>
             <td align="center">
                 <a href="https://play.google.com/store/apps/details?id=com.arthurivanets.owly">
-	                <img src="https://lh3.googleusercontent.com/V1-emL7rlp0UTZfJIN-JPpTev1ZSg2RLjC1WAgKVB0A_1ir32JxTBl8E8zz2KyJlyQ=s360" width="70" height="70"/>
+	                <img src="https://lh3.googleusercontent.com/FHaz_qNghV02MpQBEnR4K3yVGsbS_0qcUsEHidzfujI3V01zyLp6yo7oK0-ymILdRk9k=s360" width="70" height="70"/>
                 </a>
             </td>
             <td align="center"><b>Owly</b></td>
