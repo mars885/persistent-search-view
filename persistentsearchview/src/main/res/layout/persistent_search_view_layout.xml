@@ -97,6 +97,7 @@
                     android:layout_height="@dimen/persistent_search_view_input_bar_button_size"
                     android:layout_gravity="center"
                     android:scaleType="centerInside"
+                    android:visibility="gone"
                     android:background="?attr/selectableItemBackgroundBorderless"
                     tools:src="@drawable/ic_microphone_black_24dp"/>
 

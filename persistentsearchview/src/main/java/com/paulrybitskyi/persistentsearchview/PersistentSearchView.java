@@ -508,7 +508,7 @@ public class PersistentSearchView extends FrameLayout {
         setVoiceInputButtonDrawable(mVoiceInputButtonDrawable);
         mVoiceInputBtnIv.setEnabled(mIsSpeechRecognitionAvailable);
         ViewUtils.setScale(mVoiceInputBtnIv, ((isInputQueryEmpty() && mIsSpeechRecognitionAvailable) ? 1f : 0f));
-        ViewUtils.setVisibility(mVoiceInputBtnIv, ((isInputQueryEmpty() && mIsSpeechRecognitionAvailable) ? View.VISIBLE : View.GONE));
+        setVoiceInputButtonVisibility();
         mVoiceInputBtnIv.setOnClickListener(mOnVoiceInputButtonClickListener);
 
         // Button icon coloring
@@ -2116,16 +2116,23 @@ public class PersistentSearchView extends FrameLayout {
     }
 
 
-
+    /**
+     * Set the voice input button enabled or disabled
+     *
+     * @param enabled: enable or disable the voice input button
+     */
+    public void setVoiceInputEnabled(boolean enabled) {
+        mIsSpeechRecognitionAvailable = enabled;
+        setVoiceInputButtonVisibility();
+    }
 
     /**
      * Sets the drawable of the voice input button.
      *
      * @param drawable The drawable to set
      */
-    public void setVoiceInputButtonDrawable(Drawable drawable) {
+    public void setVoiceInputButtonDrawable(@NonNull Drawable drawable) {
         mVoiceInputButtonDrawable = drawable;
-
         mVoiceInputBtnIv.setImageDrawable(drawable);
     }
 
@@ -2142,6 +2149,11 @@ public class PersistentSearchView extends FrameLayout {
     }
 
 
+    private void setVoiceInputButtonVisibility() {
+        ViewUtils.setVisibility(mVoiceInputBtnIv, (((isInputQueryEmpty()
+                && mIsSpeechRecognitionAvailable)
+                && mVoiceInputButtonDrawable != null) ? View.VISIBLE : View.GONE));
+    }
 
 
     private final void setInputQueryInternal(@NonNull String query, boolean notifyAboutQueryChange) {
