@@ -390,6 +390,7 @@ public class PersistentSearchView extends FrameLayout {
         initDimensionResources(attributes);
         initDrawableResources(attributes);
         initStringResources(attributes);
+        initSearchOptions(attributes);
 
         // Recycling the typed array
         attributes.recycle();
@@ -461,7 +462,12 @@ public class PersistentSearchView extends FrameLayout {
         }
     }
 
-
+    private void initSearchOptions(TypedArray attributes) {
+        if (attributes.hasValue(R.styleable.PersistentSearchView_voiceSearchEnabled)) {
+            mIsSpeechRecognitionAvailable =
+                    attributes.getBoolean(R.styleable.PersistentSearchView_voiceSearchEnabled, Utils.isSpeechRecognitionAvailable(getContext()));
+        }
+    }
 
 
     private void initMainContainer() {

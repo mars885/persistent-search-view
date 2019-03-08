@@ -31,6 +31,8 @@
         <attr name="suggestionTextColor" format="color"/>
         <attr name="suggestionSelectedTextColor" format="color"/>
 
+        <attr name="voiceSearchEnabled" format="boolean"/>
+
     </declare-styleable>
 
 </resources>
