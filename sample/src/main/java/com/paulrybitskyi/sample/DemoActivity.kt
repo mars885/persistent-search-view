@@ -51,7 +51,7 @@ class DemoActivity : AppCompatActivity(), View.OnClickListener {
     }
 
 
-    private var mMode: DemoModes = DemoModes.SIMPLE
+    private var mMode: DemoModes = DemoModes.WITHOUT_SUGGESTIONS
 
 
     private var mDataProvider: DataProvider = DataProvider()
@@ -92,7 +92,7 @@ class DemoActivity : AppCompatActivity(), View.OnClickListener {
             setOnSearchConfirmedListener(mOnSearchConfirmedListener)
             setOnSearchQueryChangeListener(mOnSearchQueryChangeListener)
             setOnSuggestionChangeListener(mOnSuggestionChangeListener)
-            setSuggestionsDisabled(mMode == DemoModes.SIMPLE)
+            setSuggestionsDisabled(mMode == DemoModes.WITHOUT_SUGGESTIONS)
         }
     }
 
@@ -144,7 +144,7 @@ class DemoActivity : AppCompatActivity(), View.OnClickListener {
 
 
     private fun loadInitialDataIfNecessary() {
-        if(mMode == DemoModes.SIMPLE) {
+        if(mMode == DemoModes.WITHOUT_SUGGESTIONS) {
             return
         }
 
@@ -190,13 +190,13 @@ class DemoActivity : AppCompatActivity(), View.OnClickListener {
 
 
     private fun setSuggestions(queries: List<String>, expandIfNecessary: Boolean) {
-        if(mMode == DemoModes.SIMPLE) {
+        if(mMode == DemoModes.WITHOUT_SUGGESTIONS) {
             return
         }
 
         val suggestions: List<SuggestionItem> = when(mMode) {
-            DemoModes.RECENT_SEARCH_QUERIES -> SuggestionCreationUtil.asRecentSearchSuggestions(queries)
-            DemoModes.REGULAR_SEARCH_QUERIES -> SuggestionCreationUtil.asRegularSearchSuggestions(queries)
+            DemoModes.RECENT_SUGGESTIONS -> SuggestionCreationUtil.asRecentSearchSuggestions(queries)
+            DemoModes.REGULAR_SUGGESTIONS -> SuggestionCreationUtil.asRegularSearchSuggestions(queries)
 
             else -> throw IllegalStateException()
         }
@@ -207,7 +207,7 @@ class DemoActivity : AppCompatActivity(), View.OnClickListener {
 
     private fun canSaveQuery(): Boolean {
         return when(mMode) {
-            DemoModes.RECENT_SEARCH_QUERIES -> true
+            DemoModes.RECENT_SUGGESTIONS -> true
 
             else -> false
         }

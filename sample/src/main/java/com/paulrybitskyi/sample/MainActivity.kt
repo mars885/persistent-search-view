@@ -25,16 +25,16 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun initButtons() {
-        simpleButton.setOnClickListener {
-            launchActivity(DemoModes.SIMPLE)
+        withoutSuggestions.setOnClickListener {
+            launchActivity(DemoModes.WITHOUT_SUGGESTIONS)
         }
 
-        recentSearchQueriesButton.setOnClickListener {
-            launchActivity(DemoModes.RECENT_SEARCH_QUERIES)
+        recentSuggestions.setOnClickListener {
+            launchActivity(DemoModes.RECENT_SUGGESTIONS)
         }
 
-        regularSearchQueriesButton.setOnClickListener {
-            launchActivity(DemoModes.REGULAR_SEARCH_QUERIES)
+        regularSuggestions.setOnClickListener {
+            launchActivity(DemoModes.REGULAR_SUGGESTIONS)
         }
     }
 
