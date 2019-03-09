@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
+import android.view.Gravity
 import android.view.View
 import android.view.WindowManager
 import android.view.animation.LinearInterpolator
@@ -98,6 +99,7 @@ class DemoActivity : AppCompatActivity(), View.OnClickListener {
             setVoiceInputButtonEnabled(true)
             setClearInputButtonEnabled(true)
             setSuggestionsDisabled(mMode == DemoModes.WITHOUT_SUGGESTIONS)
+            setQueryInputGravity(Gravity.START or Gravity.CENTER)
         }
     }
 

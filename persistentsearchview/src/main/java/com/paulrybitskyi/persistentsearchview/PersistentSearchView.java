@@ -1877,6 +1877,16 @@ public class PersistentSearchView extends FrameLayout {
     }
 
 
+    /**
+     * Sets the gravity of the query input view.
+     *
+     * @param gravity The gravity to set
+     */
+    public final void setQueryInputGravity(int gravity) {
+        mInputEt.setGravity(gravity);
+    }
+
+
 
 
     /**
