@@ -205,15 +205,6 @@ class DemoActivity : AppCompatActivity(), View.OnClickListener {
     }
 
 
-    private fun isSearchViewExpanded(): Boolean {
-        return when(mMode) {
-            DemoModes.SIMPLE -> false
-
-            else -> persistentSearchView.isExpanded
-        }
-    }
-
-
     private fun canSaveQuery(): Boolean {
         return when(mMode) {
             DemoModes.RECENT_SEARCH_QUERIES -> true
@@ -238,7 +229,7 @@ class DemoActivity : AppCompatActivity(), View.OnClickListener {
 
 
     override fun onBackPressed() {
-        if(isSearchViewExpanded()) {
+        if(persistentSearchView.isExpanded) {
             persistentSearchView.collapse()
             return
         }

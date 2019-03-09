@@ -1395,13 +1395,13 @@ public class PersistentSearchView extends FrameLayout {
 
         showKeyboard();
 
+        // Cancelling any pending events
+        cancelExitAnimationEndActionEvent();
+
+        // Background dimming related
+        updateBackground(mState, animate);
+
         if(!areSuggestionsDisabled()) {
-            // Cancelling any pending events
-            cancelExitAnimationEndActionEvent();
-
-            // Background dimming related
-            updateBackground(mState, animate);
-
             // Suggestions container related
             makeVisible(mSuggestionsContainerLL);
             mSuggestionsContainerLL.measure(
@@ -1456,16 +1456,16 @@ public class PersistentSearchView extends FrameLayout {
 
         hideKeyboard();
 
+        // Cancelling any pending events
+        cancelExitAnimationEndActionEvent();
+
+        // Animation related
+        final long duration = getSuggestionsContainerAnimationDuration(mSuggestionsContainerLL.getMeasuredHeight(), 0);
+
+        // Background dimming related
+        updateBackgroundWithAnimation(mState, duration);
+
         if(!areSuggestionsDisabled()) {
-            // Cancelling any pending events
-            cancelExitAnimationEndActionEvent();
-
-            // Animation related
-            final long duration = getSuggestionsContainerAnimationDuration(mSuggestionsContainerLL.getMeasuredHeight(), 0);
-
-            // Background dimming related
-            updateBackgroundWithAnimation(mState, duration);
-
             // Suggestions container related
             makeInvisible(mDividerView);
             updateSuggestionsContainerHeightWithAnimation(
