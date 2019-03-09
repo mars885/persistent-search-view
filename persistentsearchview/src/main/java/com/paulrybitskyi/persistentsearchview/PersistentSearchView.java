@@ -1512,10 +1512,10 @@ public class PersistentSearchView extends FrameLayout {
                 mSuggestionsContainerLL.getMeasuredHeight(),
                 animate
             );
-
-            // Requesting a full relayout, in order to apply the new size
-            requestLayout();
         }
+
+        // Requesting a full relayout, in order to apply the new size
+        requestLayout();
     }
 
 
@@ -1570,15 +1570,14 @@ public class PersistentSearchView extends FrameLayout {
                 0,
                 duration
             );
-
-            // Relayout related stuff
-            if(!animate) {
-                requestLayout();
-            } else {
-                postExitAnimationEndActionEvent(duration);
-            }
         }
 
+        // Relayout related stuff
+        if(!animate) {
+            requestLayout();
+        } else {
+            postExitAnimationEndActionEvent(duration);
+        }
     }
 
 
