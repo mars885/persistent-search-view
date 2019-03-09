@@ -91,6 +91,10 @@
         app:suggestionRecentSearchIconColor="@color/suggestionIconColor"
         app:suggestionSearchSuggestionIconColor="@color/suggestionIconColor"
         app:suggestionTextColor="@color/suggestionTextColor"
-        app:suggestionSelectedTextColor="@color/suggestionSelectedTextColor"/>
+        app:suggestionSelectedTextColor="@color/suggestionSelectedTextColor"
+        app:isDismissableOnTouchOutside="true"
+        app:isVoiceInputEnabled="true"
+        app:areSuggestionsDisabled="false"
+        app:shouldDimBehind="true"/>
 
 </RelativeLayout>

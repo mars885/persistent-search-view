@@ -92,6 +92,7 @@ class DemoActivity : AppCompatActivity(), View.OnClickListener {
             setOnSearchConfirmedListener(mOnSearchConfirmedListener)
             setOnSearchQueryChangeListener(mOnSearchQueryChangeListener)
             setOnSuggestionChangeListener(mOnSuggestionChangeListener)
+            setVoiceInputEnabled(true)
             setSuggestionsDisabled(mMode == DemoModes.WITHOUT_SUGGESTIONS)
         }
     }
