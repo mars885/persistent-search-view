@@ -4,8 +4,10 @@ project.ext {
     targetSdk = 27
     minSdk = 21
 
-    supportLibraryVersion = "1.0.0-rc02"
-    adapsterLibraryVersion = "1.0.3"
+    appCompatLibraryVersion = "1.0.2"
+    supportLibraryVersion = "1.0.0"
+    coreKtxLibraryVersion = "1.0.1"
+    adapsterLibraryVersion = "1.0.5"
     jUnitVersion = "4.12"
     testRunnerVersion = "1.1.0-alpha4"
 
