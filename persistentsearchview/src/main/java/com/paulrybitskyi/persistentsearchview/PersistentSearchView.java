@@ -173,6 +173,8 @@ public class PersistentSearchView extends FrameLayout {
 
     private CardView mCardView;
 
+    private FrameLayout mLeftContainerFl;
+    private FrameLayout mInputButtonsContainerFl;
     private FrameLayout mRightButtonContainerFl;
 
     private LinearLayout mSuggestionsContainerLL;
@@ -198,6 +200,7 @@ public class PersistentSearchView extends FrameLayout {
 
     // Flags
     private boolean mIsDismissibleOnTouchOutside;
+    private boolean mIsProgressBarEnabled;
     private boolean mIsVoiceInputButtonEnabled;
     private boolean mIsClearInputButtonEnabled;
     private boolean mAreSuggestionsDisabled;
@@ -372,6 +375,7 @@ public class PersistentSearchView extends FrameLayout {
 
     private void initDefaultFlags() {
         mIsSpeechRecognitionAvailable = Utils.isSpeechRecognitionAvailable(getContext());
+        mIsProgressBarEnabled = true;
         mIsVoiceInputButtonEnabled = true;
         mIsClearInputButtonEnabled = true;
         mIsDismissibleOnTouchOutside = true;
@@ -405,6 +409,7 @@ public class PersistentSearchView extends FrameLayout {
 
     private void initBooleanResources(TypedArray attributes) {
         mIsDismissibleOnTouchOutside = attributes.getBoolean(R.styleable.PersistentSearchView_isDismissableOnTouchOutside, mIsDismissibleOnTouchOutside);
+        mIsProgressBarEnabled = attributes.getBoolean(R.styleable.PersistentSearchView_isProgressBarEnabled, mIsProgressBarEnabled);
         mIsVoiceInputButtonEnabled = attributes.getBoolean(R.styleable.PersistentSearchView_isVoiceInputButtonEnabled, mIsVoiceInputButtonEnabled);
         mIsClearInputButtonEnabled = attributes.getBoolean(R.styleable.PersistentSearchView_isClearInputButtonEnabled, mIsClearInputButtonEnabled);
         mAreSuggestionsDisabled = attributes.getBoolean(R.styleable.PersistentSearchView_areSuggestionsDisabled, mAreSuggestionsDisabled);
@@ -506,6 +511,12 @@ public class PersistentSearchView extends FrameLayout {
         setLeftButtonDrawable(mLeftButtonDrawable);
         mLeftBtnIv.setOnClickListener(mOnLeftButtonClickListener);
 
+        // Left button related
+        mLeftContainerFl = findViewById(R.id.leftContainerFl);
+
+        // Input buttons related
+        mInputButtonsContainerFl = findViewById(R.id.inputBtnsContainerFl);
+
         // Right button related
         mRightButtonContainerFl = findViewById(R.id.rightBtnContainerFl);
 
@@ -586,33 +597,55 @@ public class PersistentSearchView extends FrameLayout {
 
 
 
-    private void updateVoiceInputButtonState() {
-        if(!isVoiceInputEnabled()) {
-            ViewUtils.setVisibility(mVoiceInputBtnIv, View.GONE);
+    private void updateLeftContainerVisibility() {
+        if(ViewUtils.isVisible(mLeftBtnIv) || mIsProgressBarEnabled) {
+            ViewUtils.makeVisible(mLeftContainerFl);
+        } else {
+            ViewUtils.makeGone(mLeftContainerFl);
+        }
+    }
 
-            return;
+
+
+
+    private void updateVoiceInputButtonState() {
+        if(isVoiceInputEnabled()) {
+            final boolean isInputQueryEmpty = isInputQueryEmpty();
+
+            ViewUtils.setScale(mVoiceInputBtnIv, (isInputQueryEmpty ? 1f : 0f));
+            ViewUtils.setVisibility(mVoiceInputBtnIv, (isInputQueryEmpty ? View.VISIBLE : View.GONE));
+        } else {
+            ViewUtils.setVisibility(mVoiceInputBtnIv, View.GONE);
         }
 
-        final boolean isInputQueryEmpty = isInputQueryEmpty();
-
-        ViewUtils.setScale(mVoiceInputBtnIv, (isInputQueryEmpty ? 1f : 0f));
-        ViewUtils.setVisibility(mVoiceInputBtnIv, (isInputQueryEmpty ? View.VISIBLE : View.GONE));
+        updateInputButtonsContainerVisibility();
     }
 
 
 
 
     private void updateClearInputButtonState() {
-        if(!mIsClearInputButtonEnabled) {
-            ViewUtils.setVisibility(mClearInputBtnIv, View.GONE);
+        if(mIsClearInputButtonEnabled) {
+            final boolean isInputQueryEmpty = isInputQueryEmpty();
 
-            return;
+            ViewUtils.setScale(mClearInputBtnIv, (isInputQueryEmpty ? 0f : 1f));
+            ViewUtils.setVisibility(mClearInputBtnIv, (isInputQueryEmpty ? View.GONE : View.VISIBLE));
+        } else {
+            ViewUtils.setVisibility(mClearInputBtnIv, View.GONE);
         }
 
-        final boolean isInputQueryEmpty = isInputQueryEmpty();
+        updateInputButtonsContainerVisibility();
+    }
 
-        ViewUtils.setScale(mClearInputBtnIv, (isInputQueryEmpty ? 0f : 1f));
-        ViewUtils.setVisibility(mClearInputBtnIv, (isInputQueryEmpty ? View.GONE : View.VISIBLE));
+
+
+
+    private void updateInputButtonsContainerVisibility() {
+        if(isVoiceInputEnabled() || mIsClearInputButtonEnabled) {
+            ViewUtils.makeVisible(mInputButtonsContainerFl);
+        } else {
+            ViewUtils.makeGone(mInputButtonsContainerFl);
+        }
     }
 
 
@@ -1030,6 +1063,7 @@ public class PersistentSearchView extends FrameLayout {
                     public void onAnimationEnded(Animator animation) {
                         super.onAnimationEnded(animation);
                         setAnimationMarker(mLeftBtnIv, AnimationType.NO_ANIMATION);
+                        updateLeftContainerVisibility();
                     }
 
                 })
@@ -1039,6 +1073,7 @@ public class PersistentSearchView extends FrameLayout {
         } else {
             setScale(mLeftBtnIv, 1f);
             setAnimationMarker(mLeftBtnIv, AnimationType.NO_ANIMATION);
+            updateLeftContainerVisibility();
         }
     }
 
@@ -1077,6 +1112,7 @@ public class PersistentSearchView extends FrameLayout {
                         super.onAnimationEnded(animation);
                         makeGone(mLeftBtnIv);
                         setAnimationMarker(mLeftBtnIv, AnimationType.NO_ANIMATION);
+                        updateLeftContainerVisibility();
                     }
 
                 })
@@ -1087,6 +1123,7 @@ public class PersistentSearchView extends FrameLayout {
             setScale(mLeftBtnIv, 0f);
             makeGone(mLeftBtnIv);
             setAnimationMarker(mLeftBtnIv, AnimationType.NO_ANIMATION);
+            updateLeftContainerVisibility();
         }
     }
 
@@ -1255,7 +1292,9 @@ public class PersistentSearchView extends FrameLayout {
 
 
     private void showProgressBarInternal(boolean animate, @Nullable AnimatorListenerAdapter animatorListenerAdapter) {
-        if(getVisibilityMarker(mProgressBar) || (animate && AnimationType.ENTER.equals(getAnimationMarker(mProgressBar)))) {
+        if(!mIsProgressBarEnabled ||
+            getVisibilityMarker(mProgressBar) ||
+            (animate && AnimationType.ENTER.equals(getAnimationMarker(mProgressBar)))) {
             return;
         }
 
@@ -1279,6 +1318,7 @@ public class PersistentSearchView extends FrameLayout {
                     public void onAnimationEnded(Animator animation) {
                         super.onAnimationEnded(animation);
                         setAnimationMarker(mProgressBar, AnimationType.NO_ANIMATION);
+                        updateLeftContainerVisibility();
                     }
 
                 })
@@ -1288,6 +1328,7 @@ public class PersistentSearchView extends FrameLayout {
         } else {
             setScale(mProgressBar, 1f);
             setAnimationMarker(mProgressBar, AnimationType.NO_ANIMATION);
+            updateLeftContainerVisibility();
         }
     }
 
@@ -1302,7 +1343,9 @@ public class PersistentSearchView extends FrameLayout {
 
 
     private void hideProgressBarInternal(boolean animate, @Nullable AnimatorListenerAdapter animatorListenerAdapter) {
-        if(!getVisibilityMarker(mProgressBar) || (animate && AnimationType.EXIT.equals(getAnimationMarker(mProgressBar)))) {
+        if(!mIsProgressBarEnabled ||
+            !getVisibilityMarker(mProgressBar) ||
+            (animate && AnimationType.EXIT.equals(getAnimationMarker(mProgressBar)))) {
             return;
         }
 
@@ -1326,6 +1369,7 @@ public class PersistentSearchView extends FrameLayout {
                         super.onAnimationEnded(animation);
                         makeGone(mProgressBar);
                         setAnimationMarker(mProgressBar, AnimationType.NO_ANIMATION);
+                        updateLeftContainerVisibility();
                     }
 
                 })
@@ -1336,6 +1380,7 @@ public class PersistentSearchView extends FrameLayout {
             setScale(mProgressBar, 0f);
             makeGone(mProgressBar);
             setAnimationMarker(mProgressBar, AnimationType.NO_ANIMATION);
+            updateLeftContainerVisibility();
         }
     }
 
@@ -2370,6 +2415,36 @@ public class PersistentSearchView extends FrameLayout {
 
 
     /**
+     * Sets a flag indicating whether the progress bar should be enabled or not.
+     * This flag will basically allow the progress bar to be shown and hidden
+     * by calling the appropriate methods {@link PersistentSearchView#showProgressBar()}
+     * and {@link PersistentSearchView#hideProgressBar()}.
+     *
+     * @param isEnabled true if enabled; false otherwise
+     */
+    public final void setProgressBarEnabled(boolean isEnabled) {
+        mIsProgressBarEnabled = isEnabled;
+
+        updateLeftContainerVisibility();
+    }
+
+
+
+
+    /**
+     * Checks whether the progress bar is enabled (whether it is allowed to be
+     * shown and hidden).
+     *
+     * @return true if enabled; false otherwise
+     */
+    public final boolean isProgressBarEnabled() {
+        return mIsProgressBarEnabled;
+    }
+
+
+
+
+    /**
      * Sets a flag indicating whether the voice input button should be enabled by
      * the search view.
      *
@@ -2775,6 +2850,7 @@ public class PersistentSearchView extends FrameLayout {
         setInputQueryInternal(savedState.query, false);
         setQueryInputHint(savedState.inputHint);
         setDismissOnTouchOutside(savedState.isDismissibleOnTouchOutside);
+        setProgressBarEnabled(savedState.isProgressBarEnabled);
         setVoiceInputButtonEnabled(savedState.isVoiceInputButtonEnabled);
         setClearInputButtonEnabled(savedState.isClearInputButtonEnabled);
         setSuggestionsDisabled(savedState.areSuggestionsDisabled);
@@ -2816,6 +2892,7 @@ public class PersistentSearchView extends FrameLayout {
         savedState.inputHint = mInputEt.getHint().toString();
         savedState.state = mState;
         savedState.isDismissibleOnTouchOutside = mIsDismissibleOnTouchOutside;
+        savedState.isProgressBarEnabled = mIsProgressBarEnabled;
         savedState.isVoiceInputButtonEnabled = mIsVoiceInputButtonEnabled;
         savedState.isClearInputButtonEnabled = mIsClearInputButtonEnabled;
         savedState.areSuggestionsDisabled = mAreSuggestionsDisabled;
@@ -2849,6 +2926,7 @@ public class PersistentSearchView extends FrameLayout {
         private static final String KEY_INPUT_HINT = "input_hint";
         private static final String KEY_STATE = "state";
         private static final String KEY_IS_DISMISSIBLE_ON_TOUCH_OUTSIDE = "is_dismissible_on_touch_outside";
+        private static final String KEY_IS_PROGRESS_BAR_ENABLED = "is_progress_bar_enabled";
         private static final String KEY_IS_VOICE_INPUT_BUTTON_ENABLED = "is_voice_input_button_enabled";
         private static final String KEY_IS_CLEAR_INPUT_BUTTON_ENABLED = "is_clear_input_button_enabled";
         private static final String KEY_ARE_SUGGESTIONS_DISABLED = "are_suggestions_disabled";
@@ -2879,6 +2957,7 @@ public class PersistentSearchView extends FrameLayout {
         private State state;
 
         private boolean isDismissibleOnTouchOutside;
+        private boolean isProgressBarEnabled;
         private boolean isVoiceInputButtonEnabled;
         private boolean isClearInputButtonEnabled;
         private boolean areSuggestionsDisabled;
@@ -2915,6 +2994,7 @@ public class PersistentSearchView extends FrameLayout {
             this.inputHint = bundle.getString(KEY_INPUT_HINT);
             this.state = (State) bundle.getSerializable(KEY_STATE);
             this.isDismissibleOnTouchOutside = bundle.getBoolean(KEY_IS_DISMISSIBLE_ON_TOUCH_OUTSIDE, true);
+            this.isProgressBarEnabled = bundle.getBoolean(KEY_IS_PROGRESS_BAR_ENABLED, true);
             this.isVoiceInputButtonEnabled = bundle.getBoolean(KEY_IS_VOICE_INPUT_BUTTON_ENABLED, true);
             this.isClearInputButtonEnabled = bundle.getBoolean(KEY_IS_CLEAR_INPUT_BUTTON_ENABLED, true);
             this.areSuggestionsDisabled = bundle.getBoolean(KEY_ARE_SUGGESTIONS_DISABLED, false);
@@ -2948,6 +3028,7 @@ public class PersistentSearchView extends FrameLayout {
             bundle.putString(KEY_INPUT_HINT, this.inputHint);
             bundle.putSerializable(KEY_STATE, this.state);
             bundle.putBoolean(KEY_IS_DISMISSIBLE_ON_TOUCH_OUTSIDE, this.isDismissibleOnTouchOutside);
+            bundle.putBoolean(KEY_IS_PROGRESS_BAR_ENABLED, this.isProgressBarEnabled);
             bundle.putBoolean(KEY_IS_VOICE_INPUT_BUTTON_ENABLED, this.isVoiceInputButtonEnabled);
             bundle.putBoolean(KEY_IS_CLEAR_INPUT_BUTTON_ENABLED, this.isClearInputButtonEnabled);
             bundle.putBoolean(KEY_ARE_SUGGESTIONS_DISABLED, this.areSuggestionsDisabled);

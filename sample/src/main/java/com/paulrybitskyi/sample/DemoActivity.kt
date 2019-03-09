@@ -92,6 +92,9 @@ class DemoActivity : AppCompatActivity(), View.OnClickListener {
             setOnSearchConfirmedListener(mOnSearchConfirmedListener)
             setOnSearchQueryChangeListener(mOnSearchQueryChangeListener)
             setOnSuggestionChangeListener(mOnSuggestionChangeListener)
+            setDismissOnTouchOutside(true)
+            setDimBackground(true)
+            setProgressBarEnabled(true)
             setVoiceInputButtonEnabled(true)
             setClearInputButtonEnabled(true)
             setSuggestionsDisabled(mMode == DemoModes.WITHOUT_SUGGESTIONS)
@@ -171,6 +174,9 @@ class DemoActivity : AppCompatActivity(), View.OnClickListener {
                 .toMutableList()
 
         val runnable = Runnable {
+            persistentSearchView.hideProgressBar(false)
+            persistentSearchView.showLeftButton()
+
             mAdapter.items = mItems
             progressBar.makeGone()
             recyclerView.animate()
@@ -181,6 +187,9 @@ class DemoActivity : AppCompatActivity(), View.OnClickListener {
         }
 
         Handler().postDelayed(runnable, 1000L)
+
+        persistentSearchView.hideLeftButton(false)
+        persistentSearchView.showProgressBar()
     }
 
 
