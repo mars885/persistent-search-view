@@ -93,7 +93,8 @@
         app:suggestionTextColor="@color/suggestionTextColor"
         app:suggestionSelectedTextColor="@color/suggestionSelectedTextColor"
         app:isDismissableOnTouchOutside="true"
-        app:isVoiceInputEnabled="true"
+        app:isVoiceInputButtonEnabled="true"
+        app:isClearInputButtonEnabled="true"
         app:areSuggestionsDisabled="false"
         app:shouldDimBehind="true"/>
 

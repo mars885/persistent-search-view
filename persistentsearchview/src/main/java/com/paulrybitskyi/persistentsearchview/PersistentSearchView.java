@@ -198,7 +198,8 @@ public class PersistentSearchView extends FrameLayout {
 
     // Flags
     private boolean mIsDismissibleOnTouchOutside;
-    private boolean mIsVoiceInputEnabled;
+    private boolean mIsVoiceInputButtonEnabled;
+    private boolean mIsClearInputButtonEnabled;
     private boolean mAreSuggestionsDisabled;
     private boolean mIsSpeechRecognitionAvailable;
     private boolean mShouldDimBehind;
@@ -371,7 +372,8 @@ public class PersistentSearchView extends FrameLayout {
 
     private void initDefaultFlags() {
         mIsSpeechRecognitionAvailable = Utils.isSpeechRecognitionAvailable(getContext());
-        mIsVoiceInputEnabled = true;
+        mIsVoiceInputButtonEnabled = true;
+        mIsClearInputButtonEnabled = true;
         mIsDismissibleOnTouchOutside = true;
         mAreSuggestionsDisabled = false;
         mShouldDimBehind = true;
@@ -403,7 +405,8 @@ public class PersistentSearchView extends FrameLayout {
 
     private void initBooleanResources(TypedArray attributes) {
         mIsDismissibleOnTouchOutside = attributes.getBoolean(R.styleable.PersistentSearchView_isDismissableOnTouchOutside, mIsDismissibleOnTouchOutside);
-        mIsVoiceInputEnabled = attributes.getBoolean(R.styleable.PersistentSearchView_isVoiceInputEnabled, mIsVoiceInputEnabled);
+        mIsVoiceInputButtonEnabled = attributes.getBoolean(R.styleable.PersistentSearchView_isVoiceInputButtonEnabled, mIsVoiceInputButtonEnabled);
+        mIsClearInputButtonEnabled = attributes.getBoolean(R.styleable.PersistentSearchView_isClearInputButtonEnabled, mIsClearInputButtonEnabled);
         mAreSuggestionsDisabled = attributes.getBoolean(R.styleable.PersistentSearchView_areSuggestionsDisabled, mAreSuggestionsDisabled);
         mShouldDimBehind = attributes.getBoolean(R.styleable.PersistentSearchView_shouldDimBehind, mShouldDimBehind);
     }
@@ -512,8 +515,7 @@ public class PersistentSearchView extends FrameLayout {
         // Clear input button related
         mClearInputBtnIv = findViewById(R.id.clearInputBtnIv);
         setClearInputButtonDrawable(mClearInputButtonDrawable);
-        ViewUtils.setScale(mClearInputBtnIv, (isInputQueryEmpty() ? 0f : 1f));
-        ViewUtils.setVisibility(mClearInputBtnIv, (isInputQueryEmpty() ? View.GONE : View.VISIBLE));
+        updateClearInputButtonState();
         mClearInputBtnIv.setOnClickListener(mOnClearInputButtonClickListener);
 
         // Voice input button related
@@ -585,10 +587,32 @@ public class PersistentSearchView extends FrameLayout {
 
 
     private void updateVoiceInputButtonState() {
-        mVoiceInputBtnIv.setEnabled(isVoiceInputEnabled());
+        if(!isVoiceInputEnabled()) {
+            ViewUtils.setVisibility(mVoiceInputBtnIv, View.GONE);
 
-        ViewUtils.setScale(mVoiceInputBtnIv, ((isInputQueryEmpty() && isVoiceInputEnabled()) ? 1f : 0f));
-        ViewUtils.setVisibility(mVoiceInputBtnIv, ((isInputQueryEmpty() && isVoiceInputEnabled()) ? View.VISIBLE : View.GONE));
+            return;
+        }
+
+        final boolean isInputQueryEmpty = isInputQueryEmpty();
+
+        ViewUtils.setScale(mVoiceInputBtnIv, (isInputQueryEmpty ? 1f : 0f));
+        ViewUtils.setVisibility(mVoiceInputBtnIv, (isInputQueryEmpty ? View.VISIBLE : View.GONE));
+    }
+
+
+
+
+    private void updateClearInputButtonState() {
+        if(!mIsClearInputButtonEnabled) {
+            ViewUtils.setVisibility(mClearInputBtnIv, View.GONE);
+
+            return;
+        }
+
+        final boolean isInputQueryEmpty = isInputQueryEmpty();
+
+        ViewUtils.setScale(mClearInputBtnIv, (isInputQueryEmpty ? 0f : 1f));
+        ViewUtils.setVisibility(mClearInputBtnIv, (isInputQueryEmpty ? View.GONE : View.VISIBLE));
     }
 
 
@@ -637,7 +661,9 @@ public class PersistentSearchView extends FrameLayout {
 
 
     private void showClearInputButton(boolean animate, @Nullable AnimatorListenerAdapter animatorListenerAdapter) {
-        if(getVisibilityMarker(mClearInputBtnIv) || (animate && AnimationType.ENTER.equals(getAnimationMarker(mClearInputBtnIv)))) {
+        if(!mIsClearInputButtonEnabled ||
+            getVisibilityMarker(mClearInputBtnIv) ||
+            (animate && AnimationType.ENTER.equals(getAnimationMarker(mClearInputBtnIv)))) {
             return;
         }
 
@@ -715,7 +741,9 @@ public class PersistentSearchView extends FrameLayout {
 
 
     private void hideClearInputButton(boolean animate, @Nullable AnimatorListenerAdapter animatorListenerAdapter) {
-        if(!getVisibilityMarker(mClearInputBtnIv) || (animate && AnimationType.EXIT.equals(getAnimationMarker(mClearInputBtnIv)))) {
+        if(!mIsClearInputButtonEnabled ||
+            !getVisibilityMarker(mClearInputBtnIv) ||
+            (animate && AnimationType.EXIT.equals(getAnimationMarker(mClearInputBtnIv)))) {
             return;
         }
 
@@ -777,9 +805,9 @@ public class PersistentSearchView extends FrameLayout {
 
 
     private void showVoiceInputButton(boolean animate, @Nullable AnimatorListenerAdapter animatorListenerAdapter) {
-        if(!isVoiceInputEnabled()
-                || getVisibilityMarker(mVoiceInputBtnIv)
-                || (animate && AnimationType.ENTER.equals(getAnimationMarker(mVoiceInputBtnIv)))) {
+        if(!isVoiceInputEnabled() ||
+            getVisibilityMarker(mVoiceInputBtnIv) ||
+            (animate && AnimationType.ENTER.equals(getAnimationMarker(mVoiceInputBtnIv)))) {
             return;
         }
 
@@ -833,7 +861,9 @@ public class PersistentSearchView extends FrameLayout {
 
 
     private void hideVoiceInputButton(boolean animate, @Nullable AnimatorListenerAdapter animatorListenerAdapter) {
-        if(!getVisibilityMarker(mVoiceInputBtnIv) || (animate && AnimationType.EXIT.equals(getAnimationMarker(mVoiceInputBtnIv)))) {
+        if(!isVoiceInputEnabled() ||
+            !getVisibilityMarker(mVoiceInputBtnIv) ||
+            (animate && AnimationType.EXIT.equals(getAnimationMarker(mVoiceInputBtnIv)))) {
             return;
         }
 
@@ -2340,19 +2370,22 @@ public class PersistentSearchView extends FrameLayout {
 
 
     /**
-     * Sets a flag indicating whether the voice input should be enabled by
+     * Sets a flag indicating whether the voice input button should be enabled by
      * the search view.
      *
-     * Whether the voice input will be enabled or not largely depends
-     * on {@link PersistentSearchView#mIsSpeechRecognitionAvailable} flag.
-     * If the value passed into this method is true and the speech recognition
-     * is present on the device, then the voice input will be enabled. Otherwise,
-     * the voice input will not be enabled.
+     * Whether or not the voice input button will be shown depends largely on
+     * {@link PersistentSearchView#isVoiceInputEnabled()} method's return value.
+     * This method is solely responsible for setting a hint whether the voice input
+     * button should be enabled at all, but for it to be visible the device should have
+     * some kind of speech recognition support. If it does not or the value passed into
+     * this method is false, then the button won't be visible. If the device does have
+     * speech recognition support and the value passed into this method is true, then
+     * the button will be visible.
      *
      * @param isEnabled true if should be enabled; false otherwise
      */
-    public final void setVoiceInputEnabled(boolean isEnabled) {
-        mIsVoiceInputEnabled = isEnabled;
+    public final void setVoiceInputButtonEnabled(boolean isEnabled) {
+        mIsVoiceInputButtonEnabled = isEnabled;
 
         updateVoiceInputButtonState();
     }
@@ -2361,12 +2394,54 @@ public class PersistentSearchView extends FrameLayout {
 
 
     /**
-     * Checks wether the voice input is enabled.
+     * Checks whether the voice input button is enabled.
+     *
+     * @return true if enabled; false otherwise
+     */
+    public final boolean isVoiceInputButtonEnabled() {
+        return mIsVoiceInputButtonEnabled;
+    }
+
+
+
+
+    /**
+     * Checks whether the voice input is enabled.
+     *
+     * For the voice input to be enabled, the voice input button should be enabled and
+     * the device should have some kind of speech recognition support.
      *
      * @return true if enabled; false otherwise
      */
     public final boolean isVoiceInputEnabled() {
-        return (mIsVoiceInputEnabled && mIsSpeechRecognitionAvailable);
+        return (isVoiceInputButtonEnabled() && mIsSpeechRecognitionAvailable);
+    }
+
+
+
+
+    /**
+     * Sets a flag indicating whether the clear input button should be enabled
+     * by the search view.
+     *
+     * @param isEnabled true if should be enabled; false otherwise
+     */
+    public final void setClearInputButtonEnabled(boolean isEnabled) {
+        mIsClearInputButtonEnabled = isEnabled;
+
+        updateClearInputButtonState();
+    }
+
+
+
+
+    /**
+     * Checks whether the clear input button is enabled.
+     *
+     * @return true if enabled; false otherwise
+     */
+    public final boolean isClearInputButtonEnabled() {
+        return mIsClearInputButtonEnabled;
     }
 
 
@@ -2700,7 +2775,8 @@ public class PersistentSearchView extends FrameLayout {
         setInputQueryInternal(savedState.query, false);
         setQueryInputHint(savedState.inputHint);
         setDismissOnTouchOutside(savedState.isDismissibleOnTouchOutside);
-        setVoiceInputEnabled(savedState.isVoiceInputEnabled);
+        setVoiceInputButtonEnabled(savedState.isVoiceInputButtonEnabled);
+        setClearInputButtonEnabled(savedState.isClearInputButtonEnabled);
         setSuggestionsDisabled(savedState.areSuggestionsDisabled);
         setDimBackground(savedState.shouldDimBehind);
 
@@ -2740,7 +2816,8 @@ public class PersistentSearchView extends FrameLayout {
         savedState.inputHint = mInputEt.getHint().toString();
         savedState.state = mState;
         savedState.isDismissibleOnTouchOutside = mIsDismissibleOnTouchOutside;
-        savedState.isVoiceInputEnabled = mIsVoiceInputEnabled;
+        savedState.isVoiceInputButtonEnabled = mIsVoiceInputButtonEnabled;
+        savedState.isClearInputButtonEnabled = mIsClearInputButtonEnabled;
         savedState.areSuggestionsDisabled = mAreSuggestionsDisabled;
         savedState.shouldDimBehind = mShouldDimBehind;
 
@@ -2772,7 +2849,8 @@ public class PersistentSearchView extends FrameLayout {
         private static final String KEY_INPUT_HINT = "input_hint";
         private static final String KEY_STATE = "state";
         private static final String KEY_IS_DISMISSIBLE_ON_TOUCH_OUTSIDE = "is_dismissible_on_touch_outside";
-        private static final String KEY_IS_VOICE_INPUT_ENABLED = "is_voice_input_enabled";
+        private static final String KEY_IS_VOICE_INPUT_BUTTON_ENABLED = "is_voice_input_button_enabled";
+        private static final String KEY_IS_CLEAR_INPUT_BUTTON_ENABLED = "is_clear_input_button_enabled";
         private static final String KEY_ARE_SUGGESTIONS_DISABLED = "are_suggestions_disabled";
         private static final String KEY_SHOULD_DIM_BEHIND = "should_dim_behind";
 
@@ -2801,7 +2879,8 @@ public class PersistentSearchView extends FrameLayout {
         private State state;
 
         private boolean isDismissibleOnTouchOutside;
-        private boolean isVoiceInputEnabled;
+        private boolean isVoiceInputButtonEnabled;
+        private boolean isClearInputButtonEnabled;
         private boolean areSuggestionsDisabled;
         private boolean shouldDimBehind;
 
@@ -2836,7 +2915,8 @@ public class PersistentSearchView extends FrameLayout {
             this.inputHint = bundle.getString(KEY_INPUT_HINT);
             this.state = (State) bundle.getSerializable(KEY_STATE);
             this.isDismissibleOnTouchOutside = bundle.getBoolean(KEY_IS_DISMISSIBLE_ON_TOUCH_OUTSIDE, true);
-            this.isVoiceInputEnabled = bundle.getBoolean(KEY_IS_VOICE_INPUT_ENABLED, true);
+            this.isVoiceInputButtonEnabled = bundle.getBoolean(KEY_IS_VOICE_INPUT_BUTTON_ENABLED, true);
+            this.isClearInputButtonEnabled = bundle.getBoolean(KEY_IS_CLEAR_INPUT_BUTTON_ENABLED, true);
             this.areSuggestionsDisabled = bundle.getBoolean(KEY_ARE_SUGGESTIONS_DISABLED, false);
             this.shouldDimBehind = bundle.getBoolean(KEY_SHOULD_DIM_BEHIND, true);
         }
@@ -2868,7 +2948,8 @@ public class PersistentSearchView extends FrameLayout {
             bundle.putString(KEY_INPUT_HINT, this.inputHint);
             bundle.putSerializable(KEY_STATE, this.state);
             bundle.putBoolean(KEY_IS_DISMISSIBLE_ON_TOUCH_OUTSIDE, this.isDismissibleOnTouchOutside);
-            bundle.putBoolean(KEY_IS_VOICE_INPUT_ENABLED, this.isVoiceInputEnabled);
+            bundle.putBoolean(KEY_IS_VOICE_INPUT_BUTTON_ENABLED, this.isVoiceInputButtonEnabled);
+            bundle.putBoolean(KEY_IS_CLEAR_INPUT_BUTTON_ENABLED, this.isClearInputButtonEnabled);
             bundle.putBoolean(KEY_ARE_SUGGESTIONS_DISABLED, this.areSuggestionsDisabled);
             bundle.putBoolean(KEY_SHOULD_DIM_BEHIND, this.shouldDimBehind);
 
