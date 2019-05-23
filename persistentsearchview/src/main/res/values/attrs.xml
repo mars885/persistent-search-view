@@ -3,6 +3,13 @@
 
     <declare-styleable name="PersistentSearchView">
 
+        <attr name="isDismissableOnTouchOutside" format="boolean"/>
+        <attr name="isProgressBarEnabled" format="boolean"/>
+        <attr name="isVoiceInputButtonEnabled" format="boolean"/>
+        <attr name="isClearInputButtonEnabled" format="boolean"/>
+        <attr name="areSuggestionsDisabled" format="boolean"/>
+        <attr name="shouldDimBehind" format="boolean"/>
+
         <attr name="dimColor" format="color"/>
         <attr name="dimAmount" format="float"/>
 

@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
+import android.view.Gravity
 import android.view.View
 import android.view.WindowManager
 import android.view.animation.LinearInterpolator
@@ -51,7 +52,7 @@ class DemoActivity : AppCompatActivity(), View.OnClickListener {
     }
 
 
-    private var mMode: DemoModes = DemoModes.SIMPLE
+    private var mMode: DemoModes = DemoModes.WITHOUT_SUGGESTIONS
 
 
     private var mDataProvider: DataProvider = DataProvider()
@@ -92,7 +93,13 @@ class DemoActivity : AppCompatActivity(), View.OnClickListener {
             setOnSearchConfirmedListener(mOnSearchConfirmedListener)
             setOnSearchQueryChangeListener(mOnSearchQueryChangeListener)
             setOnSuggestionChangeListener(mOnSuggestionChangeListener)
-            setSuggestionsDisabled(mMode == DemoModes.SIMPLE)
+            setDismissOnTouchOutside(true)
+            setDimBackground(true)
+            setProgressBarEnabled(true)
+            setVoiceInputButtonEnabled(true)
+            setClearInputButtonEnabled(true)
+            setSuggestionsDisabled(mMode == DemoModes.WITHOUT_SUGGESTIONS)
+            setQueryInputGravity(Gravity.START or Gravity.CENTER)
         }
     }
 
@@ -144,7 +151,7 @@ class DemoActivity : AppCompatActivity(), View.OnClickListener {
 
 
     private fun loadInitialDataIfNecessary() {
-        if(mMode == DemoModes.SIMPLE) {
+        if(mMode == DemoModes.WITHOUT_SUGGESTIONS) {
             return
         }
 
@@ -169,6 +176,9 @@ class DemoActivity : AppCompatActivity(), View.OnClickListener {
                 .toMutableList()
 
         val runnable = Runnable {
+            persistentSearchView.hideProgressBar(false)
+            persistentSearchView.showLeftButton()
+
             mAdapter.items = mItems
             progressBar.makeGone()
             recyclerView.animate()
@@ -179,6 +189,9 @@ class DemoActivity : AppCompatActivity(), View.OnClickListener {
         }
 
         Handler().postDelayed(runnable, 1000L)
+
+        persistentSearchView.hideLeftButton(false)
+        persistentSearchView.showProgressBar()
     }
 
 
@@ -190,13 +203,13 @@ class DemoActivity : AppCompatActivity(), View.OnClickListener {
 
 
     private fun setSuggestions(queries: List<String>, expandIfNecessary: Boolean) {
-        if(mMode == DemoModes.SIMPLE) {
+        if(mMode == DemoModes.WITHOUT_SUGGESTIONS) {
             return
         }
 
         val suggestions: List<SuggestionItem> = when(mMode) {
-            DemoModes.RECENT_SEARCH_QUERIES -> SuggestionCreationUtil.asRecentSearchSuggestions(queries)
-            DemoModes.REGULAR_SEARCH_QUERIES -> SuggestionCreationUtil.asRegularSearchSuggestions(queries)
+            DemoModes.RECENT_SUGGESTIONS -> SuggestionCreationUtil.asRecentSearchSuggestions(queries)
+            DemoModes.REGULAR_SUGGESTIONS -> SuggestionCreationUtil.asRegularSearchSuggestions(queries)
 
             else -> throw IllegalStateException()
         }
@@ -205,18 +218,9 @@ class DemoActivity : AppCompatActivity(), View.OnClickListener {
     }
 
 
-    private fun isSearchViewExpanded(): Boolean {
-        return when(mMode) {
-            DemoModes.SIMPLE -> false
-
-            else -> persistentSearchView.isExpanded
-        }
-    }
-
-
     private fun canSaveQuery(): Boolean {
         return when(mMode) {
-            DemoModes.RECENT_SEARCH_QUERIES -> true
+            DemoModes.RECENT_SUGGESTIONS -> true
 
             else -> false
         }
@@ -238,7 +242,7 @@ class DemoActivity : AppCompatActivity(), View.OnClickListener {
 
 
     override fun onBackPressed() {
-        if(isSearchViewExpanded()) {
+        if(persistentSearchView.isExpanded) {
             persistentSearchView.collapse()
             return
         }

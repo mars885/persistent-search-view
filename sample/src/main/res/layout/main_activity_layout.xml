@@ -14,22 +14,22 @@
         android:gravity="center_horizontal">
 
         <Button
-            android:id="@+id/simpleButton"
+            android:id="@+id/withoutSuggestions"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Simple"/>
+            android:text="Without suggestions"/>
 
         <Button
-            android:id="@+id/recentSearchQueriesButton"
+            android:id="@+id/recentSuggestions"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Recent search queries"/>
+            android:text="Recent suggestions"/>
 
         <Button
-            android:id="@+id/regularSearchQueriesButton"
+            android:id="@+id/regularSuggestions"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Regular search queries"/>
+            android:text="Regular suggestions"/>
 
     </LinearLayout>
 

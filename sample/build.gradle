@@ -32,8 +32,8 @@ dependencies {
 
     implementation "androidx.appcompat:appcompat:${rootProject.supportLibraryVersion}"
     implementation "androidx.cardview:cardview:${rootProject.supportLibraryVersion}"
-    implementation "androidx.core:core-ktx:${rootProject.supportLibraryVersion}"
     implementation "androidx.browser:browser:${rootProject.supportLibraryVersion}"
+    implementation "androidx.core:core-ktx:${rootProject.coreKtxLibraryVersion}"
     implementation "com.arthurivanets.adapster:adapster:${rootProject.adapsterLibraryVersion}"
 
     testImplementation "junit:junit:${rootProject.jUnitVersion}"
