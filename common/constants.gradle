@@ -5,7 +5,7 @@ project.ext {
     minSdk = 21
 
     supportLibraryVersion = "1.0.0-rc02"
-    adapsterLibraryVersion = "1.0.3"
+    adapsterLibraryVersion = "1.0.12"
     jUnitVersion = "4.12"
     testRunnerVersion = "1.1.0-alpha4"
 
