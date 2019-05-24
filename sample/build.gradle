@@ -30,10 +30,10 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation "androidx.appcompat:appcompat:${rootProject.supportLibraryVersion}"
-    implementation "androidx.cardview:cardview:${rootProject.supportLibraryVersion}"
-    implementation "androidx.browser:browser:${rootProject.supportLibraryVersion}"
-    implementation "androidx.core:core-ktx:${rootProject.coreKtxLibraryVersion}"
+    implementation "androidx.appcompat:appcompat:${rootProject.appCompatLibraryVersion}"
+    implementation "androidx.cardview:cardview:${rootProject.cardViewLibraryVersion}"
+    implementation "androidx.browser:browser:${rootProject.browserLibraryVersion}"
+    implementation "androidx.recyclerview:recyclerview:${rootProject.recyclerViewLibraryVersion}"
     implementation "com.arthurivanets.adapster:adapster:${rootProject.adapsterLibraryVersion}"
 
     testImplementation "junit:junit:${rootProject.jUnitVersion}"

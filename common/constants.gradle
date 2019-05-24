@@ -5,11 +5,15 @@ project.ext {
     minSdk = 21
 
     appCompatLibraryVersion = "1.0.2"
-    supportLibraryVersion = "1.0.0"
+    cardViewLibraryVersion = "1.0.0"
+    browserLibraryVersion = "1.0.0"
+    recyclerViewLibraryVersion = "1.0.0"
+    annotationLibraryVersion = "1.0.0"
+    adapsterLibraryVersion = "1.0.12"
+
     coreKtxLibraryVersion = "1.0.1"
-    adapsterLibraryVersion = "1.0.5"
     jUnitVersion = "4.12"
-    testRunnerVersion = "1.1.0-alpha4"
+    testRunnerVersion = "1.1.0"
 
     releaseRepoName = "maven"
     releaseGroupId = "com.paulrybitskyi.persistentsearchview"
