@@ -1410,7 +1410,7 @@ public class PersistentSearchView extends FrameLayout {
 
 
 
-    public void hideKeyboard() {
+    private void hideKeyboard() {
         mInputEt.clearFocus();
         KeyboardManagingUtil.hideKeyboard(mInputEt);
     }
