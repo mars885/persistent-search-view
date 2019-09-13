@@ -32,6 +32,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -71,8 +72,10 @@ import androidx.annotation.ColorInt;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
+import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -453,23 +456,23 @@ public class PersistentSearchView extends FrameLayout {
 
     private void initDrawableResources(TypedArray attributes) {
         if(attributes.hasValue(R.styleable.PersistentSearchView_leftButtonDrawable)) {
-            mLeftButtonDrawable = attributes.getDrawable(R.styleable.PersistentSearchView_leftButtonDrawable);
+            mLeftButtonDrawable = AppCompatResources.getDrawable(getContext(), attributes.getResourceId(R.styleable.PersistentSearchView_leftButtonDrawable, -1));
         }
 
         if(attributes.hasValue(R.styleable.PersistentSearchView_rightButtonDrawable)) {
-            mRightButtonDrawable = attributes.getDrawable(R.styleable.PersistentSearchView_rightButtonDrawable);
+            mRightButtonDrawable = AppCompatResources.getDrawable(getContext(), attributes.getResourceId(R.styleable.PersistentSearchView_rightButtonDrawable, -1));
         }
 
         if(attributes.hasValue(R.styleable.PersistentSearchView_clearInputButtonDrawable)) {
-            mClearInputButtonDrawable = attributes.getDrawable(R.styleable.PersistentSearchView_clearInputButtonDrawable);
+            mClearInputButtonDrawable = AppCompatResources.getDrawable(getContext(), attributes.getResourceId(R.styleable.PersistentSearchView_clearInputButtonDrawable, -1));
         }
 
         if(attributes.hasValue(R.styleable.PersistentSearchView_voiceInputButtonDrawable)) {
-            mVoiceInputButtonDrawable = attributes.getDrawable(R.styleable.PersistentSearchView_voiceInputButtonDrawable);
+            mVoiceInputButtonDrawable = AppCompatResources.getDrawable(getContext(), attributes.getResourceId(R.styleable.PersistentSearchView_voiceInputButtonDrawable, -1));
         }
 
         if(attributes.hasValue(R.styleable.PersistentSearchView_queryInputCursorDrawable)) {
-            mQueryInputCursorDrawable = attributes.getDrawable(R.styleable.PersistentSearchView_queryInputCursorDrawable);
+            mQueryInputCursorDrawable = AppCompatResources.getDrawable(getContext(), attributes.getResourceId(R.styleable.PersistentSearchView_queryInputCursorDrawable, -1));
         }
     }
 
@@ -1407,7 +1410,7 @@ public class PersistentSearchView extends FrameLayout {
 
 
 
-    private void hideKeyboard() {
+    public void hideKeyboard() {
         mInputEt.clearFocus();
         KeyboardManagingUtil.hideKeyboard(mInputEt);
     }
@@ -2835,9 +2838,14 @@ public class PersistentSearchView extends FrameLayout {
 
     @Override
     protected void onRestoreInstanceState(Parcelable state) {
-        final SavedState savedState = (SavedState) state;
-
-        super.onRestoreInstanceState(state);
+        if (!(state instanceof Bundle)) {
+            super.onRestoreInstanceState(state);
+            return;
+        }
+        final Bundle receivedBundle = (Bundle) state;
+        final Parcelable superState = receivedBundle.getParcelable("superState");
+        final SavedState savedState = receivedBundle.getParcelable("stuff");
+        super.onRestoreInstanceState(superState);
 
         // Restoring our state
         setQueryInputHintColor(savedState.queryInputHintColor);
@@ -2873,12 +2881,10 @@ public class PersistentSearchView extends FrameLayout {
     }
 
 
-
-
     @Override
     protected Parcelable onSaveInstanceState() {
         final Parcelable superState = super.onSaveInstanceState();
-        final SavedState savedState = new SavedState(superState);
+        final SavedState savedState = new SavedState(new Bundle());
 
         // Saving our state
         savedState.queryInputHintColor = mQueryInputHintColor;
@@ -2907,7 +2913,11 @@ public class PersistentSearchView extends FrameLayout {
         savedState.areSuggestionsDisabled = mAreSuggestionsDisabled;
         savedState.shouldDimBehind = mShouldDimBehind;
 
-        return savedState;
+        final Bundle cappedBundle = new Bundle();
+        cappedBundle.putParcelable("superState", superState);
+        cappedBundle.putParcelable("stuff", savedState);
+
+        return cappedBundle;
     }
 
 

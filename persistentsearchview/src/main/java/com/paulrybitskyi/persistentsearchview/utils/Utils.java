@@ -41,6 +41,7 @@ import java.util.Locale;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.FloatRange;
 import androidx.annotation.NonNull;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -75,7 +76,7 @@ public final class Utils {
      */
     public static Drawable getColoredDrawable(Context context, @DrawableRes int drawableResId, int color) {
         return getColoredDrawable(
-            ContextCompat.getDrawable(context, drawableResId),
+            AppCompatResources.getDrawable(context, drawableResId),
             color
         );
     }
