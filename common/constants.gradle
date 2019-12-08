@@ -1,7 +1,7 @@
 project.ext {
 
-    compileSdk = 28
-    targetSdk = 28
+    compileSdk = 29
+    targetSdk = 29
     minSdk = 21
 
     appCompatLibraryVersion = "1.1.0"
