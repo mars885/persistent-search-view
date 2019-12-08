@@ -47,7 +47,7 @@ buildscript {
 ````groovy
 ext {
     //...
-    psvVersion = "1.0.0"
+    psvVersion = "1.1.2"
 }
 
 dependencies {
@@ -65,13 +65,13 @@ android.useAndroidX=true
 //....
 ````
 
-4. Update your `compileSdkVersion` in the module-level `build.gradle` file to **28+**.
+4. Update your `compileSdkVersion` in the module-level `build.gradle` file to **29**.
 
 ````groovy
 //...
 android {
     //...
-    compileSdkVersion 28
+    compileSdkVersion 29
     //...
 }
 //...
@@ -83,7 +83,7 @@ android {
 //...
 dependencies {
     //...
-    implementation "androidx.appcompat:appcompat:1.0.0-beta01"
+    implementation "androidx.appcompat:appcompat:1.1.0"
     //...
 }
 //...
