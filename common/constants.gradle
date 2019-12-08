@@ -4,10 +4,10 @@ project.ext {
     targetSdk = 28
     minSdk = 21
 
-    appCompatLibraryVersion = "1.0.2"
+    appCompatLibraryVersion = "1.1.0"
     cardViewLibraryVersion = "1.0.0"
     browserLibraryVersion = "1.0.0"
-    recyclerViewLibraryVersion = "1.0.0"
+    recyclerViewLibraryVersion = "1.1.0"
     annotationLibraryVersion = "1.0.0"
     adapsterLibraryVersion = "1.0.12"
 
