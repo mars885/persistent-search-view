@@ -58,6 +58,7 @@ import com.paulrybitskyi.persistentsearchview.listeners.QueryListener;
 import com.paulrybitskyi.persistentsearchview.utils.AnimationType;
 import com.paulrybitskyi.persistentsearchview.utils.KeyboardManagingUtil;
 import com.paulrybitskyi.persistentsearchview.utils.Preconditions;
+import com.paulrybitskyi.persistentsearchview.utils.StateUtils;
 import com.paulrybitskyi.persistentsearchview.utils.Utils;
 import com.paulrybitskyi.persistentsearchview.utils.ViewUtils;
 import com.paulrybitskyi.persistentsearchview.utils.VoiceRecognitionDelegate;
@@ -2835,9 +2836,9 @@ public class PersistentSearchView extends FrameLayout {
 
     @Override
     protected void onRestoreInstanceState(Parcelable state) {
-        final SavedState savedState = (SavedState) state;
+        super.onRestoreInstanceState(StateUtils.fetchParentState(state));
 
-        super.onRestoreInstanceState(state);
+        final SavedState savedState = (SavedState) state;
 
         // Restoring our state
         setQueryInputHintColor(savedState.queryInputHintColor);
