@@ -13,9 +13,9 @@ cache:
 
 env:
   global:
-    - ANDROID_API=28
-    - EMULATOR_API=27
-    - ANDROID_BUILD_TOOLS=28.0.3
+    - ANDROID_API=29
+    - EMULATOR_API=29
+    - ANDROID_BUILD_TOOLS=29.0.2
     - ADB_INSTALL_TIMEOUT=10 # minutes
 
 android:
@@ -32,10 +32,11 @@ licenses:
    - google-gdk-license-.+
 
 before_install:
-  - yes | sdkmanager "platforms;android-28"
+  - yes | sdkmanager "platforms;android-29"
   - mkdir "$ANDROID_HOME/licenses" || true
-  - echo -e "\n8933bad161af4178b1185d1a37fbf41ea5269c55\nd56f5187479451eabf01fb78af6dfcb131a6481e" > "$ANDROID_HOME/licenses/android-sdk-license"
-  - echo -e "\n84831b9409646a918e30573bab4c9c91346d8abd\n504667f4c0de7af1a06de9f4b1727b84351f2910" > "$ANDROID_HOME/licenses/android-sdk-preview-license"
+  - echo -e "\n24333f8a63b6825ea9c5514f83c2829b004d1fee" > "$ANDROID_HOME/licenses/android-sdk-license"
+  - echo -e "\n84831b9409646a918e30573bab4c9c91346d8abd" > "$ANDROID_HOME/licenses/android-sdk-preview-license"
+  - echo -e "\n859f317696f67ef3d7f30a50a5560e7834b43903" > "$ANDROID_HOME/licenses/android-sdk-arm-dbt-license"
   - chmod +x gradlew
 
 script:
