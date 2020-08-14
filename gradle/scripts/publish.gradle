@@ -5,8 +5,8 @@ apply plugin: "com.github.dcendents.android-maven"
 apply plugin: "com.jfrog.bintray"
 
 
-group = releaseGroupId
-version = releaseVersion
+group = publishingConfig.releaseGroupId
+version = publishingConfig.releaseVersion
 
 task androidSourcesJar(type: Jar) {
     classifier = 'sources'
@@ -16,9 +16,9 @@ task androidSourcesJar(type: Jar) {
 publishing {
     publications {
         aar(MavenPublication) {
-            groupId = releaseGroupId
-            artifactId = releaseArtifact
-            version = releaseVersion
+            groupId = publishingConfig.releaseGroupId
+            artifactId = publishingConfig.releaseArtifact
+            version = publishingConfig.releaseVersion
 
             // Tell maven to prepare the generated "*.aar" file for publishing
             artifact(androidSourcesJar)
@@ -31,32 +31,32 @@ install {
     repositories.mavenInstaller {
         pom.project {
             packaging "aar"
-            groupId releaseGroupId
-            artifactId releaseArtifact
+            groupId publishingConfig.releaseGroupId
+            artifactId publishingConfig.releaseArtifact
 
-            name releaseArtifact
-            description releaseDescription
-            url releaseWebsite
+            name publishingConfig.releaseArtifact
+            description publishingConfig.releaseDescription
+            url publishingConfig.releaseWebsite
 
             licenses {
                 license {
-                    name licenseName
-                    url licenseUrl
+                    name publishingConfig.licenseName
+                    url publishingConfig.licenseUrl
                 }
             }
 
             developers {
                 developer {
-                    id developerId
-                    name developerName
-                    email developerEmail
+                    id publishingConfig.developerId
+                    name publishingConfig.developerName
+                    email publishingConfig.developerEmail
                 }
             }
 
             scm {
-                connection gitUrl
-                developerConnection gitUrl
-                url siteUrl
+                connection publishingConfig.gitUrl
+                developerConnection publishingConfig.gitUrl
+                url publishingConfig.siteUrl
             }
         }
     }
@@ -120,22 +120,22 @@ bintray {
     configurations = ["archives"]
 
     pkg {
-        repo = releaseRepoName
+        repo = publishingConfig.releaseRepoName
         //userOrg = releaseUserOrg
-        name = releaseArtifact
-        desc = releaseDescription
-        websiteUrl = siteUrl
-        vcsUrl = gitUrl
-        issueTrackerUrl = issueTracker
-        githubReleaseNotesFile = releaseNotesFile
-        licenses = allLicenses
+        name = publishingConfig.releaseArtifact
+        desc = publishingConfig.releaseDescription
+        websiteUrl = publishingConfig.siteUrl
+        vcsUrl = publishingConfig.gitUrl
+        issueTrackerUrl = publishingConfig.issueTracker
+        githubReleaseNotesFile = publishingConfig.releaseNotesFile
+        licenses = publishingConfig.allLicenses
         dryRun = false
         publish = true
         override = false
         publicDownloadNumbers = false
 
         version {
-            desc = releaseDescription
+            desc = publishingConfig.releaseDescription
         }
     }
 }

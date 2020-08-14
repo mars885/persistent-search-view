@@ -4,14 +4,16 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
 android {
-    compileSdkVersion rootProject.compileSdk
+    compileSdkVersion appConfig.compileSdkVersion
+    buildToolsVersion appConfig.buildToolsVersion
 
     defaultConfig {
-        applicationId "com.paulrybitskyi.sample"
-        minSdkVersion 21
-        targetSdkVersion rootProject.targetSdk
-        versionCode rootProject.releaseVersionCode
-        versionName rootProject.releaseVersion
+        applicationId appConfig.applicationId
+        minSdkVersion appConfig.minSdkVersion
+        targetSdkVersion appConfig.targetSdkVersion
+        versionCode appConfig.versionCode
+        versionName appConfig.versionName
+
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
@@ -25,19 +27,28 @@ android {
     lintOptions {
         abortOnError false
     }
+
+    compileOptions {
+        sourceCompatibility appConfig.javaCompatibilityVersion
+        targetCompatibility appConfig.javaCompatibilityVersion
+    }
+
+    kotlinOptions {
+        jvmTarget = appConfig.kotlinCompatibilityVersion
+    }
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation "androidx.appcompat:appcompat:${rootProject.appCompatLibraryVersion}"
-    implementation "androidx.cardview:cardview:${rootProject.cardViewLibraryVersion}"
-    implementation "androidx.browser:browser:${rootProject.browserLibraryVersion}"
-    implementation "androidx.recyclerview:recyclerview:${rootProject.recyclerViewLibraryVersion}"
-    implementation "com.arthurivanets.adapster:adapster:${rootProject.adapsterLibraryVersion}"
+    implementation project(':persistentsearchview')
 
-    testImplementation "junit:junit:${rootProject.jUnitVersion}"
-    androidTestImplementation "androidx.test:runner:${rootProject.testRunnerVersion}"
+    implementation deps.appCompat
+    implementation deps.cardView
+    implementation deps.browser
+    implementation deps.recyclerView
+    implementation deps.adapster
 
-    implementation project(path: ':persistentsearchview')
+    testImplementation deps.jUnit
+    androidTestImplementation deps.testRunner
 }

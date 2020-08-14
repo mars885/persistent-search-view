@@ -1,16 +1,18 @@
 apply plugin: 'com.android.library'
 
+apply from: 'library_config.gradle'
+
 android {
-    compileSdkVersion rootProject.compileSdk
+    compileSdkVersion appConfig.compileSdkVersion
+    buildToolsVersion appConfig.buildToolsVersion
 
     defaultConfig {
-        minSdkVersion rootProject.minSdk
-        targetSdkVersion rootProject.targetSdk
-        versionCode rootProject.releaseVersionCode
-        versionName rootProject.releaseVersion
+        minSdkVersion appConfig.minSdkVersion
+        targetSdkVersion appConfig.targetSdkVersion
+        versionCode libraryConfig.versionCode
+        versionName libraryConfig.versionName
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
     }
 
     buildTypes {
@@ -20,21 +22,31 @@ android {
         }
     }
 
+    compileOptions {
+        sourceCompatibility appConfig.javaCompatibilityVersion
+        targetCompatibility appConfig.javaCompatibilityVersion
+    }
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation "androidx.appcompat:appcompat:${rootProject.appCompatLibraryVersion}"
-    implementation "androidx.cardview:cardview:${rootProject.cardViewLibraryVersion}"
-    implementation "androidx.recyclerview:recyclerview:${rootProject.recyclerViewLibraryVersion}"
-    implementation "androidx.annotation:annotation:${rootProject.annotationLibraryVersion}"
-    implementation "com.arthurivanets.adapster:adapster:${rootProject.adapsterLibraryVersion}"
+    implementation deps.appCompat
+    implementation deps.cardView
+    implementation deps.recyclerView
+    implementation deps.adapster
+    implementation deps.annotations
 
-    testImplementation "junit:junit:${rootProject.jUnitVersion}"
-
-    androidTestImplementation "androidx.test:runner:${rootProject.testRunnerVersion}"
+    testImplementation deps.jUnit
+    androidTestImplementation deps.testRunner
 }
 
-apply from: "../common/constants.gradle"
-apply from: "../gradle/script/publish.gradle"
+ext {
+    publishingConfig.releaseArtifact = libraryConfig.artifactName
+    publishingConfig.releaseDescription = libraryConfig.artifactDescription
+    publishingConfig.releaseVersion = libraryConfig.versionName
+}
+
+project.archivesBaseName = publishingConfig.releaseArtifact
+
+apply from: "../gradle/scripts/publish.gradle"

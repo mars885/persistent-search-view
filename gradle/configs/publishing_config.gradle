@@ -1,0 +1,18 @@
+ext {
+    publishingConfig = [
+        releaseRepoName: "maven",
+        releaseGroupId: "com.paulrybitskyi.persistentsearchview",
+        releaseWebsite: "https://github.com/mars885/persistent-search-view",
+        releaseLicense: ["Apache-2.0"],
+        releaseNotesFile: "CHANGELOG.md",
+        licenseName: "The Apache Software License, Version 2.0",
+        licenseUrl: "http://www.apache.org/licenses/LICENSE-2.0.txt",
+        allLicenses: ["Apache-2.0"],
+        developerId: "mars885",
+        developerName: "Paul Rybitskyi",
+        developerEmail: "paul.rybitskyi.work@gmail.com",
+        siteUrl: "https://github.com/mars885/persistent-search-view",
+        gitUrl: "https://github.com/mars885/persistent-search-view.git",
+        issueTracker: "https://github.com/mars885/persistent-search-view/issues"
+    ]
+}

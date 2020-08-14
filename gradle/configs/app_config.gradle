@@ -1,0 +1,46 @@
+ext {
+    appConfig = [
+        compileSdkVersion: 29,
+        targetSdkVersion: 29,
+        minSdkVersion: 21,
+        buildToolsVersion: "29.0.2",
+        applicationId: "com.paulrybitskyi.sample",
+        versionCode: 1,
+        versionName: "1.0.0",
+        javaCompatibilityVersion: JavaVersion.VERSION_1_8,
+        kotlinCompatibilityVersion: JavaVersion.VERSION_1_8
+    ]
+
+    depVersions = [
+        kotlinVersion: "1.3.72",
+        gradlePluginVersion: "4.0.1",
+        gradleVersionsPluginVersion: "0.29.0",
+        mavenGradlePlugin: "2.1",
+        bintrayUploadPlugin: "1.8.5",
+        appCompatVersion: "1.1.0",
+        cardViewVersion: "1.0.0",
+        browserVersion: "1.2.0",
+        recyclerViewVersion: "1.1.0",
+        adapsterVersion: "1.0.13",
+        annotationsVersion: "1.0.0",
+        jUnitVersion: "4.13",
+        testRunnerVersion: "1.2.0"
+    ]
+
+    deps = [
+        androidGradlePlugin: "com.android.tools.build:gradle:${depVersions.gradlePluginVersion}",
+        kotlinGradlePlugin: "org.jetbrains.kotlin:kotlin-gradle-plugin:${depVersions.kotlinVersion}",
+        gradleVersionsPlugin: "com.github.ben-manes:gradle-versions-plugin:${depVersions.gradleVersionsPluginVersion}",
+        mavenGradlePlugin: "com.github.dcendents:android-maven-gradle-plugin:${depVersions.mavenGradlePlugin}",
+        bintrayUploadPlugin: "com.jfrog.bintray.gradle:gradle-bintray-plugin:${depVersions.bintrayUploadPlugin}",
+        kotlinStdLib: "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${depVersions.kotlinVersion}",
+        appCompat: "androidx.appcompat:appcompat:${depVersions.appCompatVersion}",
+        cardView: "androidx.cardview:cardview:${depVersions.cardViewVersion}",
+        browser: "androidx.browser:browser:${depVersions.browserVersion}",
+        recyclerView: "androidx.recyclerview:recyclerview:${depVersions.recyclerViewVersion}",
+        adapster: "com.arthurivanets.adapster:adapster:${depVersions.adapsterVersion}",
+        annotations: "androidx.annotation:annotation:${depVersions.annotationsVersion}",
+        jUnit: "junit:junit:${depVersions.jUnitVersion}",
+        testRunner: "androidx.test:runner:${depVersions.testRunnerVersion}"
+    ]
+}

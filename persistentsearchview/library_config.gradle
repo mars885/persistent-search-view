@@ -1,0 +1,8 @@
+ext {
+    libraryConfig = [
+        versionCode: 5,
+        versionName: "1.1.2",
+        artifactName: "persistentsearchview",
+        artifactDescription: "Android library designed to simplify the process of implementing search-related functionality.",
+    ]
+}
