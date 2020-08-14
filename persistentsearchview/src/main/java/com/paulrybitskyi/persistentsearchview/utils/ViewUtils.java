@@ -32,6 +32,7 @@ import androidx.annotation.NonNull;
 public final class ViewUtils {
 
 
+    private ViewUtils() {}
 
 
     /**
@@ -45,8 +46,6 @@ public final class ViewUtils {
         view.clearAnimation();
         view.animate().cancel();
     }
-
-
 
 
     /**
@@ -65,8 +64,6 @@ public final class ViewUtils {
     }
 
 
-
-
     /**
      * Changes the visibility flags of the specified view to the {@link View#VISIBLE}.
      *
@@ -75,8 +72,6 @@ public final class ViewUtils {
     public static void makeVisible(@NonNull View view) {
         setVisibility(view, View.VISIBLE);
     }
-
-
 
 
     /**
@@ -89,8 +84,6 @@ public final class ViewUtils {
     }
 
 
-
-
     /**
      * Changes the visibility flags of the specified view to the {@link View#GONE}.
      *
@@ -99,8 +92,6 @@ public final class ViewUtils {
     public static void makeGone(@NonNull View view) {
         setVisibility(view, View.GONE);
     }
-
-
 
 
     /**
@@ -116,8 +107,6 @@ public final class ViewUtils {
     }
 
 
-
-
     /**
      * Retrieves the visibility of the view.
      *
@@ -129,8 +118,6 @@ public final class ViewUtils {
         Preconditions.nonNull(view);
         return view.getVisibility();
     }
-
-
 
 
     /**
@@ -147,8 +134,6 @@ public final class ViewUtils {
     }
 
 
-
-
     /**
      * Sets the visibility marker tag of the specified view.
      *
@@ -160,8 +145,6 @@ public final class ViewUtils {
 
         view.setTag(R.id.visibility_marker, isVisible);
     }
-
-
 
 
     /**
@@ -180,8 +163,6 @@ public final class ViewUtils {
     }
 
 
-
-
     /**
      * Sets the animation marker tag of the specified view.
      *
@@ -195,8 +176,6 @@ public final class ViewUtils {
     }
 
 
-
-
     /**
      * Retrieves the animation marker tag value of the specified view.
      *
@@ -204,12 +183,11 @@ public final class ViewUtils {
      *
      * @return The animation marker tag value of the specified view
      */
+    @SuppressWarnings("unchecked")
     public static <T> T getAnimationMarker(@NonNull View view) {
         Preconditions.nonNull(view);
         return (T) view.getTag(R.id.animation_marker);
     }
-
-
 
 
     /**
@@ -224,8 +202,6 @@ public final class ViewUtils {
     }
 
 
-
-
     /**
      * Checks whether the visibility flags of the view is {@link View#INVISIBLE}.
      *
@@ -238,8 +214,6 @@ public final class ViewUtils {
     }
 
 
-
-
     /**
      * Checks whether the visibility flags of the view is {@link View#GONE}.
      *
@@ -250,8 +224,6 @@ public final class ViewUtils {
     public static boolean isGone(@NonNull View view) {
         return (getVisibility(view) == View.GONE);
     }
-
-
 
 
 }

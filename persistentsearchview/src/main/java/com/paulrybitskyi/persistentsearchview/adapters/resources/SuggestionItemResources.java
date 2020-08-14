@@ -34,30 +34,26 @@ import androidx.annotation.NonNull;
 public class SuggestionItemResources implements ItemResources {
 
 
-    private int mIconColor;
-    private int mRecentSearchIconColor;
-    private int mSearchSuggestionIconColor;
-    private int mTextColor;
-    private int mSelectedTextColor;
+    private int iconColor;
+    private int recentSearchIconColor;
+    private int searchSuggestionIconColor;
+    private int textColor;
+    private int selectedTextColor;
 
-    private String mCurrentQuery;
+    private String currentQuery;
 
-    private Typeface mTypeface;
-
-
+    private Typeface typeface;
 
 
     public SuggestionItemResources() {
-        mIconColor = Color.BLACK;
-        mRecentSearchIconColor = Color.BLACK;
-        mSearchSuggestionIconColor = Color.BLACK;
-        mTextColor = Color.BLACK;
-        mSelectedTextColor = Color.BLACK;
-        mCurrentQuery = "";
-        mTypeface = Typeface.DEFAULT;
+        iconColor = Color.BLACK;
+        recentSearchIconColor = Color.BLACK;
+        searchSuggestionIconColor = Color.BLACK;
+        textColor = Color.BLACK;
+        selectedTextColor = Color.BLACK;
+        currentQuery = "";
+        typeface = Typeface.DEFAULT;
     }
-
-
 
 
     /**
@@ -68,11 +64,9 @@ public class SuggestionItemResources implements ItemResources {
      * @return this
      */
     public SuggestionItemResources setIconColor(@ColorInt int iconColor) {
-        mIconColor = iconColor;
+        this.iconColor = iconColor;
         return this;
     }
-
-
 
 
     /**
@@ -81,10 +75,8 @@ public class SuggestionItemResources implements ItemResources {
      * @return The icon's color
      */
     public int getIconColor() {
-        return mIconColor;
+        return iconColor;
     }
-
-
 
 
     /**
@@ -95,11 +87,9 @@ public class SuggestionItemResources implements ItemResources {
      * @return this
      */
     public SuggestionItemResources setRecentSearchIconColor(@ColorInt int recentSearchIconColor) {
-        mRecentSearchIconColor = recentSearchIconColor;
+        this.recentSearchIconColor = recentSearchIconColor;
         return this;
     }
-
-
 
 
     /**
@@ -108,10 +98,8 @@ public class SuggestionItemResources implements ItemResources {
      * @return The recent search icon's color
      */
     public int getRecentSearchIconColor() {
-        return mRecentSearchIconColor;
+        return recentSearchIconColor;
     }
-
-
 
 
     /**
@@ -122,11 +110,9 @@ public class SuggestionItemResources implements ItemResources {
      * @return this
      */
     public SuggestionItemResources setSearchSuggestionIconColor(@ColorInt int searchSuggestionIconColor) {
-        mSearchSuggestionIconColor = searchSuggestionIconColor;
+        this.searchSuggestionIconColor = searchSuggestionIconColor;
         return this;
     }
-
-
 
 
     /**
@@ -135,10 +121,8 @@ public class SuggestionItemResources implements ItemResources {
      * @return The search suggestio icon's color
      */
     public int getSearchSuggestionIconColor() {
-        return mSearchSuggestionIconColor;
+        return searchSuggestionIconColor;
     }
-
-
 
 
     /**
@@ -149,11 +133,9 @@ public class SuggestionItemResources implements ItemResources {
      * @return this
      */
     public SuggestionItemResources setTextColor(@ColorInt int textColor) {
-        mTextColor = textColor;
+        this.textColor = textColor;
         return this;
     }
-
-
 
 
     /**
@@ -162,10 +144,8 @@ public class SuggestionItemResources implements ItemResources {
      * @return The text's color
      */
     public int getTextColor() {
-        return mTextColor;
+        return textColor;
     }
-
-
 
 
     /**
@@ -176,11 +156,9 @@ public class SuggestionItemResources implements ItemResources {
      * @return this
      */
     public SuggestionItemResources setSelectedTextColor(@ColorInt int selectedTextColor) {
-        mSelectedTextColor = selectedTextColor;
+        this.selectedTextColor = selectedTextColor;
         return this;
     }
-
-
 
 
     /**
@@ -189,10 +167,8 @@ public class SuggestionItemResources implements ItemResources {
      * @return The selected text's color
      */
     public int getSelectedTextColor() {
-        return mSelectedTextColor;
+        return selectedTextColor;
     }
-
-
 
 
     /**
@@ -205,12 +181,10 @@ public class SuggestionItemResources implements ItemResources {
     public SuggestionItemResources setCurrentQuery(@NonNull String currentQuery) {
         Preconditions.nonNull(currentQuery);
 
-        mCurrentQuery = currentQuery;
+        this.currentQuery = currentQuery;
 
         return this;
     }
-
-
 
 
     /**
@@ -219,10 +193,8 @@ public class SuggestionItemResources implements ItemResources {
      * @return The v query
      */
     public String getCurrentQuery() {
-        return mCurrentQuery;
+        return currentQuery;
     }
-
-
 
 
     /**
@@ -235,12 +207,10 @@ public class SuggestionItemResources implements ItemResources {
     public SuggestionItemResources setTypeface(@NonNull Typeface typeface) {
         Preconditions.nonNull(typeface);
 
-        mTypeface = typeface;
+        this.typeface = typeface;
 
         return this;
     }
-
-
 
 
     /**
@@ -249,10 +219,8 @@ public class SuggestionItemResources implements ItemResources {
      * @return The text's typeface
      */
     public Typeface getTypeface() {
-        return mTypeface;
+        return typeface;
     }
-
-
 
 
 }

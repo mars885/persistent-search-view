@@ -27,36 +27,28 @@ import android.animation.Animator;
 public abstract class AnimatorListenerAdapter implements Animator.AnimatorListener {
 
 
-    private boolean mIsCancelled;
-
-
+    private boolean isCancelled;
 
 
     public AnimatorListenerAdapter() {
-        mIsCancelled = false;
+        isCancelled = false;
     }
-
-
 
 
     @Override
     public final void onAnimationStart(Animator animation, boolean isReverse) {
-        mIsCancelled = false;
+        isCancelled = false;
 
         onAnimationStarted(animation);
     }
-
-
 
 
     @Override
     public final void onAnimationStart(Animator animation) {
-        mIsCancelled = false;
+        isCancelled = false;
 
         onAnimationStarted(animation);
     }
-
-
 
 
     /**
@@ -69,22 +61,16 @@ public abstract class AnimatorListenerAdapter implements Animator.AnimatorListen
     }
 
 
-
-
     @Override
     public final void onAnimationEnd(Animator animation, boolean isReverse) {
         onAnimationEnded(animation);
     }
 
 
-
-
     @Override
     public final void onAnimationEnd(Animator animation) {
         onAnimationEnded(animation);
     }
-
-
 
 
     /**
@@ -97,16 +83,12 @@ public abstract class AnimatorListenerAdapter implements Animator.AnimatorListen
     }
 
 
-
-
     @Override
     public final void onAnimationCancel(Animator animation) {
-        mIsCancelled = true;
+        isCancelled = true;
 
         onAnimationCancelled(animation);
     }
-
-
 
 
     /**
@@ -119,16 +101,12 @@ public abstract class AnimatorListenerAdapter implements Animator.AnimatorListen
     }
 
 
-
-
     @Override
     public final void onAnimationRepeat(Animator animation) {
-        mIsCancelled = false;
+        isCancelled = false;
 
         onAnimationRepeated(animation);
     }
-
-
 
 
     /**
@@ -141,18 +119,14 @@ public abstract class AnimatorListenerAdapter implements Animator.AnimatorListen
     }
 
 
-
-
     /**
      * Checks whether the animation is cancelled or not.
      *
      * @return true if cancelled; false otherwise
      */
     public final boolean isCancelled() {
-        return mIsCancelled;
+        return isCancelled;
     }
-
-
 
 
 }

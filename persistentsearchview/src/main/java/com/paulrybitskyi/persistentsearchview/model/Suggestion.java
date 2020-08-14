@@ -37,15 +37,11 @@ public class Suggestion implements Serializable {
     private String text;
 
 
-
-
     public Suggestion() {
         this.id = -1L;
         this.type = TYPE_REGULAR_SEARCH_SUGGESTION;
         this.text = "";
     }
-
-
 
 
     /**
@@ -61,8 +57,6 @@ public class Suggestion implements Serializable {
     }
 
 
-
-
     /**
      * Gets the id of the suggestion.
      *
@@ -73,8 +67,6 @@ public class Suggestion implements Serializable {
     }
 
 
-
-
     /**
      * Checks whether this suggestion has a valid ID (bigger than 0).
      *
@@ -83,8 +75,6 @@ public class Suggestion implements Serializable {
     public boolean hasValidId() {
         return (this.id > 0);
     }
-
-
 
 
     /**
@@ -101,8 +91,6 @@ public class Suggestion implements Serializable {
     }
 
 
-
-
     /**
      * Gets the type of the suggestion.
      *
@@ -111,8 +99,6 @@ public class Suggestion implements Serializable {
     public String getType() {
         return this.type;
     }
-
-
 
 
     /**
@@ -128,8 +114,6 @@ public class Suggestion implements Serializable {
     }
 
 
-
-
     /**
      * Gets the text of the suggestion.
      *
@@ -138,8 +122,6 @@ public class Suggestion implements Serializable {
     public String getText() {
         return this.text;
     }
-
-
 
 
 }

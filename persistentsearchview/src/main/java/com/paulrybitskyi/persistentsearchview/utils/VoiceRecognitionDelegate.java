@@ -42,49 +42,39 @@ public class VoiceRecognitionDelegate {
     private static final int REQUEST_CODE_VOICE_INPUT = 9999;
 
 
-    private Activity mActivity;
-    private AppCompatActivity mSupportActivity;
+    private Activity activity;
+    private AppCompatActivity supportActivity;
 
-    private Fragment mFragment;
-    private androidx.fragment.app.Fragment mSupportFragment;
-
-
+    private Fragment fragment;
+    private androidx.fragment.app.Fragment supportFragment;
 
 
     public VoiceRecognitionDelegate(@NonNull Activity activity) {
         Preconditions.nonNull(activity);
 
-        mActivity = activity;
+        this.activity = activity;
     }
-
-
 
 
     public VoiceRecognitionDelegate(@NonNull AppCompatActivity activity) {
         Preconditions.nonNull(activity);
 
-        mSupportActivity = activity;
+        this.supportActivity = activity;
     }
-
-
 
 
     public VoiceRecognitionDelegate(@NonNull Fragment fragment) {
         Preconditions.nonNull(fragment);
 
-        mFragment = fragment;
+        this.fragment = fragment;
     }
-
-
 
 
     public VoiceRecognitionDelegate(@NonNull androidx.fragment.app.Fragment fragment) {
         Preconditions.nonNull(fragment);
 
-        mSupportFragment = fragment;
+        this.supportFragment = fragment;
     }
-
-
 
 
     /**
@@ -95,36 +85,32 @@ public class VoiceRecognitionDelegate {
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Utils.getLocale(getContext()));
 
-        if(mActivity != null) {
-            mActivity.startActivityForResult(intent, REQUEST_CODE_VOICE_INPUT);
-        } else if(mSupportActivity != null) {
-            mSupportActivity.startActivityForResult(intent, REQUEST_CODE_VOICE_INPUT);
-        } else if(mFragment != null) {
-            mFragment.startActivityForResult(intent, REQUEST_CODE_VOICE_INPUT);
-        } else if(mSupportFragment != null) {
-            mSupportFragment.startActivityForResult(intent, REQUEST_CODE_VOICE_INPUT);
+        if(activity != null) {
+            activity.startActivityForResult(intent, REQUEST_CODE_VOICE_INPUT);
+        } else if(supportActivity != null) {
+            supportActivity.startActivityForResult(intent, REQUEST_CODE_VOICE_INPUT);
+        } else if(fragment != null) {
+            fragment.startActivityForResult(intent, REQUEST_CODE_VOICE_INPUT);
+        } else if(supportFragment != null) {
+            supportFragment.startActivityForResult(intent, REQUEST_CODE_VOICE_INPUT);
         }
     }
-
-
 
 
     @SuppressWarnings("NewApi")
     private Context getContext() {
-        if(mActivity != null) {
-            return mActivity;
-        } else if(mSupportActivity != null) {
-            return mSupportActivity;
-        } else if(mFragment != null) {
-            return mFragment.getContext();
-        } else if(mSupportFragment != null) {
-            return mSupportFragment.getContext();
+        if(activity != null) {
+            return activity;
+        } else if(supportActivity != null) {
+            return supportActivity;
+        } else if(fragment != null) {
+            return fragment.getContext();
+        } else if(supportFragment != null) {
+            return supportFragment.getContext();
         } else {
             throw new IllegalStateException("Could not get context in VoiceRecognitionDelegate.");
         }
     }
-
-
 
 
     /**
@@ -135,10 +121,12 @@ public class VoiceRecognitionDelegate {
      * @param resultCode The result code
      * @param data The speech recognizer's data
      */
-    public static void handleResult(@NonNull PersistentSearchView searchView,
-                                    int requestCode,
-                                    int resultCode,
-                                    Intent data) {
+    public static void handleResult(
+        @NonNull PersistentSearchView searchView,
+        int requestCode,
+        int resultCode,
+        Intent data
+    ) {
         Preconditions.nonNull(searchView);
 
         if(requestCode == REQUEST_CODE_VOICE_INPUT) {
@@ -152,8 +140,6 @@ public class VoiceRecognitionDelegate {
             }
         }
     }
-
-
 
 
 }

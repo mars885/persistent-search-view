@@ -34,6 +34,7 @@ import androidx.annotation.NonNull;
 public final class SuggestionCreationUtil {
 
 
+    private SuggestionCreationUtil() {}
 
 
     /**
@@ -49,8 +50,6 @@ public final class SuggestionCreationUtil {
     }
 
 
-
-
     /**
      * Wraps raw suggestions into a list of {@link SuggestionItem} objects with
      * the type set to {@link Suggestion#TYPE_REGULAR_SEARCH_SUGGESTION}.
@@ -62,8 +61,6 @@ public final class SuggestionCreationUtil {
     public static List<SuggestionItem> asRegularSearchSuggestions(@NonNull List<String> rawSuggestions) {
         return fromRawSuggestions(Suggestion.TYPE_REGULAR_SEARCH_SUGGESTION, rawSuggestions);
     }
-
-
 
 
     /**
@@ -95,8 +92,6 @@ public final class SuggestionCreationUtil {
     }
 
 
-
-
     /**
      * Wraps a list suggestions into a list of {@link SuggestionItem} objects.
      *
@@ -116,8 +111,6 @@ public final class SuggestionCreationUtil {
 
         return suggestionItems;
     }
-
-
 
 
 }

@@ -49,15 +49,17 @@ import static com.paulrybitskyi.persistentsearchview.utils.ViewUtils.makeVisible
 /**
  * A recycler view item for a suggestion.
  */
-public class SuggestionItem extends BaseItem<Suggestion, SuggestionItem.ViewHolder, SuggestionItemResources> implements Trackable<Long> {
+public class SuggestionItem extends BaseItem<
+    Suggestion,
+    SuggestionItem.ViewHolder,
+    SuggestionItemResources
+> implements Trackable<Long> {
 
 
     /**
      * A constant holding a layout resource ID for the suggestion item.
      */
     public static final int MAIN_LAYOUT_ID = R.layout.persistent_search_view_suggestion_item_layout;
-
-
 
 
     /**
@@ -70,8 +72,6 @@ public class SuggestionItem extends BaseItem<Suggestion, SuggestionItem.ViewHold
     public static SuggestionItem of(@NonNull String suggestionText) {
         return of(-1L, suggestionText);
     }
-
-
 
 
     /**
@@ -93,61 +93,61 @@ public class SuggestionItem extends BaseItem<Suggestion, SuggestionItem.ViewHold
     }
 
 
-
-
     public SuggestionItem(Suggestion itemModel) {
         super(itemModel);
     }
 
 
-
-
     @Override
-    public ViewHolder init(Adapter adapter,
-                           ViewGroup parent,
-                           LayoutInflater inflater,
-                           SuggestionItemResources resources) {
-        final View view = inflater.inflate(MAIN_LAYOUT_ID, parent, false);
-        return new ViewHolder(view);
+    public ViewHolder init(
+        Adapter adapter,
+        ViewGroup parent,
+        LayoutInflater inflater,
+        SuggestionItemResources resources
+    ) {
+        return new ViewHolder(inflater.inflate(MAIN_LAYOUT_ID, parent, false));
     }
 
 
-
-
     @Override
-    public void bind(@Nullable Adapter adapter,
-                     @NonNull ViewHolder viewHolder,
-                     @Nullable SuggestionItemResources resources) {
+    public void bind(
+        @Nullable Adapter adapter,
+        @NonNull ViewHolder viewHolder,
+        @Nullable SuggestionItemResources resources
+    ) {
         super.bind(adapter, viewHolder, resources);
 
         final Suggestion suggestion = getItemModel();
         final boolean isRecentSearchSuggestion = Suggestion.TYPE_RECENT_SEARCH_SUGGESTION.equals(suggestion.getType());
 
-        // text related
-        viewHolder.mTextTv.setTextColor(resources.getTextColor());
-        handleText(viewHolder, resources);
-
-        // icon related
-        viewHolder.mIconIv.setImageDrawable(Utils.getColoredDrawable(
-            viewHolder.mIconIv.getContext(),
-            (isRecentSearchSuggestion ? R.drawable.ic_history_black_24dp : R.drawable.ic_magnify_black_24dp),
-            (isRecentSearchSuggestion ? resources.getRecentSearchIconColor() : resources.getSearchSuggestionIconColor())
-        ));
-
-        // remove button related
-        if(isRecentSearchSuggestion) {
-            viewHolder.mRemoveBtnIv.setImageDrawable(Utils.getColoredDrawable(
-                viewHolder.mRemoveBtnIv.getContext(),
-                R.drawable.ic_close_black_24dp,
-                resources.getIconColor()
-            ));
-            makeVisible(viewHolder.mRemoveBtnIv);
-        } else {
-            makeGone(viewHolder.mRemoveBtnIv);
-        }
+        bindText(viewHolder, resources);
+        bindIcon(isRecentSearchSuggestion, viewHolder, resources);
+        bindButton(isRecentSearchSuggestion, viewHolder, resources);
     }
 
 
+    private void bindText(
+        ViewHolder viewHolder,
+        SuggestionItemResources resources
+    ) {
+        viewHolder.textTv.setTextColor(resources.getTextColor());
+        handleText(viewHolder, resources);
+    }
+
+
+    private void bindIcon(
+        boolean isRecentSearchSuggestion,
+        ViewHolder viewHolder,
+        SuggestionItemResources resources
+    ) {
+        viewHolder.iconIv.setImageDrawable(
+            Utils.getColoredDrawable(
+                viewHolder.iconIv.getContext(),
+                (isRecentSearchSuggestion ? R.drawable.ic_history_black_24dp : R.drawable.ic_magnify_black_24dp),
+                (isRecentSearchSuggestion ? resources.getRecentSearchIconColor() : resources.getSearchSuggestionIconColor())
+            )
+        );
+    }
 
 
     private void handleText(ViewHolder viewHolder, SuggestionItemResources resources) {
@@ -155,10 +155,11 @@ public class SuggestionItem extends BaseItem<Suggestion, SuggestionItem.ViewHold
         final String text = suggestion.getText();
         final int startIndex = suggestion.getText().toLowerCase().indexOf(resources.getCurrentQuery().toLowerCase());
         final int endIndex = Math.min(resources.getCurrentQuery().length(), text.length());
+        final boolean isCurrentQueryValid = !TextUtils.isEmpty(resources.getCurrentQuery());
+        final boolean isStartIndexValid = (startIndex != -1);
+        final boolean isEndIndexValid = (startIndex <= endIndex);
 
-        if(!TextUtils.isEmpty(resources.getCurrentQuery())
-                && (startIndex != -1)
-                && (startIndex <= endIndex)) {
+        if(isCurrentQueryValid && isStartIndexValid && isEndIndexValid) {
             final SpannableString spannableString = new SpannableString(text);
             spannableString.setSpan(
                 new ForegroundColorSpan(resources.getSelectedTextColor()),
@@ -167,13 +168,31 @@ public class SuggestionItem extends BaseItem<Suggestion, SuggestionItem.ViewHold
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
             );
 
-            viewHolder.mTextTv.setText(spannableString);
+            viewHolder.textTv.setText(spannableString);
         } else {
-            viewHolder.mTextTv.setText(text);
+            viewHolder.textTv.setText(text);
         }
     }
 
 
+    private void bindButton(
+        boolean isRecentSearchSuggestion,
+        ViewHolder viewHolder,
+        SuggestionItemResources resources
+    ) {
+        if(isRecentSearchSuggestion) {
+            viewHolder.removeBtnIv.setImageDrawable(
+                Utils.getColoredDrawable(
+                    viewHolder.removeBtnIv.getContext(),
+                    R.drawable.ic_close_black_24dp,
+                    resources.getIconColor()
+                )
+            );
+            makeVisible(viewHolder.removeBtnIv);
+        } else {
+            makeGone(viewHolder.removeBtnIv);
+        }
+    }
 
 
     /**
@@ -182,15 +201,18 @@ public class SuggestionItem extends BaseItem<Suggestion, SuggestionItem.ViewHold
      * @param viewHolder The view holder
      * @param onItemClickListener The listener to set
      */
-    public void setOnItemClickListener(ViewHolder viewHolder, OnItemClickListener<SuggestionItem> onItemClickListener) {
-        viewHolder.itemView.setOnClickListener(new ItemClickListener<>(
-            this,
-            viewHolder.getAdapterPosition(),
-            onItemClickListener
-        ));
+    public void setOnItemClickListener(
+        ViewHolder viewHolder,
+        OnItemClickListener<SuggestionItem> onItemClickListener
+    ) {
+        viewHolder.itemView.setOnClickListener(
+            new ItemClickListener<>(
+                this,
+                viewHolder.getAdapterPosition(),
+                onItemClickListener
+            )
+        );
     }
-
-
 
 
     /**
@@ -199,23 +221,24 @@ public class SuggestionItem extends BaseItem<Suggestion, SuggestionItem.ViewHold
      * @param viewHolder The view holder
      * @param onItemRemoveButtonClickListener The listener to set
      */
-    public void setOnItemRemoveButtonClickListener(ViewHolder viewHolder, OnItemClickListener<SuggestionItem> onItemRemoveButtonClickListener) {
-        viewHolder.mRemoveBtnIv.setOnClickListener(new ItemClickListener<>(
-            this,
-            viewHolder.getAdapterPosition(),
-            onItemRemoveButtonClickListener
-        ));
+    public void setOnItemRemoveButtonClickListener(
+        ViewHolder viewHolder,
+        OnItemClickListener<SuggestionItem> onItemRemoveButtonClickListener
+    ) {
+        viewHolder.removeBtnIv.setOnClickListener(
+            new ItemClickListener<>(
+                this,
+                viewHolder.getAdapterPosition(),
+                onItemRemoveButtonClickListener
+            )
+        );
     }
-
-
 
 
     @Override
     public int getLayout() {
         return MAIN_LAYOUT_ID;
     }
-
-
 
 
     @Override
@@ -225,31 +248,25 @@ public class SuggestionItem extends BaseItem<Suggestion, SuggestionItem.ViewHold
     }
 
 
-
-
     /**
      * A view holder containing suggestion item related views.
      */
     public static class ViewHolder extends BaseItem.ViewHolder<Suggestion> {
 
-        private TextView mTextTv;
+        private TextView textTv;
 
-        private ImageView mIconIv;
-        private ImageView mRemoveBtnIv;
-
+        private ImageView iconIv;
+        private ImageView removeBtnIv;
 
         public ViewHolder(View itemView) {
             super(itemView);
 
-            mTextTv = itemView.findViewById(R.id.textTv);
-            mIconIv = itemView.findViewById(R.id.iconIv);
-            mRemoveBtnIv = itemView.findViewById(R.id.removeBtnIv);
+            textTv = itemView.findViewById(R.id.textTv);
+            iconIv = itemView.findViewById(R.id.iconIv);
+            removeBtnIv = itemView.findViewById(R.id.removeBtnIv);
         }
 
-
     }
-
-
 
 
 }

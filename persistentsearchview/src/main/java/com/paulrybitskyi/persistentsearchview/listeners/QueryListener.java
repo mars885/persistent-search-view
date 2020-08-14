@@ -30,32 +30,24 @@ import android.text.TextWatcher;
 public abstract class QueryListener implements TextWatcher {
 
 
-    private String mPreviousQuery;
-
-
+    private String previousQuery;
 
 
     public QueryListener() {
-        mPreviousQuery = "";
+        previousQuery = "";
     }
-
-
 
 
     @Override
-    public final void beforeTextChanged(CharSequence s, int start, int count, int after) {
-        // Stub
-    }
-
-
+    public final void beforeTextChanged(CharSequence text, int start, int count, int after) {}
 
 
     @Override
     public final void onTextChanged(CharSequence text, int start, int before, int count) {
         final String newQuery = text.toString();
 
-        if(!newQuery.equals(mPreviousQuery)) {
-            onQueryChanged(mPreviousQuery, newQuery);
+        if(!newQuery.equals(previousQuery)) {
+            onQueryChanged(previousQuery, newQuery);
         }
 
         if(!TextUtils.isEmpty(text)) {
@@ -64,18 +56,12 @@ public abstract class QueryListener implements TextWatcher {
             onQueryRemoved();
         }
 
-        mPreviousQuery = newQuery;
+        previousQuery = newQuery;
     }
-
-
 
 
     @Override
-    public final void afterTextChanged(Editable s) {
-        // Stub
-    }
-
-
+    public final void afterTextChanged(Editable editable) {}
 
 
     /**
@@ -84,11 +70,7 @@ public abstract class QueryListener implements TextWatcher {
      * @param oldQuery The old query
      * @param newQuery The new query
      */
-    public void onQueryChanged(String oldQuery, String newQuery) {
-        //
-    }
-
-
+    public void onQueryChanged(String oldQuery, String newQuery) {}
 
 
     /**
@@ -96,21 +78,13 @@ public abstract class QueryListener implements TextWatcher {
      *
      * @param query The search query
      */
-    public void onQueryEntered(String query) {
-        //
-    }
-
-
+    public void onQueryEntered(String query) {}
 
 
     /**
      * Gets called whenever a search query has been removed.
      */
-    public void onQueryRemoved() {
-        //
-    }
-
-
+    public void onQueryRemoved() {}
 
 
 }

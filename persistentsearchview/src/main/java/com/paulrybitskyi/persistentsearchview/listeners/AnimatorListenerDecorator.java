@@ -33,14 +33,10 @@ public class AnimatorListenerDecorator extends AnimatorListenerAdapter {
     private AnimatorListenerAdapter mAnimatorListenerAdapter;
 
 
-
-
     public AnimatorListenerDecorator(@Nullable AnimatorListenerAdapter animatorListenerAdapter) {
         super();
         mAnimatorListenerAdapter = animatorListenerAdapter;
     }
-
-
 
 
     @CallSuper
@@ -54,8 +50,6 @@ public class AnimatorListenerDecorator extends AnimatorListenerAdapter {
     }
 
 
-
-
     @CallSuper
     @Override
     public void onAnimationEnded(Animator animation) {
@@ -65,8 +59,6 @@ public class AnimatorListenerDecorator extends AnimatorListenerAdapter {
             mAnimatorListenerAdapter.onAnimationEnded(animation);
         }
     }
-
-
 
 
     @CallSuper
@@ -80,8 +72,6 @@ public class AnimatorListenerDecorator extends AnimatorListenerAdapter {
     }
 
 
-
-
     @CallSuper
     @Override
     public void onAnimationRepeated(Animator animation) {
@@ -91,8 +81,6 @@ public class AnimatorListenerDecorator extends AnimatorListenerAdapter {
             mAnimatorListenerAdapter.onAnimationRepeated(animation);
         }
     }
-
-
 
 
 }

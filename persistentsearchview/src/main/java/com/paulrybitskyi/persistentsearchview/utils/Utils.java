@@ -53,15 +53,14 @@ public final class Utils {
     public static final int API_VERSION = Build.VERSION.SDK_INT;
 
     public static final boolean IS_AT_LEAST_JELLY_BEAN = (API_VERSION >= Build.VERSION_CODES.JELLY_BEAN);
-    public static final boolean IS_AT_LEAST_KITKAT = (API_VERSION >= Build.VERSION_CODES.KITKAT);
     public static final boolean IS_AT_LEAST_LOLLIPOP = (API_VERSION >= Build.VERSION_CODES.LOLLIPOP);
     public static final boolean IS_AT_LEAST_MARSHMALLOW = (API_VERSION >= Build.VERSION_CODES.M);
     public static final boolean IS_AT_LEAST_NOUGAT = (API_VERSION >= Build.VERSION_CODES.N);
-    public static final boolean IS_AT_LEAST_OREO = (API_VERSION >= Build.VERSION_CODES.O);
 
     public static final Typeface TOOLBAR_TITLE_TYPEFACE = Typeface.create("sans-serif-medium", Typeface.NORMAL);
 
 
+    private Utils() {}
 
 
     /**
@@ -79,8 +78,6 @@ public final class Utils {
             color
         );
     }
-
-
 
 
     /**
@@ -103,8 +100,6 @@ public final class Utils {
 
         return drawable;
     }
-
-
 
 
     /**
@@ -141,13 +136,9 @@ public final class Utils {
                     cursorDrawableFieldOwner,
                     new Drawable[] {cursorDrawable, cursorDrawable}
                 );
-            } catch(Exception e) {
-                // Ignore
-            }
+            } catch(Exception e) {}
         }
     }
-
-
 
 
     /**
@@ -161,8 +152,6 @@ public final class Utils {
 
         progressBar.getIndeterminateDrawable().setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
     }
-
-
 
 
     /**
@@ -182,8 +171,6 @@ public final class Utils {
     }
 
 
-
-
     /**
      * Disables the animations of the specified {@link RecyclerView}.
      *
@@ -194,8 +181,6 @@ public final class Utils {
             recyclerView.setItemAnimator(null);
         }
     }
-
-
 
 
     /**
@@ -214,8 +199,6 @@ public final class Utils {
 
         return Color.argb(alphaChannel, redChannel, greenChannel, blueChannel);
     }
-
-
 
 
     /**
@@ -238,8 +221,6 @@ public final class Utils {
     }
 
 
-
-
     /**
      * Checks whether the speech recognition is available on the device or not.
      *
@@ -251,16 +232,13 @@ public final class Utils {
         Preconditions.nonNull(context);
 
         final PackageManager packageManager = context.getPackageManager();
-
         final List<ResolveInfo> activities = packageManager.queryIntentActivities(
             new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH),
             PackageManager.MATCH_DEFAULT_ONLY
         );
 
-        return ((activities != null) && (activities.size() > 0));
+        return (activities.size() > 0);
     }
-
-
 
 
 }

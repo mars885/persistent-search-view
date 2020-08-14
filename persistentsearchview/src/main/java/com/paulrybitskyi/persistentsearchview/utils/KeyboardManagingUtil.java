@@ -31,6 +31,7 @@ import androidx.annotation.NonNull;
 public final class KeyboardManagingUtil {
 
 
+    private KeyboardManagingUtil() {}
 
 
     /**
@@ -49,8 +50,6 @@ public final class KeyboardManagingUtil {
     }
 
 
-
-
     /**
      * Hides the keyboard from the user.
      *
@@ -65,8 +64,6 @@ public final class KeyboardManagingUtil {
             manager.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }
-
-
 
 
 }

@@ -32,9 +32,7 @@ import androidx.appcompat.widget.AppCompatEditText;
 public class AdvancedEditText extends AppCompatEditText {
 
 
-    private View.OnTouchListener mTouchEventInterceptor;
-
-
+    private View.OnTouchListener touchEventInterceptor;
 
 
     public AdvancedEditText(Context context) {
@@ -42,13 +40,9 @@ public class AdvancedEditText extends AppCompatEditText {
     }
 
 
-
-
     public AdvancedEditText(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
-
-
 
 
     public AdvancedEditText(Context context, AttributeSet attrs, int defStyleAttr) {
@@ -56,28 +50,22 @@ public class AdvancedEditText extends AppCompatEditText {
     }
 
 
-
-
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
 
-        mTouchEventInterceptor = null;
+        touchEventInterceptor = null;
     }
-
-
 
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if((mTouchEventInterceptor != null) && mTouchEventInterceptor.onTouch(this, event)) {
+        if((touchEventInterceptor != null) && touchEventInterceptor.onTouch(this, event)) {
             return true;
         }
 
         return super.onTouchEvent(event);
     }
-
-
 
 
     /**
@@ -87,10 +75,8 @@ public class AdvancedEditText extends AppCompatEditText {
      * @param touchEventInterceptor The interceptor
      */
     public final void setTouchEventInterceptor(View.OnTouchListener touchEventInterceptor) {
-        mTouchEventInterceptor = touchEventInterceptor;
+        this.touchEventInterceptor = touchEventInterceptor;
     }
-
-
 
 
 }

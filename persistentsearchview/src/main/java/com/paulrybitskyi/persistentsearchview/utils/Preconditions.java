@@ -27,7 +27,6 @@ import java.util.Locale;
 
 import androidx.annotation.NonNull;
 
-
 /**
  * A utility class responsible for performing precondition checks
  * on arguments and throwing appropriate exceptions in case the precondition
@@ -36,6 +35,7 @@ import androidx.annotation.NonNull;
 public final class Preconditions {
 
 
+    private Preconditions() {}
 
 
     /**
@@ -46,8 +46,6 @@ public final class Preconditions {
     public static void isTrue(boolean condition) {
         isTrue("Condition", condition);
     }
-
-
 
 
     /**
@@ -69,8 +67,6 @@ public final class Preconditions {
     }
 
 
-
-
     /**
      * Checks whether the object is not null. If null, throws {@link NullPointerException}.
      *
@@ -81,8 +77,6 @@ public final class Preconditions {
             throw new NullPointerException("The argument must be non-null!");
         }
     }
-
-
 
 
     /**
@@ -97,8 +91,6 @@ public final class Preconditions {
     }
 
 
-
-
     /**
      * Checks whether the collection is not empty. If empty, throws {@link IllegalArgumentException}.
      *
@@ -111,8 +103,6 @@ public final class Preconditions {
             throw new IllegalArgumentException("You must specify a collection that contains at least one element.");
         }
     }
-
-
 
 
     /**
@@ -130,8 +120,6 @@ public final class Preconditions {
     }
 
 
-
-
     /**
      * Checks whether the index is within the bounds of the dataset, including the size of the dataset.
      *
@@ -145,8 +133,6 @@ public final class Preconditions {
             throw new IndexOutOfBoundsException("The Index must lie within the bounds of the specified dataset (0 <= index <= dataset.size).");
         }
     }
-
-
 
 
 }

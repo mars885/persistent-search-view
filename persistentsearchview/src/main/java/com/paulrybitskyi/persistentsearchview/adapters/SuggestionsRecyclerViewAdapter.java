@@ -35,36 +35,36 @@ import androidx.annotation.NonNull;
 /**
  * A recycler view adapter implementation for suggestion items.
  */
-public class SuggestionsRecyclerViewAdapter extends TrackableRecyclerViewAdapter<Long, SuggestionItem, SuggestionItem.ViewHolder> {
+public class SuggestionsRecyclerViewAdapter extends TrackableRecyclerViewAdapter<
+    Long,
+    SuggestionItem,
+    SuggestionItem.ViewHolder
+> {
 
 
-    private ItemResources mResources;
+    private ItemResources resources;
 
-    private OnItemClickListener<SuggestionItem> mOnItemClickListener;
-    private OnItemClickListener<SuggestionItem> mOnItemRemoveButtonClickListener;
-
-
+    private OnItemClickListener<SuggestionItem> onItemClickListener;
+    private OnItemClickListener<SuggestionItem> onItemRemoveButtonClickListener;
 
 
-    public SuggestionsRecyclerViewAdapter(Context context,
-                                          List<SuggestionItem> items,
-                                          @NonNull SuggestionItemResources resources) {
+    public SuggestionsRecyclerViewAdapter(
+        Context context,
+        List<SuggestionItem> items,
+        @NonNull SuggestionItemResources resources
+    ) {
         super(context, items);
         setResources(resources);
     }
-
-
 
 
     @Override
     protected final void assignListeners(SuggestionItem.ViewHolder holder, int position, SuggestionItem item) {
         super.assignListeners(holder, position, item);
 
-        item.setOnItemClickListener(holder, mOnItemClickListener);
-        item.setOnItemRemoveButtonClickListener(holder, mOnItemRemoveButtonClickListener);
+        item.setOnItemClickListener(holder, onItemClickListener);
+        item.setOnItemRemoveButtonClickListener(holder, onItemRemoveButtonClickListener);
     }
-
-
 
 
     /**
@@ -73,10 +73,8 @@ public class SuggestionsRecyclerViewAdapter extends TrackableRecyclerViewAdapter
      * @param onItemClickListener The listener to set
      */
     public final void setOnItemClickListener(OnItemClickListener<SuggestionItem> onItemClickListener) {
-        mOnItemClickListener = onItemClickListener;
+        this.onItemClickListener = onItemClickListener;
     }
-
-
 
 
     /**
@@ -85,10 +83,8 @@ public class SuggestionsRecyclerViewAdapter extends TrackableRecyclerViewAdapter
      * @param onItemRemoveButtonClickListener The listener to set
      */
     public final void setOnItemRemoveButtonClickListener(OnItemClickListener<SuggestionItem> onItemRemoveButtonClickListener) {
-        mOnItemRemoveButtonClickListener = onItemRemoveButtonClickListener;
+        this.onItemRemoveButtonClickListener = onItemRemoveButtonClickListener;
     }
-
-
 
 
     /**
@@ -99,19 +95,15 @@ public class SuggestionsRecyclerViewAdapter extends TrackableRecyclerViewAdapter
     public final void setResources(@NonNull SuggestionItemResources resources) {
         Preconditions.nonNull(resources);
 
-        mResources = resources;
+        this.resources = resources;
         notifyDataSetChanged();
     }
 
 
-
-
     @Override
     public final ItemResources getResources() {
-        return mResources;
+        return resources;
     }
-
-
 
 
 }

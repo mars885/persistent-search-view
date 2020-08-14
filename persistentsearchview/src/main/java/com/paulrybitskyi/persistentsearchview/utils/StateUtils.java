@@ -3,7 +3,10 @@ package com.paulrybitskyi.persistentsearchview.utils;
 import android.os.Parcelable;
 import android.view.View;
 
-public class StateUtils {
+public final class StateUtils {
+
+
+    private StateUtils() {}
 
 
     public static Parcelable fetchParentState(Parcelable state) {

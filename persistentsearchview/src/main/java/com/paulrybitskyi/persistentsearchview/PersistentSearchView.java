@@ -21,6 +21,7 @@ package com.paulrybitskyi.persistentsearchview;
 
 import android.animation.Animator;
 import android.animation.ValueAnimator;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -77,7 +78,6 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import static com.paulrybitskyi.persistentsearchview.utils.Utils.IS_AT_LEAST_LOLLIPOP;
 import static com.paulrybitskyi.persistentsearchview.utils.Utils.TOOLBAR_TITLE_TYPEFACE;
 import static com.paulrybitskyi.persistentsearchview.utils.Utils.adjustColorAlpha;
 import static com.paulrybitskyi.persistentsearchview.utils.ViewUtils.getAnimationMarker;
@@ -109,107 +109,79 @@ public class PersistentSearchView extends FrameLayout {
     private static final Interpolator SUGGESTIONS_CONTAINER_ANIMATION_INTERPOLATOR = new DecelerateInterpolator();
 
 
-    // Colors
-    private int mQueryInputHintColor;
-    private int mQueryInputTextColor;
-    private int mQueryInputCursorColor;
+    private boolean isDismissibleOnTouchOutside;
+    private boolean isProgressBarEnabled;
+    private boolean isVoiceInputButtonEnabled;
+    private boolean isClearInputButtonEnabled;
+    private boolean areSuggestionsDisabled;
+    private boolean isSpeechRecognitionAvailable;
+    private boolean shouldDimBehind;
+    private boolean shouldNotifyAboutQueryChange;
 
-    private int mInputBarIconColor;
-    private int mDividerColor;
-    private int mProgressBarColor;
+    private int queryInputHintColor;
+    private int queryInputTextColor;
+    private int queryInputCursorColor;
+    private int inputBarIconColor;
+    private int dividerColor;
+    private int progressBarColor;
+    private int suggestionIconColor;
+    private int recentSearchIconColor;
+    private int searchSuggestionIconColor;
+    private int suggestionTextColor;
+    private int suggestionSelectedTextColor;
+    private int cardBackgroundColor;
+    private int backgroundDimColor;
 
-    private int mSuggestionIconColor;
-    private int mRecentSearchIconColor;
-    private int mSearchSuggestionIconColor;
-    private int mSuggestionTextColor;
-    private int mSuggestionSelectedTextColor;
+    private int suggestionItemHeight;
+    private int cardCornerRadius;
+    private int cardElevation;
 
-    private int mCardBackgroundColor;
+    private float dimAmount;
 
-    private int mBackgroundDimColor;
+    private Drawable leftButtonDrawable;
+    private Drawable rightButtonDrawable;
+    private Drawable clearInputButtonDrawable;
+    private Drawable voiceInputButtonDrawable;
+    private Drawable queryInputCursorDrawable;
 
-    // Dimensions
-    private int mSuggestionItemHeight;
+    private String queryInputHint;
 
-    private int mCardCornerRadius;
-    private int mCardElevation;
+    private Typeface queryTextTypeface;
+    private Typeface suggestionTextTypeface;
 
-    private float mDimAmount;
+    private State state;
 
-    // Drawables
-    private Drawable mLeftButtonDrawable;
-    private Drawable mRightButtonDrawable;
+    private VoiceRecognitionDelegate voiceRecognitionDelegate;
 
-    private Drawable mClearInputButtonDrawable;
-    private Drawable mVoiceInputButtonDrawable;
+    private List<SuggestionItem> suggestionItems;
 
-    private Drawable mQueryInputCursorDrawable;
+    private SuggestionsRecyclerViewAdapter adapter;
 
-    // Strings
-    private String mQueryInputHint;
+    private View dividerView;
+    private ImageView leftBtnIv;
+    private ImageView rightBtnIv;
+    private ImageView clearInputBtnIv;
+    private ImageView voiceInputBtnIv;
+    private ProgressBar progressBar;
+    private AdvancedEditText inputEt;
+    private CardView cardView;
+    private FrameLayout leftContainerFl;
+    private FrameLayout inputButtonsContainerFl;
+    private FrameLayout rightButtonContainerFl;
+    private LinearLayout suggestionsContainerLL;
+    private RecyclerView suggestionsRecyclerView;
 
-    private Typeface mQueryTextTypeface;
-    private Typeface mSuggestionTextTypeface;
+    private ValueAnimator suggestionsContainerAnimator;
+    private BackgroundDimmingAnimation backgroundEnterAnimation;
+    private BackgroundDimmingAnimation backgroundExitAnimation;
 
-    private State mState;
+    private OnSearchQueryChangeListener onSearchQueryChangeListener;
+    private OnSuggestionChangeListener onSuggestionChangeListener;
+    private OnSearchConfirmedListener onSearchConfirmedListener;
+    private OnClickListener onLeftBtnClickListener;
+    private OnClickListener onClearInputBtnClickListener;
 
-    private VoiceRecognitionDelegate mVoiceRecognitionDelegate;
-
-    private List<SuggestionItem> mSuggestionItems;
-
-    private SuggestionsRecyclerViewAdapter mAdapter;
-
-    // Views
-    private View mDividerView;
-
-    private ImageView mLeftBtnIv;
-    private ImageView mRightBtnIv;
-
-    private ImageView mClearInputBtnIv;
-    private ImageView mVoiceInputBtnIv;
-
-    private ProgressBar mProgressBar;
-
-    private AdvancedEditText mInputEt;
-
-    private CardView mCardView;
-
-    private FrameLayout mLeftContainerFl;
-    private FrameLayout mInputButtonsContainerFl;
-    private FrameLayout mRightButtonContainerFl;
-
-    private LinearLayout mSuggestionsContainerLL;
-
-    private RecyclerView mSuggestionsRecyclerView;
-
-    // Animators
-    private ValueAnimator mSuggestionsContainerAnimator;
-
-    private BackgroundDimmingAnimation mBackgroundEnterAnimation;
-    private BackgroundDimmingAnimation mBackgroundExitAnimation;
-
-    // Listeners
-    private OnSearchQueryChangeListener mOnSearchQueryChangeListener;
-    private OnSuggestionChangeListener mOnSuggestionChangeListener;
-
-    private OnSearchConfirmedListener mOnSearchConfirmedListener;
-
-    private OnClickListener mOnLeftBtnClickListener;
-    private OnClickListener mOnClearInputBtnClickListener;
-
-    private Runnable mExitAnimationEndAction;
-
-    // Flags
-    private boolean mIsDismissibleOnTouchOutside;
-    private boolean mIsProgressBarEnabled;
-    private boolean mIsVoiceInputButtonEnabled;
-    private boolean mIsClearInputButtonEnabled;
-    private boolean mAreSuggestionsDisabled;
-    private boolean mIsSpeechRecognitionAvailable;
-    private boolean mShouldDimBehind;
-    private boolean mShouldNotifyAboutQueryChange;
-
-
+    private Runnable exitAnimationEndAction;
 
 
     private enum State {
@@ -220,14 +192,10 @@ public class PersistentSearchView extends FrameLayout {
     }
 
 
-
-
     public PersistentSearchView(Context context) {
         super(context);
         init(null);
     }
-
-
 
 
     public PersistentSearchView(Context context, AttributeSet attrs) {
@@ -236,14 +204,10 @@ public class PersistentSearchView extends FrameLayout {
     }
 
 
-
-
     public PersistentSearchView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         init(attrs);
     }
-
-
 
 
     @SuppressWarnings("NewApi")
@@ -253,37 +217,25 @@ public class PersistentSearchView extends FrameLayout {
     }
 
 
-
-
     @SuppressWarnings("NewApi")
     private void init(AttributeSet attrs) {
         View.inflate(getContext(), R.layout.persistent_search_view_layout, this);
 
-        // Initialization related stuff
         initDefaults();
         initResources(attrs);
         initMainContainer();
         initQueryInputBar();
         initSuggestionsContainer();
 
-        // By default the view is collapsed
         collapse(false);
-
-        // Allowing the view to be drawn atop all other views within the same view group
-        if(IS_AT_LEAST_LOLLIPOP) {
-            setTranslationZ(999);
-        }
+        drawOnTopOfAllOtherViews();
     }
 
 
-
-
     private void initDefaults() {
-        mDimAmount = DEFAULT_DIM_AMOUNT;
+        dimAmount = DEFAULT_DIM_AMOUNT;
+        suggestionItems = new ArrayList<>();
 
-        mSuggestionItems = new ArrayList<>();
-
-        // initializing the default resources
         initDefaultColors();
         initDefaultDimensions();
         initDefaultDrawables();
@@ -294,98 +246,82 @@ public class PersistentSearchView extends FrameLayout {
     }
 
 
-
-
     private void initDefaultColors() {
-        mBackgroundDimColor = ContextCompat.getColor(getContext(), R.color.persistent_search_view_background_dim_color);
+        backgroundDimColor = ContextCompat.getColor(getContext(), R.color.persistent_search_view_background_dim_color);
 
-        mQueryInputHintColor = ContextCompat.getColor(getContext(), R.color.persistent_search_view_query_input_hint_color);
-        mQueryInputTextColor = ContextCompat.getColor(getContext(), R.color.persistent_search_view_query_input_text_color);
-        mQueryInputCursorColor = ContextCompat.getColor(getContext(), R.color.persistent_search_view_query_input_cursor_color);
+        queryInputHintColor = ContextCompat.getColor(getContext(), R.color.persistent_search_view_query_input_hint_color);
+        queryInputTextColor = ContextCompat.getColor(getContext(), R.color.persistent_search_view_query_input_text_color);
+        queryInputCursorColor = ContextCompat.getColor(getContext(), R.color.persistent_search_view_query_input_cursor_color);
 
-        mInputBarIconColor = ContextCompat.getColor(getContext(), R.color.persistent_search_view_query_input_bar_icon_color);
-        mDividerColor = ContextCompat.getColor(getContext(), R.color.persistent_search_view_divider_color);
-        mProgressBarColor = ContextCompat.getColor(getContext(), R.color.persistent_search_view_progress_bar_color);
+        inputBarIconColor = ContextCompat.getColor(getContext(), R.color.persistent_search_view_query_input_bar_icon_color);
+        dividerColor = ContextCompat.getColor(getContext(), R.color.persistent_search_view_divider_color);
+        progressBarColor = ContextCompat.getColor(getContext(), R.color.persistent_search_view_progress_bar_color);
 
-        mSuggestionIconColor = ContextCompat.getColor(getContext(), R.color.persistent_search_view_suggestion_item_icon_color);
-        mRecentSearchIconColor = ContextCompat.getColor(getContext(), R.color.persistent_search_view_suggestion_item_recent_search_icon_color);
-        mSearchSuggestionIconColor = ContextCompat.getColor(getContext(), R.color.persistent_search_view_suggestion_item_search_suggestion_icon_color);
-        mSuggestionTextColor = ContextCompat.getColor(getContext(), R.color.persistent_search_view_suggestion_item_text_color);
-        mSuggestionSelectedTextColor = ContextCompat.getColor(getContext(), R.color.persistent_search_view_suggestion_item_selected_text_color);
+        suggestionIconColor = ContextCompat.getColor(getContext(), R.color.persistent_search_view_suggestion_item_icon_color);
+        recentSearchIconColor = ContextCompat.getColor(getContext(), R.color.persistent_search_view_suggestion_item_recent_search_icon_color);
+        searchSuggestionIconColor = ContextCompat.getColor(getContext(), R.color.persistent_search_view_suggestion_item_search_suggestion_icon_color);
+        suggestionTextColor = ContextCompat.getColor(getContext(), R.color.persistent_search_view_suggestion_item_text_color);
+        suggestionSelectedTextColor = ContextCompat.getColor(getContext(), R.color.persistent_search_view_suggestion_item_selected_text_color);
 
-        mCardBackgroundColor = ContextCompat.getColor(getContext(), R.color.persistent_search_view_card_background_color);
+        cardBackgroundColor = ContextCompat.getColor(getContext(), R.color.persistent_search_view_card_background_color);
     }
-
-
 
 
     private void initDefaultDimensions() {
         final Resources resources = getResources();
 
-        mSuggestionItemHeight = resources.getDimensionPixelSize(R.dimen.persistent_search_view_item_height);
-        mCardCornerRadius = resources.getDimensionPixelSize(R.dimen.persistent_search_view_card_view_corner_radius);
-        mCardElevation = resources.getDimensionPixelSize(R.dimen.persistent_search_view_card_view_elevation);
+        suggestionItemHeight = resources.getDimensionPixelSize(R.dimen.persistent_search_view_item_height);
+        cardCornerRadius = resources.getDimensionPixelSize(R.dimen.persistent_search_view_card_view_corner_radius);
+        cardElevation = resources.getDimensionPixelSize(R.dimen.persistent_search_view_card_view_elevation);
     }
-
-
 
 
     private void initDefaultDrawables() {
-        mLeftButtonDrawable = ContextCompat.getDrawable(getContext(), R.drawable.ic_arrow_left_black_24dp);
-        mClearInputButtonDrawable = ContextCompat.getDrawable(getContext(), R.drawable.ic_close_black_24dp);
-        mVoiceInputButtonDrawable = ContextCompat.getDrawable(getContext(), R.drawable.ic_microphone_black_24dp);
-        mQueryInputCursorDrawable = ContextCompat.getDrawable(getContext(), R.drawable.persistent_search_view_cursor_drawable);
+        leftButtonDrawable = ContextCompat.getDrawable(getContext(), R.drawable.ic_arrow_left_black_24dp);
+        clearInputButtonDrawable = ContextCompat.getDrawable(getContext(), R.drawable.ic_close_black_24dp);
+        voiceInputButtonDrawable = ContextCompat.getDrawable(getContext(), R.drawable.ic_microphone_black_24dp);
+        queryInputCursorDrawable = ContextCompat.getDrawable(getContext(), R.drawable.persistent_search_view_cursor_drawable);
     }
-
-
 
 
     private void initDefaultStrings() {
-        mQueryInputHint = getResources().getString(R.string.persistent_search_view_query_input_hint);
+        queryInputHint = getResources().getString(R.string.persistent_search_view_query_input_hint);
     }
-
-
 
 
     private void initDefaultTypefaces() {
-        mQueryTextTypeface = TOOLBAR_TITLE_TYPEFACE;
-        mSuggestionTextTypeface = Typeface.DEFAULT;
+        queryTextTypeface = TOOLBAR_TITLE_TYPEFACE;
+        suggestionTextTypeface = Typeface.DEFAULT;
     }
 
 
-
-
     private void initDefaultAnimations() {
-        mBackgroundEnterAnimation = new BackgroundDimmingAnimation(
+        backgroundEnterAnimation = new BackgroundDimmingAnimation(
             this,
-            mBackgroundDimColor,
+            backgroundDimColor,
             0f,
-            mDimAmount
+            dimAmount
         );
 
-        mBackgroundExitAnimation = new BackgroundDimmingAnimation(
+        backgroundExitAnimation = new BackgroundDimmingAnimation(
             this,
-            mBackgroundDimColor,
-            mDimAmount,
+            backgroundDimColor,
+            dimAmount,
             0f
         );
     }
 
 
-
-
     private void initDefaultFlags() {
-        mIsSpeechRecognitionAvailable = Utils.isSpeechRecognitionAvailable(getContext());
-        mIsProgressBarEnabled = true;
-        mIsVoiceInputButtonEnabled = true;
-        mIsClearInputButtonEnabled = true;
-        mIsDismissibleOnTouchOutside = true;
-        mAreSuggestionsDisabled = false;
-        mShouldDimBehind = true;
-        mShouldNotifyAboutQueryChange = true;
+        isSpeechRecognitionAvailable = Utils.isSpeechRecognitionAvailable(getContext());
+        isProgressBarEnabled = true;
+        isVoiceInputButtonEnabled = true;
+        isClearInputButtonEnabled = true;
+        isDismissibleOnTouchOutside = true;
+        areSuggestionsDisabled = false;
+        shouldDimBehind = true;
+        shouldNotifyAboutQueryChange = true;
     }
-
-
 
 
     private void initResources(AttributeSet attrs) {
@@ -401,255 +337,247 @@ public class PersistentSearchView extends FrameLayout {
         initDrawableResources(attributes);
         initStringResources(attributes);
 
-        // Recycling the typed array
         attributes.recycle();
     }
 
 
-
-
     private void initBooleanResources(TypedArray attributes) {
-        mIsDismissibleOnTouchOutside = attributes.getBoolean(R.styleable.PersistentSearchView_isDismissableOnTouchOutside, mIsDismissibleOnTouchOutside);
-        mIsProgressBarEnabled = attributes.getBoolean(R.styleable.PersistentSearchView_isProgressBarEnabled, mIsProgressBarEnabled);
-        mIsVoiceInputButtonEnabled = attributes.getBoolean(R.styleable.PersistentSearchView_isVoiceInputButtonEnabled, mIsVoiceInputButtonEnabled);
-        mIsClearInputButtonEnabled = attributes.getBoolean(R.styleable.PersistentSearchView_isClearInputButtonEnabled, mIsClearInputButtonEnabled);
-        mAreSuggestionsDisabled = attributes.getBoolean(R.styleable.PersistentSearchView_areSuggestionsDisabled, mAreSuggestionsDisabled);
-        mShouldDimBehind = attributes.getBoolean(R.styleable.PersistentSearchView_shouldDimBehind, mShouldDimBehind);
+        isDismissibleOnTouchOutside = attributes.getBoolean(R.styleable.PersistentSearchView_isDismissableOnTouchOutside, isDismissibleOnTouchOutside);
+        isProgressBarEnabled = attributes.getBoolean(R.styleable.PersistentSearchView_isProgressBarEnabled, isProgressBarEnabled);
+        isVoiceInputButtonEnabled = attributes.getBoolean(R.styleable.PersistentSearchView_isVoiceInputButtonEnabled, isVoiceInputButtonEnabled);
+        isClearInputButtonEnabled = attributes.getBoolean(R.styleable.PersistentSearchView_isClearInputButtonEnabled, isClearInputButtonEnabled);
+        areSuggestionsDisabled = attributes.getBoolean(R.styleable.PersistentSearchView_areSuggestionsDisabled, areSuggestionsDisabled);
+        shouldDimBehind = attributes.getBoolean(R.styleable.PersistentSearchView_shouldDimBehind, shouldDimBehind);
     }
-
-
 
 
     private void initColorResources(TypedArray attributes) {
-        mBackgroundDimColor = attributes.getColor(R.styleable.PersistentSearchView_dimColor, mBackgroundDimColor);
+        backgroundDimColor = attributes.getColor(R.styleable.PersistentSearchView_dimColor, backgroundDimColor);
 
-        mQueryInputHintColor = attributes.getColor(R.styleable.PersistentSearchView_queryInputHintColor, mQueryInputHintColor);
-        mQueryInputTextColor = attributes.getColor(R.styleable.PersistentSearchView_queryInputTextColor, mQueryInputTextColor);
-        mQueryInputCursorColor = attributes.getColor(R.styleable.PersistentSearchView_queryInputCursorColor, mQueryInputCursorColor);
+        queryInputHintColor = attributes.getColor(R.styleable.PersistentSearchView_queryInputHintColor, queryInputHintColor);
+        queryInputTextColor = attributes.getColor(R.styleable.PersistentSearchView_queryInputTextColor, queryInputTextColor);
+        queryInputCursorColor = attributes.getColor(R.styleable.PersistentSearchView_queryInputCursorColor, queryInputCursorColor);
 
-        mInputBarIconColor = attributes.getColor(R.styleable.PersistentSearchView_queryInputBarIconColor, mInputBarIconColor);
-        mDividerColor = attributes.getColor(R.styleable.PersistentSearchView_dividerColor, mDividerColor);
-        mProgressBarColor = attributes.getColor(R.styleable.PersistentSearchView_progressBarColor, mProgressBarColor);
+        inputBarIconColor = attributes.getColor(R.styleable.PersistentSearchView_queryInputBarIconColor, inputBarIconColor);
+        dividerColor = attributes.getColor(R.styleable.PersistentSearchView_dividerColor, dividerColor);
+        progressBarColor = attributes.getColor(R.styleable.PersistentSearchView_progressBarColor, progressBarColor);
 
-        mSuggestionIconColor = attributes.getColor(R.styleable.PersistentSearchView_suggestionIconColor, mSuggestionIconColor);
-        mRecentSearchIconColor = attributes.getColor(R.styleable.PersistentSearchView_suggestionRecentSearchIconColor, mRecentSearchIconColor);
-        mSearchSuggestionIconColor = attributes.getColor(R.styleable.PersistentSearchView_suggestionSearchSuggestionIconColor, mSearchSuggestionIconColor);
-        mSuggestionTextColor = attributes.getColor(R.styleable.PersistentSearchView_suggestionTextColor, mSuggestionTextColor);
-        mSuggestionSelectedTextColor = attributes.getColor(R.styleable.PersistentSearchView_suggestionSelectedTextColor, mSuggestionSelectedTextColor);
+        suggestionIconColor = attributes.getColor(R.styleable.PersistentSearchView_suggestionIconColor, suggestionIconColor);
+        recentSearchIconColor = attributes.getColor(R.styleable.PersistentSearchView_suggestionRecentSearchIconColor, recentSearchIconColor);
+        searchSuggestionIconColor = attributes.getColor(R.styleable.PersistentSearchView_suggestionSearchSuggestionIconColor, searchSuggestionIconColor);
+        suggestionTextColor = attributes.getColor(R.styleable.PersistentSearchView_suggestionTextColor, suggestionTextColor);
+        suggestionSelectedTextColor = attributes.getColor(R.styleable.PersistentSearchView_suggestionSelectedTextColor, suggestionSelectedTextColor);
 
-        mCardBackgroundColor = attributes.getColor(R.styleable.PersistentSearchView_cardBackgroundColor, mCardBackgroundColor);
+        cardBackgroundColor = attributes.getColor(R.styleable.PersistentSearchView_cardBackgroundColor, cardBackgroundColor);
     }
-
-
 
 
     private void initDimensionResources(TypedArray attributes) {
-        mDimAmount = attributes.getFloat(R.styleable.PersistentSearchView_dimAmount, mDimAmount);
-        mCardCornerRadius = attributes.getDimensionPixelSize(R.styleable.PersistentSearchView_cardCornerRadius, mCardCornerRadius);
-        mCardElevation = attributes.getDimensionPixelSize(R.styleable.PersistentSearchView_cardElevation, mCardElevation);
+        dimAmount = attributes.getFloat(R.styleable.PersistentSearchView_dimAmount, dimAmount);
+        cardCornerRadius = attributes.getDimensionPixelSize(R.styleable.PersistentSearchView_cardCornerRadius, cardCornerRadius);
+        cardElevation = attributes.getDimensionPixelSize(R.styleable.PersistentSearchView_cardElevation, cardElevation);
     }
-
-
 
 
     private void initDrawableResources(TypedArray attributes) {
         if(attributes.hasValue(R.styleable.PersistentSearchView_leftButtonDrawable)) {
-            mLeftButtonDrawable = attributes.getDrawable(R.styleable.PersistentSearchView_leftButtonDrawable);
+            leftButtonDrawable = attributes.getDrawable(R.styleable.PersistentSearchView_leftButtonDrawable);
         }
 
         if(attributes.hasValue(R.styleable.PersistentSearchView_rightButtonDrawable)) {
-            mRightButtonDrawable = attributes.getDrawable(R.styleable.PersistentSearchView_rightButtonDrawable);
+            rightButtonDrawable = attributes.getDrawable(R.styleable.PersistentSearchView_rightButtonDrawable);
         }
 
         if(attributes.hasValue(R.styleable.PersistentSearchView_clearInputButtonDrawable)) {
-            mClearInputButtonDrawable = attributes.getDrawable(R.styleable.PersistentSearchView_clearInputButtonDrawable);
+            clearInputButtonDrawable = attributes.getDrawable(R.styleable.PersistentSearchView_clearInputButtonDrawable);
         }
 
         if(attributes.hasValue(R.styleable.PersistentSearchView_voiceInputButtonDrawable)) {
-            mVoiceInputButtonDrawable = attributes.getDrawable(R.styleable.PersistentSearchView_voiceInputButtonDrawable);
+            voiceInputButtonDrawable = attributes.getDrawable(R.styleable.PersistentSearchView_voiceInputButtonDrawable);
         }
 
         if(attributes.hasValue(R.styleable.PersistentSearchView_queryInputCursorDrawable)) {
-            mQueryInputCursorDrawable = attributes.getDrawable(R.styleable.PersistentSearchView_queryInputCursorDrawable);
+            queryInputCursorDrawable = attributes.getDrawable(R.styleable.PersistentSearchView_queryInputCursorDrawable);
         }
     }
-
-
 
 
     private void initStringResources(TypedArray attributes) {
         if(attributes.hasValue(R.styleable.PersistentSearchView_queryInputHint)) {
-            mQueryInputHint = attributes.getString(R.styleable.PersistentSearchView_queryInputHint);
+            queryInputHint = attributes.getString(R.styleable.PersistentSearchView_queryInputHint);
         }
     }
 
 
-
-
     private void initMainContainer() {
-        mCardView = findViewById(R.id.cardView);
-        setCardBackgroundColor(mCardBackgroundColor);
-        setCardCornerRadius(mCardCornerRadius);
-        setCardElevation(mCardElevation);
-
-        // For dismissibility on touch outside
+        cardView = findViewById(R.id.cardView);
+        setCardBackgroundColor(cardBackgroundColor);
+        setCardCornerRadius(cardCornerRadius);
+        setCardElevation(cardElevation);
         setOnClickListener(mOnParentOutsideClickListener);
     }
 
 
-
-
     private void initQueryInputBar() {
-        // Query input related
         initQueryInputEditText();
+        initQueryInputBarProgressBar();
+        initQueryInputBarLeftButton();
+        iniQueryInputBarButtonsContainers();
 
-        // Progress bar related
-        mProgressBar = findViewById(R.id.progressBar);
-        setProgressBarColor(mProgressBarColor);
-
-        // Left button related
-        mLeftBtnIv = findViewById(R.id.leftBtnIv);
-        setLeftButtonDrawable(mLeftButtonDrawable);
-        mLeftBtnIv.setOnClickListener(mOnLeftButtonClickListener);
-
-        // Left button related
-        mLeftContainerFl = findViewById(R.id.leftContainerFl);
-
-        // Input buttons related
-        mInputButtonsContainerFl = findViewById(R.id.inputBtnsContainerFl);
-
-        // Right button related
-        mRightButtonContainerFl = findViewById(R.id.rightBtnContainerFl);
-
-        mRightBtnIv = findViewById(R.id.rightBtnIv);
-        setRightButtonDrawable(mRightButtonDrawable);
-
-        // Clear input button related
-        mClearInputBtnIv = findViewById(R.id.clearInputBtnIv);
-        setClearInputButtonDrawable(mClearInputButtonDrawable);
-        updateClearInputButtonState();
-        mClearInputBtnIv.setOnClickListener(mOnClearInputButtonClickListener);
-
-        // Voice input button related
-        mVoiceInputBtnIv = findViewById(R.id.voiceInputBtnIv);
-        setVoiceInputButtonDrawable(mVoiceInputButtonDrawable);
-        updateVoiceInputButtonState();
-        mVoiceInputBtnIv.setOnClickListener(mOnVoiceInputButtonClickListener);
-
-        // Button icon coloring
-        setQueryInputBarIconColor(mInputBarIconColor);
+        setQueryInputBarIconColor(inputBarIconColor);
     }
-
-
 
 
     private void initQueryInputEditText() {
-        mInputEt = findViewById(R.id.inputEt);
-        setQueryInputHint(mQueryInputHint);
-        setQueryInputHintColor(mQueryInputHintColor);
-        setQueryInputTextColor(mQueryInputTextColor);
-        setQueryInputCursorDrawable(mQueryInputCursorDrawable, mQueryInputCursorColor);
-        setQueryTextTypeface(mQueryTextTypeface);
-        mInputEt.setOnEditorActionListener(mInternalEditorActionListener);
-        mInputEt.addTextChangedListener(mQueryListener);
-        mInputEt.setTouchEventInterceptor(mInputEditTextTouchEventInterceptor);
+        inputEt = findViewById(R.id.inputEt);
+        setQueryInputHint(queryInputHint);
+        setQueryInputHintColor(queryInputHintColor);
+        setQueryInputTextColor(queryInputTextColor);
+        setQueryInputCursorDrawable(queryInputCursorDrawable, queryInputCursorColor);
+        setQueryTextTypeface(queryTextTypeface);
+        inputEt.setOnEditorActionListener(mInternalEditorActionListener);
+        inputEt.addTextChangedListener(mQueryListener);
+        inputEt.setTouchEventInterceptor(mInputEditTextTouchEventInterceptor);
     }
 
 
+    private void initQueryInputBarProgressBar() {
+        progressBar = findViewById(R.id.progressBar);
+        setProgressBarColor(progressBarColor);
+    }
+
+
+    private void initQueryInputBarLeftButton() {
+        leftContainerFl = findViewById(R.id.leftContainerFl);
+
+        leftBtnIv = findViewById(R.id.leftBtnIv);
+        setLeftButtonDrawable(leftButtonDrawable);
+        leftBtnIv.setOnClickListener(mOnLeftButtonClickListener);
+    }
+
+
+    private void iniQueryInputBarButtonsContainers() {
+        inputButtonsContainerFl = findViewById(R.id.inputBtnsContainerFl);
+
+        initQueryInputBarRightButton();
+        initQueryInputBarClearInputButton();
+        initQueryInputBarVoiceInputButton();
+    }
+
+
+    private void initQueryInputBarRightButton() {
+        rightButtonContainerFl = findViewById(R.id.rightBtnContainerFl);
+
+        rightBtnIv = findViewById(R.id.rightBtnIv);
+        setRightButtonDrawable(rightButtonDrawable);
+    }
+
+
+    private void initQueryInputBarClearInputButton() {
+        clearInputBtnIv = findViewById(R.id.clearInputBtnIv);
+        setClearInputButtonDrawable(clearInputButtonDrawable);
+        updateClearInputButtonState();
+        clearInputBtnIv.setOnClickListener(mOnClearInputButtonClickListener);
+    }
+
+
+    private void initQueryInputBarVoiceInputButton() {
+        voiceInputBtnIv = findViewById(R.id.voiceInputBtnIv);
+        setVoiceInputButtonDrawable(voiceInputButtonDrawable);
+        updateVoiceInputButtonState();
+        voiceInputBtnIv.setOnClickListener(mOnVoiceInputButtonClickListener);
+    }
 
 
     private void initSuggestionsContainer() {
-        mDividerView = findViewById(R.id.divider);
-        setDividerColor(mDividerColor);
+        dividerView = findViewById(R.id.divider);
+        setDividerColor(dividerColor);
 
-        mSuggestionsContainerLL = findViewById(R.id.suggestionsContainerLl);
+        suggestionsContainerLL = findViewById(R.id.suggestionsContainerLl);
 
         initSuggestionsRecyclerView();
     }
 
 
-
-
     private void initSuggestionsRecyclerView() {
-        mSuggestionsRecyclerView = findViewById(R.id.suggestionsRecyclerView);
-        Utils.disableRecyclerViewAnimations(mSuggestionsRecyclerView);
-        mSuggestionsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        mSuggestionsRecyclerView.addOnScrollListener(mSuggestionsRecyclerViewScrollListener);
+        suggestionsRecyclerView = findViewById(R.id.suggestionsRecyclerView);
+        Utils.disableRecyclerViewAnimations(suggestionsRecyclerView);
+        suggestionsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        suggestionsRecyclerView.addOnScrollListener(mSuggestionsRecyclerViewScrollListener);
 
-        // Adapter related
-        mAdapter = new SuggestionsRecyclerViewAdapter(
-            getContext(),
-            mSuggestionItems,
-            new SuggestionItemResources()
-        );
-        setRecentSearchIconColor(mRecentSearchIconColor);
-        setSearchSuggestionIconColor(mSearchSuggestionIconColor);
-        setSuggestionIconColor(mSuggestionIconColor);
-        setSuggestionTextColor(mSuggestionTextColor);
-        setSuggestionSelectedTextColor(mSuggestionSelectedTextColor);
-        setSuggestionTextTypeface(mSuggestionTextTypeface);
-        setAdapterQuery(getInputQuery());
-        mAdapter.setOnItemClickListener(mOnSuggestionClickListener);
-        mAdapter.setOnItemRemoveButtonClickListener(mOnRemoveButtonClickListener);
-
-        mSuggestionsRecyclerView.setAdapter(mAdapter);
+        initSuggestionsAdapter();
     }
 
 
+    private void initSuggestionsAdapter() {
+        adapter = new SuggestionsRecyclerViewAdapter(
+            getContext(),
+            suggestionItems,
+            new SuggestionItemResources()
+        );
+        setRecentSearchIconColor(recentSearchIconColor);
+        setSearchSuggestionIconColor(searchSuggestionIconColor);
+        setSuggestionIconColor(suggestionIconColor);
+        setSuggestionTextColor(suggestionTextColor);
+        setSuggestionSelectedTextColor(suggestionSelectedTextColor);
+        setSuggestionTextTypeface(suggestionTextTypeface);
+        setAdapterQuery(getInputQuery());
+        adapter.setOnItemClickListener(mOnSuggestionClickListener);
+        adapter.setOnItemRemoveButtonClickListener(mOnRemoveButtonClickListener);
+
+        suggestionsRecyclerView.setAdapter(adapter);
+    }
+
+
+    private void drawOnTopOfAllOtherViews() {
+        setTranslationZ(999);
+    }
 
 
     private void updateLeftContainerVisibility() {
-        if(ViewUtils.isVisible(mLeftBtnIv) || mIsProgressBarEnabled) {
-            ViewUtils.makeVisible(mLeftContainerFl);
+        if(ViewUtils.isVisible(leftBtnIv) || isProgressBarEnabled) {
+            ViewUtils.makeVisible(leftContainerFl);
         } else {
-            ViewUtils.makeGone(mLeftContainerFl);
+            ViewUtils.makeGone(leftContainerFl);
         }
     }
-
-
 
 
     private void updateVoiceInputButtonState() {
         if(isVoiceInputEnabled()) {
             final boolean isInputQueryEmpty = isInputQueryEmpty();
 
-            ViewUtils.setScale(mVoiceInputBtnIv, (isInputQueryEmpty ? 1f : 0f));
-            ViewUtils.setVisibility(mVoiceInputBtnIv, (isInputQueryEmpty ? View.VISIBLE : View.GONE));
+            ViewUtils.setScale(voiceInputBtnIv, (isInputQueryEmpty ? 1f : 0f));
+            ViewUtils.setVisibility(voiceInputBtnIv, (isInputQueryEmpty ? View.VISIBLE : View.GONE));
         } else {
-            ViewUtils.setVisibility(mVoiceInputBtnIv, View.GONE);
+            ViewUtils.setVisibility(voiceInputBtnIv, View.GONE);
         }
 
         updateInputButtonsContainerVisibility();
     }
-
-
 
 
     private void updateClearInputButtonState() {
-        if(mIsClearInputButtonEnabled) {
+        if(isClearInputButtonEnabled) {
             final boolean isInputQueryEmpty = isInputQueryEmpty();
 
-            ViewUtils.setScale(mClearInputBtnIv, (isInputQueryEmpty ? 0f : 1f));
-            ViewUtils.setVisibility(mClearInputBtnIv, (isInputQueryEmpty ? View.GONE : View.VISIBLE));
+            ViewUtils.setScale(clearInputBtnIv, (isInputQueryEmpty ? 0f : 1f));
+            ViewUtils.setVisibility(clearInputBtnIv, (isInputQueryEmpty ? View.GONE : View.VISIBLE));
         } else {
-            ViewUtils.setVisibility(mClearInputBtnIv, View.GONE);
+            ViewUtils.setVisibility(clearInputBtnIv, View.GONE);
         }
 
         updateInputButtonsContainerVisibility();
     }
 
 
-
-
     private void updateInputButtonsContainerVisibility() {
-        if(isVoiceInputEnabled() || mIsClearInputButtonEnabled) {
-            ViewUtils.makeVisible(mInputButtonsContainerFl);
+        if(isVoiceInputEnabled() || isClearInputButtonEnabled) {
+            ViewUtils.makeVisible(inputButtonsContainerFl);
         } else {
-            ViewUtils.makeGone(mInputButtonsContainerFl);
+            ViewUtils.makeGone(inputButtonsContainerFl);
         }
     }
-
-
 
 
     private void showClearInputButtonWithVoiceInputButton(boolean animate) {
@@ -678,13 +606,9 @@ public class PersistentSearchView extends FrameLayout {
     }
 
 
-
-
     private void showClearInputButton() {
         showClearInputButton(true);
     }
-
-
 
 
     private void showClearInputButton(boolean animate) {
@@ -692,21 +616,19 @@ public class PersistentSearchView extends FrameLayout {
     }
 
 
-
-
     private void showClearInputButton(boolean animate, @Nullable AnimatorListenerAdapter animatorListenerAdapter) {
-        if(!mIsClearInputButtonEnabled ||
-            getVisibilityMarker(mClearInputBtnIv) ||
-            (animate && AnimationType.ENTER.equals(getAnimationMarker(mClearInputBtnIv)))) {
+        if(!isClearInputButtonEnabled ||
+            getVisibilityMarker(clearInputBtnIv) ||
+            (animate && AnimationType.ENTER.equals(getAnimationMarker(clearInputBtnIv)))) {
             return;
         }
 
-        ViewUtils.cancelAllAnimations(mClearInputBtnIv);
-        makeVisible(mClearInputBtnIv);
-        setVisibilityMarker(mClearInputBtnIv, true);
+        ViewUtils.cancelAllAnimations(clearInputBtnIv);
+        makeVisible(clearInputBtnIv);
+        setVisibilityMarker(clearInputBtnIv, true);
 
         if(animate) {
-            mClearInputBtnIv.animate()
+            clearInputBtnIv.animate()
                 .scaleX(1f)
                 .scaleY(1f)
                 .setListener(new AnimatorListenerDecorator(animatorListenerAdapter) {
@@ -714,13 +636,13 @@ public class PersistentSearchView extends FrameLayout {
                     @Override
                     public void onAnimationStarted(Animator animation) {
                         super.onAnimationStarted(animation);
-                        setAnimationMarker(mClearInputBtnIv, AnimationType.ENTER);
+                        setAnimationMarker(clearInputBtnIv, AnimationType.ENTER);
                     }
 
                     @Override
                     public void onAnimationEnded(Animator animation) {
                         super.onAnimationEnded(animation);
-                        setAnimationMarker(mClearInputBtnIv, AnimationType.NO_ANIMATION);
+                        setAnimationMarker(clearInputBtnIv, AnimationType.NO_ANIMATION);
                     }
 
                 })
@@ -728,12 +650,10 @@ public class PersistentSearchView extends FrameLayout {
                 .setDuration(ANIMATION_DURATION_BUTTON_SCALING)
                 .start();
         } else {
-            setScale(mClearInputBtnIv, 1f);
-            setAnimationMarker(mClearInputBtnIv, AnimationType.NO_ANIMATION);
+            setScale(clearInputBtnIv, 1f);
+            setAnimationMarker(clearInputBtnIv, AnimationType.NO_ANIMATION);
         }
     }
-
-
 
 
     private void hideClearInputButtonWithVoiceInputButton(boolean animate) {
@@ -758,13 +678,9 @@ public class PersistentSearchView extends FrameLayout {
     }
 
 
-
-
     private void hideClearInputButton() {
         hideClearInputButton(true);
     }
-
-
 
 
     private void hideClearInputButton(boolean animate) {
@@ -772,20 +688,18 @@ public class PersistentSearchView extends FrameLayout {
     }
 
 
-
-
     private void hideClearInputButton(boolean animate, @Nullable AnimatorListenerAdapter animatorListenerAdapter) {
-        if(!mIsClearInputButtonEnabled ||
-            !getVisibilityMarker(mClearInputBtnIv) ||
-            (animate && AnimationType.EXIT.equals(getAnimationMarker(mClearInputBtnIv)))) {
+        if(!isClearInputButtonEnabled ||
+            !getVisibilityMarker(clearInputBtnIv) ||
+            (animate && AnimationType.EXIT.equals(getAnimationMarker(clearInputBtnIv)))) {
             return;
         }
 
-        ViewUtils.cancelAllAnimations(mClearInputBtnIv);
-        setVisibilityMarker(mClearInputBtnIv, false);
+        ViewUtils.cancelAllAnimations(clearInputBtnIv);
+        setVisibilityMarker(clearInputBtnIv, false);
 
         if(animate) {
-            mClearInputBtnIv.animate()
+            clearInputBtnIv.animate()
                 .scaleX(0f)
                 .scaleY(0f)
                 .setListener(new AnimatorListenerDecorator(animatorListenerAdapter) {
@@ -793,14 +707,14 @@ public class PersistentSearchView extends FrameLayout {
                     @Override
                     public void onAnimationStarted(Animator animation) {
                         super.onAnimationStarted(animation);
-                        setAnimationMarker(mClearInputBtnIv, AnimationType.EXIT);
+                        setAnimationMarker(clearInputBtnIv, AnimationType.EXIT);
                     }
 
                     @Override
                     public void onAnimationEnded(Animator animation) {
                         super.onAnimationEnded(animation);
-                        makeGone(mClearInputBtnIv);
-                        setAnimationMarker(mClearInputBtnIv, AnimationType.NO_ANIMATION);
+                        makeGone(clearInputBtnIv);
+                        setAnimationMarker(clearInputBtnIv, AnimationType.NO_ANIMATION);
                     }
 
                 })
@@ -808,20 +722,16 @@ public class PersistentSearchView extends FrameLayout {
                 .setDuration(ANIMATION_DURATION_BUTTON_SCALING)
                 .start();
         } else {
-            setScale(mClearInputBtnIv, 0f);
-            makeGone(mClearInputBtnIv);
-            setAnimationMarker(mClearInputBtnIv, AnimationType.NO_ANIMATION);
+            setScale(clearInputBtnIv, 0f);
+            makeGone(clearInputBtnIv);
+            setAnimationMarker(clearInputBtnIv, AnimationType.NO_ANIMATION);
         }
     }
 
 
-
-
     private boolean isClearInputButtonVisible() {
-        return isVisible(mClearInputBtnIv);
+        return isVisible(clearInputBtnIv);
     }
-
-
 
 
     private void showVoiceInputButton() {
@@ -829,28 +739,24 @@ public class PersistentSearchView extends FrameLayout {
     }
 
 
-
-
     private void showVoiceInputButton(boolean animate) {
         showVoiceInputButton(animate, null);
     }
 
 
-
-
     private void showVoiceInputButton(boolean animate, @Nullable AnimatorListenerAdapter animatorListenerAdapter) {
         if(!isVoiceInputEnabled() ||
-            getVisibilityMarker(mVoiceInputBtnIv) ||
-            (animate && AnimationType.ENTER.equals(getAnimationMarker(mVoiceInputBtnIv)))) {
+            getVisibilityMarker(voiceInputBtnIv) ||
+            (animate && AnimationType.ENTER.equals(getAnimationMarker(voiceInputBtnIv)))) {
             return;
         }
 
-        ViewUtils.cancelAllAnimations(mVoiceInputBtnIv);
-        makeVisible(mVoiceInputBtnIv);
-        setVisibilityMarker(mVoiceInputBtnIv, true);
+        ViewUtils.cancelAllAnimations(voiceInputBtnIv);
+        makeVisible(voiceInputBtnIv);
+        setVisibilityMarker(voiceInputBtnIv, true);
 
         if(animate) {
-            mVoiceInputBtnIv.animate()
+            voiceInputBtnIv.animate()
                 .scaleX(1f)
                 .scaleY(1f)
                 .setListener(new AnimatorListenerDecorator(animatorListenerAdapter) {
@@ -858,13 +764,13 @@ public class PersistentSearchView extends FrameLayout {
                     @Override
                     public void onAnimationStarted(Animator animation) {
                         super.onAnimationStarted(animation);
-                        setAnimationMarker(mVoiceInputBtnIv, AnimationType.ENTER);
+                        setAnimationMarker(voiceInputBtnIv, AnimationType.ENTER);
                     }
 
                     @Override
                     public void onAnimationEnded(Animator animation) {
                         super.onAnimationEnded(animation);
-                        setAnimationMarker(mVoiceInputBtnIv, AnimationType.NO_ANIMATION);
+                        setAnimationMarker(voiceInputBtnIv, AnimationType.NO_ANIMATION);
                     }
 
                 })
@@ -872,12 +778,10 @@ public class PersistentSearchView extends FrameLayout {
                 .setDuration(ANIMATION_DURATION_BUTTON_SCALING)
                 .start();
         } else {
-            setScale(mVoiceInputBtnIv, 1f);
-            setAnimationMarker(mVoiceInputBtnIv, AnimationType.NO_ANIMATION);
+            setScale(voiceInputBtnIv, 1f);
+            setAnimationMarker(voiceInputBtnIv, AnimationType.NO_ANIMATION);
         }
     }
-
-
 
 
     private void hideVoiceInputButton() {
@@ -885,27 +789,23 @@ public class PersistentSearchView extends FrameLayout {
     }
 
 
-
-
     private void hideVoiceInputButton(boolean animate) {
         hideVoiceInputButton(animate, null);
     }
 
 
-
-
     private void hideVoiceInputButton(boolean animate, @Nullable AnimatorListenerAdapter animatorListenerAdapter) {
         if(!isVoiceInputEnabled() ||
-            !getVisibilityMarker(mVoiceInputBtnIv) ||
-            (animate && AnimationType.EXIT.equals(getAnimationMarker(mVoiceInputBtnIv)))) {
+            !getVisibilityMarker(voiceInputBtnIv) ||
+            (animate && AnimationType.EXIT.equals(getAnimationMarker(voiceInputBtnIv)))) {
             return;
         }
 
-        ViewUtils.cancelAllAnimations(mVoiceInputBtnIv);
-        setVisibilityMarker(mVoiceInputBtnIv, false);
+        ViewUtils.cancelAllAnimations(voiceInputBtnIv);
+        setVisibilityMarker(voiceInputBtnIv, false);
 
         if(animate) {
-            mVoiceInputBtnIv.animate()
+            voiceInputBtnIv.animate()
                 .scaleX(0f)
                 .scaleY(0f)
                 .setListener(new AnimatorListenerDecorator(animatorListenerAdapter) {
@@ -913,14 +813,14 @@ public class PersistentSearchView extends FrameLayout {
                     @Override
                     public void onAnimationStarted(Animator animation) {
                         super.onAnimationStarted(animation);
-                        setAnimationMarker(mVoiceInputBtnIv, AnimationType.EXIT);
+                        setAnimationMarker(voiceInputBtnIv, AnimationType.EXIT);
                     }
 
                     @Override
                     public void onAnimationEnded(Animator animation) {
                         super.onAnimationEnded(animation);
-                        makeGone(mVoiceInputBtnIv);
-                        setAnimationMarker(mVoiceInputBtnIv, AnimationType.NO_ANIMATION);
+                        makeGone(voiceInputBtnIv);
+                        setAnimationMarker(voiceInputBtnIv, AnimationType.NO_ANIMATION);
                     }
 
                 })
@@ -928,20 +828,16 @@ public class PersistentSearchView extends FrameLayout {
                 .setDuration(ANIMATION_DURATION_BUTTON_SCALING)
                 .start();
         } else {
-            setScale(mVoiceInputBtnIv, 0f);
-            makeGone(mVoiceInputBtnIv);
-            setAnimationMarker(mVoiceInputBtnIv, AnimationType.NO_ANIMATION);
+            setScale(voiceInputBtnIv, 0f);
+            makeGone(voiceInputBtnIv);
+            setAnimationMarker(voiceInputBtnIv, AnimationType.NO_ANIMATION);
         }
     }
 
 
-
-
     private boolean isVoiceInputButtonVisible() {
-        return isVisible(mVoiceInputBtnIv);
+        return isVisible(voiceInputBtnIv);
     }
-
-
 
 
     /**
@@ -950,8 +846,6 @@ public class PersistentSearchView extends FrameLayout {
     public final void showLeftButton() {
         showLeftButton(true);
     }
-
-
 
 
     /**
@@ -964,16 +858,12 @@ public class PersistentSearchView extends FrameLayout {
     }
 
 
-
-
     /**
      * Shows the left button by animating it and hides the progress bar if shown.
      */
     public final void showLeftButtonWithProgressBar() {
         showLeftButtonWithProgressBar(true);
     }
-
-
 
 
     /**
@@ -986,16 +876,12 @@ public class PersistentSearchView extends FrameLayout {
     }
 
 
-
-
     /**
      * Hides the right button by animating it.
      */
     public final void hideLeftButton() {
         hideLeftButton(true);
     }
-
-
 
 
     /**
@@ -1008,16 +894,12 @@ public class PersistentSearchView extends FrameLayout {
     }
 
 
-
-
     /**
      * Hides the left button by animating it and hides the progress bar if shown.
      */
     public final void hideLeftButtonWithProgressBar() {
         hideLeftButtonWithProgressBar(true);
     }
-
-
 
 
     /**
@@ -1030,26 +912,23 @@ public class PersistentSearchView extends FrameLayout {
     }
 
 
-
-
     private void showLeftButtonInternal(boolean animate) {
         showLeftButtonInternal(animate, null);
     }
 
 
-
-
     private void showLeftButtonInternal(boolean animate, @Nullable AnimatorListenerAdapter animatorListenerAdapter) {
-        if(getVisibilityMarker(mLeftBtnIv) || (animate && AnimationType.ENTER.equals(getAnimationMarker(mLeftBtnIv)))) {
+        if(getVisibilityMarker(leftBtnIv) ||
+            (animate && AnimationType.ENTER.equals(getAnimationMarker(leftBtnIv)))) {
             return;
         }
 
-        ViewUtils.cancelAllAnimations(mLeftBtnIv);
-        makeVisible(mLeftBtnIv);
-        setVisibilityMarker(mLeftBtnIv, true);
+        ViewUtils.cancelAllAnimations(leftBtnIv);
+        makeVisible(leftBtnIv);
+        setVisibilityMarker(leftBtnIv, true);
 
         if(animate) {
-            mLeftBtnIv.animate()
+            leftBtnIv.animate()
                 .scaleX(1f)
                 .scaleY(1f)
                 .setListener(new AnimatorListenerDecorator(animatorListenerAdapter) {
@@ -1057,13 +936,13 @@ public class PersistentSearchView extends FrameLayout {
                     @Override
                     public void onAnimationStarted(Animator animation) {
                         super.onAnimationStarted(animation);
-                        setAnimationMarker(mLeftBtnIv, AnimationType.ENTER);
+                        setAnimationMarker(leftBtnIv, AnimationType.ENTER);
                     }
 
                     @Override
                     public void onAnimationEnded(Animator animation) {
                         super.onAnimationEnded(animation);
-                        setAnimationMarker(mLeftBtnIv, AnimationType.NO_ANIMATION);
+                        setAnimationMarker(leftBtnIv, AnimationType.NO_ANIMATION);
                         updateLeftContainerVisibility();
                     }
 
@@ -1072,13 +951,11 @@ public class PersistentSearchView extends FrameLayout {
                 .setDuration(ANIMATION_DURATION_BUTTON_SCALING)
                 .start();
         } else {
-            setScale(mLeftBtnIv, 1f);
-            setAnimationMarker(mLeftBtnIv, AnimationType.NO_ANIMATION);
+            setScale(leftBtnIv, 1f);
+            setAnimationMarker(leftBtnIv, AnimationType.NO_ANIMATION);
             updateLeftContainerVisibility();
         }
     }
-
-
 
 
     private void hideLeftButtonInternal(boolean animate) {
@@ -1086,18 +963,17 @@ public class PersistentSearchView extends FrameLayout {
     }
 
 
-
-
     private void hideLeftButtonInternal(boolean animate, @Nullable AnimatorListenerAdapter animatorListenerAdapter) {
-        if(!getVisibilityMarker(mLeftBtnIv) || (animate && AnimationType.EXIT.equals(getAnimationMarker(mLeftBtnIv)))) {
+        if(!getVisibilityMarker(leftBtnIv) ||
+            (animate && AnimationType.EXIT.equals(getAnimationMarker(leftBtnIv)))) {
             return;
         }
 
-        ViewUtils.cancelAllAnimations(mLeftBtnIv);
-        setVisibilityMarker(mLeftBtnIv, false);
+        ViewUtils.cancelAllAnimations(leftBtnIv);
+        setVisibilityMarker(leftBtnIv, false);
 
         if(animate) {
-            mLeftBtnIv.animate()
+            leftBtnIv.animate()
                 .scaleX(0f)
                 .scaleY(0f)
                 .setListener(new AnimatorListenerDecorator(animatorListenerAdapter) {
@@ -1105,14 +981,14 @@ public class PersistentSearchView extends FrameLayout {
                     @Override
                     public void onAnimationStarted(Animator animation) {
                         super.onAnimationStarted(animation);
-                        setAnimationMarker(mLeftBtnIv, AnimationType.EXIT);
+                        setAnimationMarker(leftBtnIv, AnimationType.EXIT);
                     }
 
                     @Override
                     public void onAnimationEnded(Animator animation) {
                         super.onAnimationEnded(animation);
-                        makeGone(mLeftBtnIv);
-                        setAnimationMarker(mLeftBtnIv, AnimationType.NO_ANIMATION);
+                        makeGone(leftBtnIv);
+                        setAnimationMarker(leftBtnIv, AnimationType.NO_ANIMATION);
                         updateLeftContainerVisibility();
                     }
 
@@ -1121,14 +997,12 @@ public class PersistentSearchView extends FrameLayout {
                 .setDuration(ANIMATION_DURATION_BUTTON_SCALING)
                 .start();
         } else {
-            setScale(mLeftBtnIv, 0f);
-            makeGone(mLeftBtnIv);
-            setAnimationMarker(mLeftBtnIv, AnimationType.NO_ANIMATION);
+            setScale(leftBtnIv, 0f);
+            makeGone(leftBtnIv);
+            setAnimationMarker(leftBtnIv, AnimationType.NO_ANIMATION);
             updateLeftContainerVisibility();
         }
     }
-
-
 
 
     /**
@@ -1137,30 +1011,24 @@ public class PersistentSearchView extends FrameLayout {
      * @return true if visible; false otherwise
      */
     public final boolean isLeftButtonVisible() {
-        return isVisible(mLeftBtnIv);
+        return isVisible(leftBtnIv);
     }
-
-
 
 
     /**
      * Shows the right button (i.e., change its visibility flags to {@link View#VISIBLE}.
      */
     public final void showRightButton() {
-        makeVisible(mRightButtonContainerFl);
+        makeVisible(rightButtonContainerFl);
     }
-
-
 
 
     /**
      * Hides the right button (i.e., change its visibility flags to {@link View#GONE}.
      */
     public final void hideRightButton() {
-        makeGone(mRightButtonContainerFl);
+        makeGone(rightButtonContainerFl);
     }
-
-
 
 
     /**
@@ -1169,8 +1037,6 @@ public class PersistentSearchView extends FrameLayout {
     public final void showProgressBar() {
         showProgressBar(true);
     }
-
-
 
 
     /**
@@ -1183,16 +1049,12 @@ public class PersistentSearchView extends FrameLayout {
     }
 
 
-
-
     /**
      * Hides the progress bar by animating it.
      */
     public final void hideProgressBar() {
         hideProgressBar(true);
     }
-
-
 
 
     /**
@@ -1205,16 +1067,12 @@ public class PersistentSearchView extends FrameLayout {
     }
 
 
-
-
     /**
      * Shows the progress bar by animating it and hides the left button if shown.
      */
     public final void showProgressBarWithLeftButton() {
         showProgressBarWithLeftButton(true);
     }
-
-
 
 
     /**
@@ -1244,16 +1102,12 @@ public class PersistentSearchView extends FrameLayout {
     }
 
 
-
-
     /**
      * Hides the progress bar by animating it and shows the left button if hidden.
      */
     public final void hideProgressBarWithLeftButton() {
         hideProgressBarWithLeftButton(true);
     }
-
-
 
 
     /**
@@ -1283,28 +1137,24 @@ public class PersistentSearchView extends FrameLayout {
     }
 
 
-
-
     private void showProgressBarInternal(boolean animate) {
         showProgressBarInternal(animate, null);
     }
 
 
-
-
     private void showProgressBarInternal(boolean animate, @Nullable AnimatorListenerAdapter animatorListenerAdapter) {
-        if(!mIsProgressBarEnabled ||
-            getVisibilityMarker(mProgressBar) ||
-            (animate && AnimationType.ENTER.equals(getAnimationMarker(mProgressBar)))) {
+        if(!isProgressBarEnabled ||
+            getVisibilityMarker(progressBar) ||
+            (animate && AnimationType.ENTER.equals(getAnimationMarker(progressBar)))) {
             return;
         }
 
-        ViewUtils.cancelAllAnimations(mProgressBar);
-        makeVisible(mProgressBar);
-        setVisibilityMarker(mProgressBar, true);
+        ViewUtils.cancelAllAnimations(progressBar);
+        makeVisible(progressBar);
+        setVisibilityMarker(progressBar, true);
 
         if(animate) {
-            mProgressBar.animate()
+            progressBar.animate()
                 .scaleX(1f)
                 .scaleY(1f)
                 .setListener(new AnimatorListenerDecorator(animatorListenerAdapter) {
@@ -1312,13 +1162,13 @@ public class PersistentSearchView extends FrameLayout {
                     @Override
                     public void onAnimationStarted(Animator animation) {
                         super.onAnimationStarted(animation);
-                        setAnimationMarker(mProgressBar, AnimationType.ENTER);
+                        setAnimationMarker(progressBar, AnimationType.ENTER);
                     }
 
                     @Override
                     public void onAnimationEnded(Animator animation) {
                         super.onAnimationEnded(animation);
-                        setAnimationMarker(mProgressBar, AnimationType.NO_ANIMATION);
+                        setAnimationMarker(progressBar, AnimationType.NO_ANIMATION);
                         updateLeftContainerVisibility();
                     }
 
@@ -1327,13 +1177,11 @@ public class PersistentSearchView extends FrameLayout {
                 .setDuration(ANIMATION_DURATION_BUTTON_SCALING)
                 .start();
         } else {
-            setScale(mProgressBar, 1f);
-            setAnimationMarker(mProgressBar, AnimationType.NO_ANIMATION);
+            setScale(progressBar, 1f);
+            setAnimationMarker(progressBar, AnimationType.NO_ANIMATION);
             updateLeftContainerVisibility();
         }
     }
-
-
 
 
     private void hideProgressBarInternal(boolean animate) {
@@ -1341,20 +1189,18 @@ public class PersistentSearchView extends FrameLayout {
     }
 
 
-
-
     private void hideProgressBarInternal(boolean animate, @Nullable AnimatorListenerAdapter animatorListenerAdapter) {
-        if(!mIsProgressBarEnabled ||
-            !getVisibilityMarker(mProgressBar) ||
-            (animate && AnimationType.EXIT.equals(getAnimationMarker(mProgressBar)))) {
+        if(!isProgressBarEnabled ||
+            !getVisibilityMarker(progressBar) ||
+            (animate && AnimationType.EXIT.equals(getAnimationMarker(progressBar)))) {
             return;
         }
 
-        ViewUtils.cancelAllAnimations(mProgressBar);
-        setVisibilityMarker(mProgressBar, false);
+        ViewUtils.cancelAllAnimations(progressBar);
+        setVisibilityMarker(progressBar, false);
 
         if(animate) {
-            mProgressBar.animate()
+            progressBar.animate()
                 .scaleX(0f)
                 .scaleY(0f)
                 .setListener(new AnimatorListenerDecorator(animatorListenerAdapter) {
@@ -1362,14 +1208,14 @@ public class PersistentSearchView extends FrameLayout {
                     @Override
                     public void onAnimationStarted(Animator animation) {
                         super.onAnimationStarted(animation);
-                        setAnimationMarker(mProgressBar, AnimationType.EXIT);
+                        setAnimationMarker(progressBar, AnimationType.EXIT);
                     }
 
                     @Override
                     public void onAnimationEnded(Animator animation) {
                         super.onAnimationEnded(animation);
-                        makeGone(mProgressBar);
-                        setAnimationMarker(mProgressBar, AnimationType.NO_ANIMATION);
+                        makeGone(progressBar);
+                        setAnimationMarker(progressBar, AnimationType.NO_ANIMATION);
                         updateLeftContainerVisibility();
                     }
 
@@ -1378,14 +1224,12 @@ public class PersistentSearchView extends FrameLayout {
                 .setDuration(ANIMATION_DURATION_BUTTON_SCALING)
                 .start();
         } else {
-            setScale(mProgressBar, 0f);
-            makeGone(mProgressBar);
-            setAnimationMarker(mProgressBar, AnimationType.NO_ANIMATION);
+            setScale(progressBar, 0f);
+            makeGone(progressBar);
+            setAnimationMarker(progressBar, AnimationType.NO_ANIMATION);
             updateLeftContainerVisibility();
         }
     }
-
-
 
 
     /**
@@ -1394,26 +1238,20 @@ public class PersistentSearchView extends FrameLayout {
      * @return true if visible; false otherwise
      */
     public final boolean isProgressBarVisible() {
-        return isVisible(mProgressBar);
+        return isVisible(progressBar);
     }
-
-
 
 
     private void showKeyboard() {
-        mInputEt.requestFocus();
-        KeyboardManagingUtil.showKeyboard(mInputEt);
+        inputEt.requestFocus();
+        KeyboardManagingUtil.showKeyboard(inputEt);
     }
-
-
 
 
     private void hideKeyboard() {
-        mInputEt.clearFocus();
-        KeyboardManagingUtil.hideKeyboard(mInputEt);
+        inputEt.clearFocus();
+        KeyboardManagingUtil.hideKeyboard(inputEt);
     }
-
-
 
 
     /**
@@ -1422,7 +1260,7 @@ public class PersistentSearchView extends FrameLayout {
     public final void confirmSearchAction() {
         if(mInternalEditorActionListener != null) {
             mInternalEditorActionListener.onEditorAction(
-                mInputEt,
+                inputEt,
                 EditorInfo.IME_ACTION_SEARCH,
                 new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_SEARCH)
             );
@@ -1430,34 +1268,24 @@ public class PersistentSearchView extends FrameLayout {
     }
 
 
-
-
     private void postExitAnimationEndActionEvent(long delay) {
         cancelExitAnimationEndActionEvent();
 
-        // Creating a brand-new event
-        mExitAnimationEndAction = new Runnable() {
-            @Override
-            public void run() {
-                requestLayout();
-                mExitAnimationEndAction = null;
-            }
+        exitAnimationEndAction = () -> {
+            requestLayout();
+            exitAnimationEndAction = null;
         };
 
-        postDelayed(mExitAnimationEndAction, delay);
+        postDelayed(exitAnimationEndAction, delay);
     }
-
-
 
 
     private void cancelExitAnimationEndActionEvent() {
-        if(mExitAnimationEndAction != null) {
-            removeCallbacks(mExitAnimationEndAction);
-            mExitAnimationEndAction = null;
+        if(exitAnimationEndAction != null) {
+            removeCallbacks(exitAnimationEndAction);
+            exitAnimationEndAction = null;
         }
     }
-
-
 
 
     /**
@@ -1466,8 +1294,6 @@ public class PersistentSearchView extends FrameLayout {
     public final void expand() {
         expand(true);
     }
-
-
 
 
     /**
@@ -1481,45 +1307,35 @@ public class PersistentSearchView extends FrameLayout {
             return;
         }
 
-        // Internal states
         setEnabled(true);
         setClickable(true);
         setState(State.EXPANDED);
 
-        // Input related
-        mInputEt.setEnabled(true);
-        mInputEt.setSelection(mInputEt.length());
+        inputEt.setEnabled(true);
+        inputEt.setSelection(inputEt.length());
 
         showKeyboard();
-
-        // Cancelling any pending events
         cancelExitAnimationEndActionEvent();
-
-        // Background dimming related
-        updateBackground(mState, animate);
+        updateBackground(state, animate);
 
         if(!areSuggestionsDisabled()) {
-            // Suggestions container related
-            makeVisible(mSuggestionsContainerLL);
-            mSuggestionsContainerLL.measure(
+            makeVisible(suggestionsContainerLL);
+            suggestionsContainerLL.measure(
                 MeasureSpec.makeMeasureSpec(getMeasuredWidth(), MeasureSpec.EXACTLY),
                 MeasureSpec.makeMeasureSpec(getSuggestionsContainerMaxHeight(), MeasureSpec.AT_MOST)
             );
 
-            makeVisible(mDividerView);
+            makeVisible(dividerView);
             updateSuggestionsContainerHeight(
-                mState,
+                state,
                 0,
-                mSuggestionsContainerLL.getMeasuredHeight(),
+                suggestionsContainerLL.getMeasuredHeight(),
                 animate
             );
         }
 
-        // Requesting a full relayout, in order to apply the new size
         requestLayout();
     }
-
-
 
 
     /**
@@ -1528,8 +1344,6 @@ public class PersistentSearchView extends FrameLayout {
     public final void collapse() {
         collapse(true);
     }
-
-
 
 
     /**
@@ -1543,45 +1357,35 @@ public class PersistentSearchView extends FrameLayout {
             return;
         }
 
-        // Internal states
         setEnabled(false);
         setClickable(false);
         setState(State.COLLAPSED);
 
-        // Input related
-        mInputEt.setEnabled(false);
+        inputEt.setEnabled(false);
 
         hideKeyboard();
-
-        // Cancelling any pending events
         cancelExitAnimationEndActionEvent();
 
-        // Animation related
-        final long duration = getSuggestionsContainerAnimationDuration(mSuggestionsContainerLL.getMeasuredHeight(), 0);
+        final long duration = getSuggestionsContainerAnimationDuration(suggestionsContainerLL.getMeasuredHeight(), 0);
 
-        // Background dimming related
-        updateBackgroundWithAnimation(mState, duration);
+        updateBackgroundWithAnimation(state, duration);
 
         if(!areSuggestionsDisabled()) {
-            // Suggestions container related
-            makeInvisible(mDividerView);
+            makeInvisible(dividerView);
             updateSuggestionsContainerHeightWithAnimation(
-                mState,
-                mSuggestionsContainerLL.getMeasuredHeight(),
+                state,
+                suggestionsContainerLL.getMeasuredHeight(),
                 0,
                 duration
             );
         }
 
-        // Relayout related stuff
-        if(!animate) {
-            requestLayout();
-        } else {
+        if(animate) {
             postExitAnimationEndActionEvent(duration);
+        } else {
+            requestLayout();
         }
     }
-
-
 
 
     private void updateBackgroundWithAnimation(State state) {
@@ -1589,13 +1393,9 @@ public class PersistentSearchView extends FrameLayout {
     }
 
 
-
-
     private void updateBackgroundWithAnimation(State state, long duration) {
         updateBackground(state, duration, true);
     }
-
-
 
 
     private void updateBackground(State state, boolean animate) {
@@ -1603,27 +1403,23 @@ public class PersistentSearchView extends FrameLayout {
     }
 
 
-
-
     private void updateBackground(State state,
                                   long duration,
                                   boolean animate) {
-        if(!mShouldDimBehind) {
+        if(!shouldDimBehind) {
             setBackgroundColor(Color.TRANSPARENT);
             return;
         }
 
         if(State.EXPANDED.equals(state)) {
             if(animate) {
-                mBackgroundEnterAnimation.setDuration(duration)
-                    .start();
+                backgroundEnterAnimation.setDuration(duration).start();
             } else {
-                setBackgroundColor(adjustColorAlpha(mBackgroundDimColor, mDimAmount));
+                setBackgroundColor(adjustColorAlpha(backgroundDimColor, dimAmount));
             }
         } else {
             if(animate) {
-                mBackgroundExitAnimation.setDuration(duration)
-                    .start();
+                backgroundExitAnimation.setDuration(duration).start();
             } else {
                 setBackgroundColor(Color.TRANSPARENT);
             }
@@ -1631,12 +1427,12 @@ public class PersistentSearchView extends FrameLayout {
     }
 
 
-
-
-    private void updateSuggestionsContainerHeightWithAnimation(final State state,
-                                                               final int fromHeight,
-                                                               final int toHeight,
-                                                               final long duration) {
+    private void updateSuggestionsContainerHeightWithAnimation(
+        final State state,
+        final int fromHeight,
+        final int toHeight,
+        final long duration
+    ) {
         updateSuggestionsContainerHeight(
             state,
             fromHeight,
@@ -1647,12 +1443,12 @@ public class PersistentSearchView extends FrameLayout {
     }
 
 
-
-
-    private void updateSuggestionsContainerHeight(final State state,
-                                                  final int fromHeight,
-                                                  final int toHeight,
-                                                  final boolean animate) {
+    private void updateSuggestionsContainerHeight(
+        final State state,
+        final int fromHeight,
+        final int toHeight,
+        final boolean animate
+    ) {
         updateSuggestionsContainerHeight(
             state,
             fromHeight,
@@ -1663,74 +1459,65 @@ public class PersistentSearchView extends FrameLayout {
     }
 
 
-
-
-    private void updateSuggestionsContainerHeight(final State state,
-                                                  final int fromHeight,
-                                                  final int toHeight,
-                                                  final long duration,
-                                                  final boolean animate) {
-        // Cancelling the active suggestions container animation (if there's any)
+    private void updateSuggestionsContainerHeight(
+        final State state,
+        final int fromHeight,
+        final int toHeight,
+        final long duration,
+        final boolean animate
+    ) {
         cancelSuggestionsContainerAnimation();
+        updateDividerVisibility();
 
-        // Adjusting the divider visibility
-        if(mSuggestionItems.isEmpty()) {
-            makeGone(mDividerView);
-        } else {
-            makeVisible(mDividerView);
-        }
-
-        // The actual animation related stuff
         if(animate && (fromHeight != toHeight)) {
-            mSuggestionsContainerAnimator = ValueAnimator.ofInt(fromHeight, toHeight);
-            mSuggestionsContainerAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    final int newHeight = (Integer) animation.getAnimatedValue();
-
-                    updateHeight(mSuggestionsContainerLL, newHeight);
-                }
+            suggestionsContainerAnimator = ValueAnimator.ofInt(fromHeight, toHeight);
+            suggestionsContainerAnimator.addUpdateListener(animation -> {
+                final int newHeight = (Integer) animation.getAnimatedValue();
+                updateHeight(suggestionsContainerLL, newHeight);
             });
-            mSuggestionsContainerAnimator.addListener(new AnimatorListenerAdapter() {
+            suggestionsContainerAnimator.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnded(Animator animation) {
                     if(State.COLLAPSED.equals(state)) {
-                        mSuggestionsContainerLL.setVisibility(View.GONE);
+                        suggestionsContainerLL.setVisibility(View.GONE);
                     }
                 }
             });
-            mSuggestionsContainerAnimator.setInterpolator(SUGGESTIONS_CONTAINER_ANIMATION_INTERPOLATOR);
-            mSuggestionsContainerAnimator.setDuration(duration);
-            mSuggestionsContainerAnimator.start();
+            suggestionsContainerAnimator.setInterpolator(SUGGESTIONS_CONTAINER_ANIMATION_INTERPOLATOR);
+            suggestionsContainerAnimator.setDuration(duration);
+            suggestionsContainerAnimator.start();
         } else {
-            updateHeight(mSuggestionsContainerLL, toHeight);
+            updateHeight(suggestionsContainerLL, toHeight);
 
             if(State.COLLAPSED.equals(state)) {
-                mSuggestionsContainerLL.setVisibility(View.GONE);
+                suggestionsContainerLL.setVisibility(View.GONE);
             }
         }
     }
 
 
-
-
     private void cancelSuggestionsContainerAnimation() {
-        if(mSuggestionsContainerAnimator != null) {
-            mSuggestionsContainerAnimator.cancel();
+        if(suggestionsContainerAnimator != null) {
+            suggestionsContainerAnimator.cancel();
         }
     }
 
 
+    private void updateDividerVisibility() {
+        if(suggestionItems.isEmpty()) {
+            makeGone(dividerView);
+        } else {
+            makeVisible(dividerView);
+        }
+    }
 
 
     private void cancelAllAnimations() {
         cancelSuggestionsContainerAnimation();
 
-        mBackgroundEnterAnimation.stop();
-        mBackgroundExitAnimation.stop();
+        backgroundEnterAnimation.stop();
+        backgroundExitAnimation.stop();
     }
-
-
 
 
     @CallSuper
@@ -1740,63 +1527,57 @@ public class PersistentSearchView extends FrameLayout {
 
         cancelExitAnimationEndActionEvent();
         cancelAllAnimations();
-
-        // recycling the listeners
-        mVoiceRecognitionDelegate = null;
-        mOnSearchQueryChangeListener = null;
-        mOnSuggestionChangeListener = null;
-        mOnLeftBtnClickListener = null;
-        mOnClearInputBtnClickListener = null;
-        mOnSearchConfirmedListener = null;
+        recycleListeners();
     }
 
 
+    private void recycleListeners() {
+        voiceRecognitionDelegate = null;
+        onSearchQueryChangeListener = null;
+        onSuggestionChangeListener = null;
+        onLeftBtnClickListener = null;
+        onClearInputBtnClickListener = null;
+        onSearchConfirmedListener = null;
+    }
 
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        // First measuring all the available children
         measureChildren(widthMeasureSpec, heightMeasureSpec);
 
-        // Then measuring the current view group
-        // and changing its background color based
-        // on the current state
         final int[] measuredSize;
 
         if(isExpanded() || isExitAnimationRunning()) {
             measuredSize = Utils.getScreenSize(getContext());
         } else {
-            measuredSize = calculateTheUsedSpace(widthMeasureSpec, heightMeasureSpec);
+            measuredSize = calculateTheUsedSpace(widthMeasureSpec);
         }
 
         setMeasuredDimension(measuredSize[0], measuredSize[1]);
     }
 
 
-
-
-    private int[] calculateTheUsedSpace(int widthMeasureSpec, int heightMeasureSpec) {
+    private int[] calculateTheUsedSpace(int widthMeasureSpec) {
         final int measuredWidth = MeasureSpec.getSize(widthMeasureSpec);
-        final int measuredHeight = (mCardView.getMeasuredHeight() + getPaddingTop() + getPaddingBottom());
+        final int measuredHeight = (cardView.getMeasuredHeight() + getPaddingTop() + getPaddingBottom());
 
-        return new int[] {measuredWidth, measuredHeight};
+        return new int[] { measuredWidth, measuredHeight };
     }
-
-
 
 
     private void setState(State state) {
-        mState = state;
+        this.state = state;
     }
-
-
 
 
     private void setAdapterQuery(String query) {
-        mAdapter.setResources(((SuggestionItemResources) mAdapter.getResources()).setCurrentQuery(query));
+        adapter.setResources(getAdapterResources().setCurrentQuery(query));
     }
 
 
+    private SuggestionItemResources getAdapterResources() {
+        return ((SuggestionItemResources) adapter.getResources());
+    }
 
 
     /**
@@ -1807,8 +1588,6 @@ public class PersistentSearchView extends FrameLayout {
     public final void setSuggestions(@NonNull List<? extends SuggestionItem> suggestions) {
         setSuggestions(suggestions, true);
     }
-
-
 
 
     /**
@@ -1822,25 +1601,19 @@ public class PersistentSearchView extends FrameLayout {
         Preconditions.nonNull(suggestions);
 
         if(isExpanded()) {
-            final int currentHeight = mSuggestionsContainerLL.getMeasuredHeight();
+            final int currentHeight = suggestionsContainerLL.getMeasuredHeight();
 
-            // Swapping the items
-            mAdapter.setItems(mSuggestionItems = (List<SuggestionItem>) suggestions);
+            adapter.setItems(suggestionItems = (List<SuggestionItem>) suggestions);
 
-            // Animation related
-            mSuggestionsContainerLL.measure(
-                MeasureSpec.makeMeasureSpec(getMeasuredWidth(), MeasureSpec.EXACTLY),
-                MeasureSpec.makeMeasureSpec(getSuggestionsContainerMaxHeight(), MeasureSpec.AT_MOST)
-            );
-
+            remeasureSuggestionsContainer();
             updateSuggestionsContainerHeightWithAnimation(
-                mState,
+                state,
                 currentHeight,
-                mSuggestionsContainerLL.getMeasuredHeight(),
-                getSuggestionsContainerAnimationDuration(currentHeight, mSuggestionsContainerLL.getMeasuredHeight())
+                suggestionsContainerLL.getMeasuredHeight(),
+                getSuggestionsContainerAnimationDuration(currentHeight, suggestionsContainerLL.getMeasuredHeight())
             );
         } else {
-            mAdapter.setItems(mSuggestionItems = (List<SuggestionItem>) suggestions);
+            adapter.setItems(suggestionItems = (List<SuggestionItem>) suggestions);
 
             if(expandIfNecessary) {
                 expand();
@@ -1849,6 +1622,12 @@ public class PersistentSearchView extends FrameLayout {
     }
 
 
+    private void remeasureSuggestionsContainer() {
+        suggestionsContainerLL.measure(
+            MeasureSpec.makeMeasureSpec(getMeasuredWidth(), MeasureSpec.EXACTLY),
+            MeasureSpec.makeMeasureSpec(getSuggestionsContainerMaxHeight(), MeasureSpec.AT_MOST)
+        );
+    }
 
 
     /**
@@ -1857,12 +1636,10 @@ public class PersistentSearchView extends FrameLayout {
      * @param color The color to set
      */
     public final void setQueryInputHintColor(@ColorInt int color) {
-        mQueryInputHintColor = color;
+        queryInputHintColor = color;
 
-        mInputEt.setHintTextColor(color);
+        inputEt.setHintTextColor(color);
     }
-
-
 
 
     /**
@@ -1871,9 +1648,9 @@ public class PersistentSearchView extends FrameLayout {
      * @param textColor The color to set
      */
     public final void setQueryInputTextColor(@ColorInt int textColor) {
-        mQueryInputTextColor = textColor;
+        queryInputTextColor = textColor;
 
-        mInputEt.setTextColor(textColor);
+        inputEt.setTextColor(textColor);
     }
 
 
@@ -1883,10 +1660,8 @@ public class PersistentSearchView extends FrameLayout {
      * @param gravity The gravity to set
      */
     public final void setQueryInputGravity(int gravity) {
-        mInputEt.setGravity(gravity);
+        inputEt.setGravity(gravity);
     }
-
-
 
 
     /**
@@ -1895,10 +1670,8 @@ public class PersistentSearchView extends FrameLayout {
      * @param color The color to set
      */
     public final void setQueryInputCursorColor(@ColorInt int color) {
-        setQueryInputCursorDrawable(mQueryInputCursorDrawable, color);
+        setQueryInputCursorDrawable(queryInputCursorDrawable, color);
     }
-
-
 
 
     /**
@@ -1908,12 +1681,10 @@ public class PersistentSearchView extends FrameLayout {
      * @param color The color of the drawable
      */
     public final void setQueryInputCursorDrawable(Drawable drawable, @ColorInt int color) {
-        mQueryInputCursorColor = color;
+        queryInputCursorColor = color;
 
         setQueryInputCursorDrawable(Utils.getColoredDrawable(drawable, color));
     }
-
-
 
 
     /**
@@ -1922,12 +1693,10 @@ public class PersistentSearchView extends FrameLayout {
      * @param drawable The drawable to set
      */
     public final void setQueryInputCursorDrawable(Drawable drawable) {
-        mQueryInputCursorDrawable = drawable;
+        queryInputCursorDrawable = drawable;
 
-        Utils.setCursorDrawable(mInputEt, drawable);
+        Utils.setCursorDrawable(inputEt, drawable);
     }
-
-
 
 
     /**
@@ -1936,15 +1705,13 @@ public class PersistentSearchView extends FrameLayout {
      * @param color The color to set
      */
     public final void setQueryInputBarIconColor(@ColorInt int color) {
-        mInputBarIconColor = color;
+        inputBarIconColor = color;
 
-        setLeftButtonDrawable(Utils.getColoredDrawable(mLeftButtonDrawable, color));
-        setRightButtonDrawable(Utils.getColoredDrawable(mRightButtonDrawable, color));
-        setClearInputButtonDrawable(Utils.getColoredDrawable(mClearInputButtonDrawable, color));
-        setVoiceInputButtonDrawable(Utils.getColoredDrawable(mVoiceInputButtonDrawable, color));
+        setLeftButtonDrawable(Utils.getColoredDrawable(leftButtonDrawable, color));
+        setRightButtonDrawable(Utils.getColoredDrawable(rightButtonDrawable, color));
+        setClearInputButtonDrawable(Utils.getColoredDrawable(clearInputButtonDrawable, color));
+        setVoiceInputButtonDrawable(Utils.getColoredDrawable(voiceInputButtonDrawable, color));
     }
-
-
 
 
     /**
@@ -1953,12 +1720,10 @@ public class PersistentSearchView extends FrameLayout {
      * @param color The color to set
      */
     public final void setDividerColor(@ColorInt int color) {
-        mDividerColor = color;
+        dividerColor = color;
 
-        mDividerView.setBackgroundColor(color);
+        dividerView.setBackgroundColor(color);
     }
-
-
 
 
     /**
@@ -1967,12 +1732,10 @@ public class PersistentSearchView extends FrameLayout {
      * @param color The color to set
      */
     public final void setProgressBarColor(@ColorInt int color) {
-        mProgressBarColor = color;
+        progressBarColor = color;
 
-        Utils.setProgressBarColor(mProgressBar, color);
+        Utils.setProgressBarColor(progressBar, color);
     }
-
-
 
 
     /**
@@ -1981,12 +1744,10 @@ public class PersistentSearchView extends FrameLayout {
      * @param color The color to set
      */
     public final void setSuggestionIconColor(@ColorInt int color) {
-        mSuggestionIconColor = color;
+        suggestionIconColor = color;
 
-        mAdapter.setResources(((SuggestionItemResources) mAdapter.getResources()).setIconColor(color));
+        adapter.setResources(getAdapterResources().setIconColor(color));
     }
-
-
 
 
     /**
@@ -1995,12 +1756,10 @@ public class PersistentSearchView extends FrameLayout {
      * @param color The color to set
      */
     public final void setRecentSearchIconColor(@ColorInt int color) {
-        mRecentSearchIconColor = color;
+        recentSearchIconColor = color;
 
-        mAdapter.setResources(((SuggestionItemResources) mAdapter.getResources()).setRecentSearchIconColor(color));
+        adapter.setResources(getAdapterResources().setRecentSearchIconColor(color));
     }
-
-
 
 
     /**
@@ -2009,12 +1768,10 @@ public class PersistentSearchView extends FrameLayout {
      * @param color The color to set
      */
     public final void setSearchSuggestionIconColor(@ColorInt int color) {
-        mSearchSuggestionIconColor = color;
+        searchSuggestionIconColor = color;
 
-        mAdapter.setResources(((SuggestionItemResources) mAdapter.getResources()).setSearchSuggestionIconColor(color));
+        adapter.setResources(getAdapterResources().setSearchSuggestionIconColor(color));
     }
-
-
 
 
     /**
@@ -2023,12 +1780,10 @@ public class PersistentSearchView extends FrameLayout {
      * @param color The color to set
      */
     public final void setSuggestionTextColor(@ColorInt int color) {
-        mSuggestionTextColor = color;
+        suggestionTextColor = color;
 
-        mAdapter.setResources(((SuggestionItemResources) mAdapter.getResources()).setTextColor(color));
+        adapter.setResources(getAdapterResources().setTextColor(color));
     }
-
-
 
 
     /**
@@ -2037,12 +1792,10 @@ public class PersistentSearchView extends FrameLayout {
      * @param color The color to set
      */
     public final void setSuggestionSelectedTextColor(@ColorInt int color) {
-        mSuggestionSelectedTextColor = color;
+        suggestionSelectedTextColor = color;
 
-        mAdapter.setResources(((SuggestionItemResources) mAdapter.getResources()).setSelectedTextColor(color));
+        adapter.setResources(getAdapterResources().setSelectedTextColor(color));
     }
-
-
 
 
     /**
@@ -2051,12 +1804,10 @@ public class PersistentSearchView extends FrameLayout {
      * @param color The color to set
      */
     public final void setCardBackgroundColor(@ColorInt int color) {
-        mCardBackgroundColor = color;
+        cardBackgroundColor = color;
 
-        mCardView.setCardBackgroundColor(color);
+        cardView.setCardBackgroundColor(color);
     }
-
-
 
 
     /**
@@ -2065,13 +1816,11 @@ public class PersistentSearchView extends FrameLayout {
      * @param color The color to set
      */
     public final void setBackgroundDimColor(@ColorInt int color) {
-        mBackgroundDimColor = color;
+        backgroundDimColor = color;
 
-        mBackgroundEnterAnimation.setDimColor(color);
-        mBackgroundExitAnimation.setDimColor(color);
+        backgroundEnterAnimation.setDimColor(color);
+        backgroundExitAnimation.setDimColor(color);
     }
-
-
 
 
     /**
@@ -2080,12 +1829,10 @@ public class PersistentSearchView extends FrameLayout {
      * @param cornerRadius The corner radius to set
      */
     public final void setCardCornerRadius(int cornerRadius) {
-        mCardCornerRadius = cornerRadius;
+        cardCornerRadius = cornerRadius;
 
-        mCardView.setRadius(mCardCornerRadius);
+        cardView.setRadius(cardCornerRadius);
     }
-
-
 
 
     /**
@@ -2094,13 +1841,11 @@ public class PersistentSearchView extends FrameLayout {
      * @param cardElevation The elevation to set
      */
     public final void setCardElevation(int cardElevation) {
-        mCardElevation = cardElevation;
+        this.cardElevation = cardElevation;
 
-        mCardView.setCardElevation(cardElevation);
-        mCardView.setMaxCardElevation(cardElevation);
+        cardView.setCardElevation(cardElevation);
+        cardView.setMaxCardElevation(cardElevation);
     }
-
-
 
 
     /**
@@ -2109,13 +1854,11 @@ public class PersistentSearchView extends FrameLayout {
      * @param dimAmount The dim amount to set
      */
     public final void setBackgroundDimAmount(float dimAmount) {
-        mDimAmount = dimAmount;
+        this.dimAmount = dimAmount;
 
-        mBackgroundEnterAnimation.setToAlpha(dimAmount);
-        mBackgroundExitAnimation.setFromAlpha(dimAmount);
+        backgroundEnterAnimation.setToAlpha(dimAmount);
+        backgroundExitAnimation.setFromAlpha(dimAmount);
     }
-
-
 
 
     /**
@@ -2124,14 +1867,14 @@ public class PersistentSearchView extends FrameLayout {
      * @param drawableResId The resource ID of the drawable
      */
     public final void setLeftButtonDrawable(@DrawableRes int drawableResId) {
-        setLeftButtonDrawable(Utils.getColoredDrawable(
-            getContext(),
-            drawableResId,
-            mInputBarIconColor
-        ));
+        setLeftButtonDrawable(
+            Utils.getColoredDrawable(
+                getContext(),
+                drawableResId,
+                inputBarIconColor
+            )
+        );
     }
-
-
 
 
     /**
@@ -2140,12 +1883,10 @@ public class PersistentSearchView extends FrameLayout {
      * @param drawable The drawable to set
      */
     public final void setLeftButtonDrawable(Drawable drawable) {
-        mLeftButtonDrawable = drawable;
+        leftButtonDrawable = drawable;
 
-        mLeftBtnIv.setImageDrawable(drawable);
+        leftBtnIv.setImageDrawable(drawable);
     }
-
-
 
 
     /**
@@ -2154,14 +1895,14 @@ public class PersistentSearchView extends FrameLayout {
      * @param drawableResId The resource ID of the drawable
      */
     public final void setRightButtonDrawable(@DrawableRes int drawableResId) {
-        setRightButtonDrawable(Utils.getColoredDrawable(
-            getContext(),
-            drawableResId,
-            mInputBarIconColor
-        ));
+        setRightButtonDrawable(
+            Utils.getColoredDrawable(
+                getContext(),
+                drawableResId,
+                inputBarIconColor
+            )
+        );
     }
-
-
 
 
     /**
@@ -2170,12 +1911,10 @@ public class PersistentSearchView extends FrameLayout {
      * @param drawable The drawable to set
      */
     public final void setRightButtonDrawable(Drawable drawable) {
-        mRightButtonDrawable = drawable;
+        rightButtonDrawable = drawable;
 
-        mRightBtnIv.setImageDrawable(drawable);
+        rightBtnIv.setImageDrawable(drawable);
     }
-
-
 
 
     /**
@@ -2184,14 +1923,14 @@ public class PersistentSearchView extends FrameLayout {
      * @param drawableResId The resource ID of the drawable
      */
     public final void setClearInputButtonDrawable(@DrawableRes int drawableResId) {
-        setClearInputButtonDrawable(Utils.getColoredDrawable(
-            getContext(),
-            drawableResId,
-            mInputBarIconColor
-        ));
+        setClearInputButtonDrawable(
+            Utils.getColoredDrawable(
+                getContext(),
+                drawableResId,
+                inputBarIconColor
+            )
+        );
     }
-
-
 
 
     /**
@@ -2200,12 +1939,10 @@ public class PersistentSearchView extends FrameLayout {
      * @param drawable The drawable to set
      */
     public final void setClearInputButtonDrawable(Drawable drawable) {
-        mClearInputButtonDrawable = drawable;
+        clearInputButtonDrawable = drawable;
 
-        mClearInputBtnIv.setImageDrawable(drawable);
+        clearInputBtnIv.setImageDrawable(drawable);
     }
-
-
 
 
     /**
@@ -2214,14 +1951,14 @@ public class PersistentSearchView extends FrameLayout {
      * @param drawableResId The resource ID of the drawable
      */
     public final void setVoiceInputButtonDrawable(@DrawableRes int drawableResId) {
-        setVoiceInputButtonDrawable(Utils.getColoredDrawable(
-            getContext(),
-            drawableResId,
-            mInputBarIconColor
-        ));
+        setVoiceInputButtonDrawable(
+            Utils.getColoredDrawable(
+                getContext(),
+                drawableResId,
+                inputBarIconColor
+            )
+        );
     }
-
-
 
 
     /**
@@ -2230,12 +1967,10 @@ public class PersistentSearchView extends FrameLayout {
      * @param drawable The drawable to set
      */
     public void setVoiceInputButtonDrawable(Drawable drawable) {
-        mVoiceInputButtonDrawable = drawable;
+        voiceInputButtonDrawable = drawable;
 
-        mVoiceInputBtnIv.setImageDrawable(drawable);
+        voiceInputBtnIv.setImageDrawable(drawable);
     }
-
-
 
 
     /**
@@ -2248,20 +1983,16 @@ public class PersistentSearchView extends FrameLayout {
     }
 
 
-
-
     private final void setInputQueryInternal(@NonNull String query, boolean notifyAboutQueryChange) {
         Preconditions.nonNull(query);
 
-        mShouldNotifyAboutQueryChange = notifyAboutQueryChange;
+        shouldNotifyAboutQueryChange = notifyAboutQueryChange;
 
-        mInputEt.setText(query);
-        mInputEt.setSelection(mInputEt.length());
+        inputEt.setText(query);
+        inputEt.setSelection(inputEt.length());
 
-        mShouldNotifyAboutQueryChange = true;
+        shouldNotifyAboutQueryChange = true;
     }
-
-
 
 
     /**
@@ -2272,12 +2003,10 @@ public class PersistentSearchView extends FrameLayout {
     public final void setQueryInputHint(@NonNull String hint) {
         Preconditions.nonNull(hint);
 
-        mQueryInputHint = hint;
+        queryInputHint = hint;
 
-        mInputEt.setHint(hint);
+        inputEt.setHint(hint);
     }
-
-
 
 
     /**
@@ -2288,12 +2017,10 @@ public class PersistentSearchView extends FrameLayout {
     public final void setQueryTextTypeface(@NonNull Typeface typeface) {
         Preconditions.nonNull(typeface);
 
-        mQueryTextTypeface = typeface;
+        queryTextTypeface = typeface;
 
-        mInputEt.setTypeface(typeface);
+        inputEt.setTypeface(typeface);
     }
-
-
 
 
     /**
@@ -2304,12 +2031,10 @@ public class PersistentSearchView extends FrameLayout {
     public final void setSuggestionTextTypeface(@NonNull Typeface typeface) {
         Preconditions.nonNull(typeface);
 
-        mSuggestionTextTypeface = typeface;
+        suggestionTextTypeface = typeface;
 
-        mAdapter.setResources(((SuggestionItemResources) mAdapter.getResources()).setTypeface(typeface));
+        adapter.setResources(getAdapterResources().setTypeface(typeface));
     }
-
-
 
 
     /**
@@ -2318,10 +2043,8 @@ public class PersistentSearchView extends FrameLayout {
      * @param delegate The delegate to set
      */
     public final void setVoiceRecognitionDelegate(VoiceRecognitionDelegate delegate) {
-        mVoiceRecognitionDelegate = delegate;
+        voiceRecognitionDelegate = delegate;
     }
-
-
 
 
     /**
@@ -2330,10 +2053,8 @@ public class PersistentSearchView extends FrameLayout {
      * @param onSearchConfirmedListener The listener to set
      */
     public final void setOnSearchConfirmedListener(OnSearchConfirmedListener onSearchConfirmedListener) {
-        mOnSearchConfirmedListener = onSearchConfirmedListener;
+        this.onSearchConfirmedListener = onSearchConfirmedListener;
     }
-
-
 
 
     /**
@@ -2342,10 +2063,8 @@ public class PersistentSearchView extends FrameLayout {
      * @param onSearchQueryChangeListener The listener to set
      */
     public final void setOnSearchQueryChangeListener(OnSearchQueryChangeListener onSearchQueryChangeListener) {
-        mOnSearchQueryChangeListener = onSearchQueryChangeListener;
+        this.onSearchQueryChangeListener = onSearchQueryChangeListener;
     }
-
-
 
 
     /**
@@ -2354,10 +2073,8 @@ public class PersistentSearchView extends FrameLayout {
      * @param onSuggestionChangeListener The listener to set
      */
     public final void setOnSuggestionChangeListener(OnSuggestionChangeListener onSuggestionChangeListener) {
-        mOnSuggestionChangeListener = onSuggestionChangeListener;
+        this.onSuggestionChangeListener = onSuggestionChangeListener;
     }
-
-
 
 
     /**
@@ -2366,10 +2083,8 @@ public class PersistentSearchView extends FrameLayout {
      * @param listener The listener to set
      */
     public final void setOnLeftBtnClickListener(OnClickListener listener) {
-        mOnLeftBtnClickListener = listener;
+        onLeftBtnClickListener = listener;
     }
-
-
 
 
     /**
@@ -2378,10 +2093,8 @@ public class PersistentSearchView extends FrameLayout {
      * @param listener The listener to set
      */
     public final void setOnClearInputBtnClickListener(OnClickListener listener) {
-        mOnClearInputBtnClickListener = listener;
+        onClearInputBtnClickListener = listener;
     }
-
-
 
 
     /**
@@ -2390,10 +2103,8 @@ public class PersistentSearchView extends FrameLayout {
      * @param listener The listener to set
      */
     public final void setOnRightBtnClickListener(OnClickListener listener) {
-        mRightBtnIv.setOnClickListener(listener);
+        rightBtnIv.setOnClickListener(listener);
     }
-
-
 
 
     /**
@@ -2405,10 +2116,8 @@ public class PersistentSearchView extends FrameLayout {
      * a user clicks on the outside area.
      */
     public final void setDismissOnTouchOutside(boolean dismissOnTouchOutside) {
-        mIsDismissibleOnTouchOutside = dismissOnTouchOutside;
+        isDismissibleOnTouchOutside = dismissOnTouchOutside;
     }
-
-
 
 
     /**
@@ -2418,10 +2127,8 @@ public class PersistentSearchView extends FrameLayout {
      * @return true if dismissible; false otherwise
      */
     public final boolean isDismissibleOnTouchOutside() {
-        return mIsDismissibleOnTouchOutside;
+        return isDismissibleOnTouchOutside;
     }
-
-
 
 
     /**
@@ -2433,12 +2140,10 @@ public class PersistentSearchView extends FrameLayout {
      * @param isEnabled true if enabled; false otherwise
      */
     public final void setProgressBarEnabled(boolean isEnabled) {
-        mIsProgressBarEnabled = isEnabled;
+        isProgressBarEnabled = isEnabled;
 
         updateLeftContainerVisibility();
     }
-
-
 
 
     /**
@@ -2448,10 +2153,8 @@ public class PersistentSearchView extends FrameLayout {
      * @return true if enabled; false otherwise
      */
     public final boolean isProgressBarEnabled() {
-        return mIsProgressBarEnabled;
+        return isProgressBarEnabled;
     }
-
-
 
 
     /**
@@ -2470,12 +2173,10 @@ public class PersistentSearchView extends FrameLayout {
      * @param isEnabled true if should be enabled; false otherwise
      */
     public final void setVoiceInputButtonEnabled(boolean isEnabled) {
-        mIsVoiceInputButtonEnabled = isEnabled;
+        isVoiceInputButtonEnabled = isEnabled;
 
         updateVoiceInputButtonState();
     }
-
-
 
 
     /**
@@ -2484,10 +2185,8 @@ public class PersistentSearchView extends FrameLayout {
      * @return true if enabled; false otherwise
      */
     public final boolean isVoiceInputButtonEnabled() {
-        return mIsVoiceInputButtonEnabled;
+        return isVoiceInputButtonEnabled;
     }
-
-
 
 
     /**
@@ -2499,10 +2198,8 @@ public class PersistentSearchView extends FrameLayout {
      * @return true if enabled; false otherwise
      */
     public final boolean isVoiceInputEnabled() {
-        return (isVoiceInputButtonEnabled() && mIsSpeechRecognitionAvailable);
+        return (isVoiceInputButtonEnabled() && isSpeechRecognitionAvailable);
     }
-
-
 
 
     /**
@@ -2512,12 +2209,10 @@ public class PersistentSearchView extends FrameLayout {
      * @param isEnabled true if should be enabled; false otherwise
      */
     public final void setClearInputButtonEnabled(boolean isEnabled) {
-        mIsClearInputButtonEnabled = isEnabled;
+        isClearInputButtonEnabled = isEnabled;
 
         updateClearInputButtonState();
     }
-
-
 
 
     /**
@@ -2526,10 +2221,8 @@ public class PersistentSearchView extends FrameLayout {
      * @return true if enabled; false otherwise
      */
     public final boolean isClearInputButtonEnabled() {
-        return mIsClearInputButtonEnabled;
+        return isClearInputButtonEnabled;
     }
-
-
 
 
     /**
@@ -2538,10 +2231,8 @@ public class PersistentSearchView extends FrameLayout {
      * @param areSuggestionsDisabled Whether it is possible to show suggestions or not
      */
     public final void setSuggestionsDisabled(boolean areSuggestionsDisabled) {
-        mAreSuggestionsDisabled = areSuggestionsDisabled;
+        this.areSuggestionsDisabled = areSuggestionsDisabled;
     }
-
-
 
 
     /**
@@ -2550,10 +2241,8 @@ public class PersistentSearchView extends FrameLayout {
      * @return true if possible; false otherwise
      */
     public final boolean areSuggestionsDisabled() {
-        return mAreSuggestionsDisabled;
+        return areSuggestionsDisabled;
     }
-
-
 
 
     /**
@@ -2562,17 +2251,13 @@ public class PersistentSearchView extends FrameLayout {
      * @param dimBackground Whether it is possible to dim background
      */
     public final void setDimBackground(boolean dimBackground) {
-        mShouldDimBehind = dimBackground;
+        shouldDimBehind = dimBackground;
     }
-
-
 
 
     private boolean isExitAnimationRunning() {
-        return (mExitAnimationEndAction != null);
+        return (exitAnimationEndAction != null);
     }
-
-
 
 
     /**
@@ -2581,10 +2266,8 @@ public class PersistentSearchView extends FrameLayout {
      * @return true if expanded; false otherwise
      */
     public final boolean isExpanded() {
-        return State.EXPANDED.equals(mState);
+        return State.EXPANDED.equals(state);
     }
-
-
 
 
     /**
@@ -2593,10 +2276,8 @@ public class PersistentSearchView extends FrameLayout {
      * @return true if empty; false otherwise
      */
     public final boolean isInputQueryEmpty() {
-        return TextUtils.isEmpty(mInputEt.getText().toString());
+        return TextUtils.isEmpty(inputEt.getText().toString());
     }
-
-
 
 
     /**
@@ -2605,10 +2286,8 @@ public class PersistentSearchView extends FrameLayout {
      * @return true if focused; false otherwise
      */
     public final boolean isInputFocused() {
-        return mInputEt.hasFocus();
+        return inputEt.hasFocus();
     }
-
-
 
 
     /**
@@ -2617,21 +2296,17 @@ public class PersistentSearchView extends FrameLayout {
      * @return The input query
      */
     public final String getInputQuery() {
-        return mInputEt.getText().toString();
+        return inputEt.getText().toString();
     }
-
-
 
 
     private int getSuggestionsContainerMaxHeight() {
         final int maxRawHeight = (Utils.getScreenSize(getContext())[1] / 2);
-        final int maxItemCount = (maxRawHeight / mSuggestionItemHeight);
+        final int maxItemCount = (maxRawHeight / suggestionItemHeight);
         final int maxAllowedItemCount = 8;
 
-        return ((maxItemCount > maxAllowedItemCount) ? (maxAllowedItemCount * mSuggestionItemHeight) : (maxItemCount * mSuggestionItemHeight));
+        return ((maxItemCount > maxAllowedItemCount) ? (maxAllowedItemCount * suggestionItemHeight) : (maxItemCount * suggestionItemHeight));
     }
-
-
 
 
     private long getSuggestionsContainerAnimationDuration(final long fromHeight, final long toHeight) {
@@ -2640,20 +2315,16 @@ public class PersistentSearchView extends FrameLayout {
     }
 
 
-
-
     private final OnClickListener mOnParentOutsideClickListener = new OnClickListener() {
 
         @Override
         public void onClick(View v) {
-            if(mIsDismissibleOnTouchOutside) {
+            if(isDismissibleOnTouchOutside) {
                 collapse();
             }
         }
 
     };
-
-
 
 
     private final OnClickListener mOnLeftButtonClickListener = new OnClickListener() {
@@ -2662,14 +2333,12 @@ public class PersistentSearchView extends FrameLayout {
         public void onClick(View view) {
             if(isExpanded()) {
                 collapse();
-            } else if(mOnLeftBtnClickListener != null) {
-                mOnLeftBtnClickListener.onClick(view);
+            } else if(onLeftBtnClickListener != null) {
+                onLeftBtnClickListener.onClick(view);
             }
         }
 
     };
-
-
 
 
     private final OnClickListener mOnClearInputButtonClickListener = new OnClickListener() {
@@ -2679,14 +2348,12 @@ public class PersistentSearchView extends FrameLayout {
             expand();
             setInputQuery("");
 
-            if(mOnClearInputBtnClickListener != null) {
-                mOnClearInputBtnClickListener.onClick(view);
+            if(onClearInputBtnClickListener != null) {
+                onClearInputBtnClickListener.onClick(view);
             }
         }
 
     };
-
-
 
 
     private final OnClickListener mOnVoiceInputButtonClickListener = new OnClickListener() {
@@ -2695,38 +2362,30 @@ public class PersistentSearchView extends FrameLayout {
         public void onClick(View view) {
             expand();
 
-            if(mVoiceRecognitionDelegate != null) {
-                mVoiceRecognitionDelegate.openSpeechRecognizer();
+            if(voiceRecognitionDelegate != null) {
+                voiceRecognitionDelegate.openSpeechRecognizer();
             }
         }
 
     };
 
 
-
-
-    private final OnTouchListener mInputEditTextTouchEventInterceptor = new OnTouchListener() {
-
-        @Override
-        public boolean onTouch(View v, MotionEvent event) {
-            if(event.getAction() == MotionEvent.ACTION_UP) {
-                expand();
-            }
-
-            return !isExpanded();
+    @SuppressLint("ClickableViewAccessibility")
+    private final OnTouchListener mInputEditTextTouchEventInterceptor = (view, event) -> {
+        if(event.getAction() == MotionEvent.ACTION_UP) {
+            expand();
         }
 
+        return !isExpanded();
     };
-
-
 
 
     private final TextView.OnEditorActionListener mInternalEditorActionListener = new TextView.OnEditorActionListener() {
 
         @Override
         public boolean onEditorAction(TextView view, int actionId, KeyEvent event) {
-            if((actionId == EditorInfo.IME_ACTION_SEARCH) && (mOnSearchConfirmedListener != null)) {
-                mOnSearchConfirmedListener.onSearchConfirmed(PersistentSearchView.this, getInputQuery());
+            if((actionId == EditorInfo.IME_ACTION_SEARCH) && (onSearchConfirmedListener != null)) {
+                onSearchConfirmedListener.onSearchConfirmed(PersistentSearchView.this, getInputQuery());
             }
 
             return true;
@@ -2735,16 +2394,14 @@ public class PersistentSearchView extends FrameLayout {
     };
 
 
-
-
     private final QueryListener mQueryListener = new QueryListener() {
 
         @Override
         public void onQueryChanged(String oldQuery, String newQuery) {
             setAdapterQuery(newQuery);
 
-            if((mOnSearchQueryChangeListener != null) && mShouldNotifyAboutQueryChange) {
-                mOnSearchQueryChangeListener.onSearchQueryChanged(PersistentSearchView.this, oldQuery, newQuery);
+            if((onSearchQueryChangeListener != null) && shouldNotifyAboutQueryChange) {
+                onSearchQueryChangeListener.onSearchQueryChanged(PersistentSearchView.this, oldQuery, newQuery);
             }
         }
 
@@ -2763,14 +2420,12 @@ public class PersistentSearchView extends FrameLayout {
     };
 
 
-
-
     private final OnItemClickListener<SuggestionItem> mOnSuggestionClickListener = new OnItemClickListener<SuggestionItem>() {
 
         @Override
         public void onItemClicked(View view, SuggestionItem suggestion, int position) {
-            if(mOnSuggestionChangeListener != null) {
-                mOnSuggestionChangeListener.onSuggestionPicked(suggestion);
+            if(onSuggestionChangeListener != null) {
+                onSuggestionChangeListener.onSuggestionPicked(suggestion);
             }
 
             setInputQueryInternal(suggestion.getItemModel().getText(), false);
@@ -2780,58 +2435,43 @@ public class PersistentSearchView extends FrameLayout {
     };
 
 
-
-
     private final OnItemClickListener<SuggestionItem> mOnRemoveButtonClickListener = new OnItemClickListener<SuggestionItem>() {
 
         @Override
         public void onItemClicked(View view, SuggestionItem item, int position) {
-            // Keeping the current height
-            final int currentHeight = mSuggestionsContainerLL.getMeasuredHeight();
+            final int currentHeight = suggestionsContainerLL.getMeasuredHeight();
 
-            // Removing the item from the dataset
-            mAdapter.deleteItem(item);
+            adapter.deleteItem(item);
 
-            // Remeasuring the container (after the item removal)
-            mSuggestionsContainerLL.measure(
-                MeasureSpec.makeMeasureSpec(getMeasuredWidth(), MeasureSpec.EXACTLY),
-                MeasureSpec.makeMeasureSpec(getSuggestionsContainerMaxHeight(), MeasureSpec.AT_MOST)
-            );
-
-            // Animating the suggestions container
+            remeasureSuggestionsContainer();
             updateSuggestionsContainerHeightWithAnimation(
-                mState,
+                state,
                 currentHeight,
-                mSuggestionsContainerLL.getMeasuredHeight(),
+                suggestionsContainerLL.getMeasuredHeight(),
                 getSuggestionsContainerAnimationDuration(
                     currentHeight,
-                    mSuggestionsContainerLL.getMeasuredHeight()
+                    suggestionsContainerLL.getMeasuredHeight()
                 )
             );
 
-            // Reporting the change
-            if(mOnSuggestionChangeListener != null) {
-                mOnSuggestionChangeListener.onSuggestionRemoved(item);
+            if(onSuggestionChangeListener != null) {
+                onSuggestionChangeListener.onSuggestionRemoved(item);
             }
         }
 
     };
-
-
 
 
     private final RecyclerView.OnScrollListener mSuggestionsRecyclerViewScrollListener = new RecyclerView.OnScrollListener() {
 
         @Override
         public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-            if((newState == RecyclerView.SCROLL_STATE_DRAGGING) && !mSuggestionItems.isEmpty()) {
+            if((newState == RecyclerView.SCROLL_STATE_DRAGGING) && !suggestionItems.isEmpty()) {
                 hideKeyboard();
             }
         }
 
     };
-
-
 
 
     @Override
@@ -2840,7 +2480,6 @@ public class PersistentSearchView extends FrameLayout {
 
         final SavedState savedState = (SavedState) state;
 
-        // Restoring our state
         setQueryInputHintColor(savedState.queryInputHintColor);
         setQueryInputTextColor(savedState.queryInputTextColor);
         setQueryInputCursorColor(savedState.queryInputCursorColor);
@@ -2874,44 +2513,39 @@ public class PersistentSearchView extends FrameLayout {
     }
 
 
-
-
     @Override
     protected Parcelable onSaveInstanceState() {
         final Parcelable superState = super.onSaveInstanceState();
         final SavedState savedState = new SavedState(superState);
 
-        // Saving our state
-        savedState.queryInputHintColor = mQueryInputHintColor;
-        savedState.queryInputTextColor = mQueryInputTextColor;
-        savedState.queryInputCursorColor = mQueryInputCursorColor;
-        savedState.inputBarIconColor = mInputBarIconColor;
-        savedState.dividerColor = mDividerColor;
-        savedState.progressBarColor = mProgressBarColor;
-        savedState.suggestionIconColor = mSuggestionIconColor;
-        savedState.recentSearchIconColor = mRecentSearchIconColor;
-        savedState.searchSuggestionIconColor = mSearchSuggestionIconColor;
-        savedState.suggestionTextColor = mSuggestionTextColor;
-        savedState.suggestionSelectedTextColor = mSuggestionSelectedTextColor;
-        savedState.cardBackgroundColor = mCardBackgroundColor;
-        savedState.backgroundDimColor = mBackgroundDimColor;
-        savedState.cardElevation = mCardElevation;
-        savedState.cardCornerRadius = mCardCornerRadius;
-        savedState.dimAmount = mDimAmount;
+        savedState.queryInputHintColor = queryInputHintColor;
+        savedState.queryInputTextColor = queryInputTextColor;
+        savedState.queryInputCursorColor = queryInputCursorColor;
+        savedState.inputBarIconColor = inputBarIconColor;
+        savedState.dividerColor = dividerColor;
+        savedState.progressBarColor = progressBarColor;
+        savedState.suggestionIconColor = suggestionIconColor;
+        savedState.recentSearchIconColor = recentSearchIconColor;
+        savedState.searchSuggestionIconColor = searchSuggestionIconColor;
+        savedState.suggestionTextColor = suggestionTextColor;
+        savedState.suggestionSelectedTextColor = suggestionSelectedTextColor;
+        savedState.cardBackgroundColor = cardBackgroundColor;
+        savedState.backgroundDimColor = backgroundDimColor;
+        savedState.cardElevation = cardElevation;
+        savedState.cardCornerRadius = cardCornerRadius;
+        savedState.dimAmount = dimAmount;
         savedState.query = getInputQuery();
-        savedState.inputHint = mInputEt.getHint().toString();
-        savedState.state = mState;
-        savedState.isDismissibleOnTouchOutside = mIsDismissibleOnTouchOutside;
-        savedState.isProgressBarEnabled = mIsProgressBarEnabled;
-        savedState.isVoiceInputButtonEnabled = mIsVoiceInputButtonEnabled;
-        savedState.isClearInputButtonEnabled = mIsClearInputButtonEnabled;
-        savedState.areSuggestionsDisabled = mAreSuggestionsDisabled;
-        savedState.shouldDimBehind = mShouldDimBehind;
+        savedState.inputHint = inputEt.getHint().toString();
+        savedState.state = state;
+        savedState.isDismissibleOnTouchOutside = isDismissibleOnTouchOutside;
+        savedState.isProgressBarEnabled = isProgressBarEnabled;
+        savedState.isVoiceInputButtonEnabled = isVoiceInputButtonEnabled;
+        savedState.isClearInputButtonEnabled = isClearInputButtonEnabled;
+        savedState.areSuggestionsDisabled = areSuggestionsDisabled;
+        savedState.shouldDimBehind = shouldDimBehind;
 
         return savedState;
     }
-
-
 
 
     private static class SavedState extends BaseSavedState {
@@ -2982,7 +2616,6 @@ public class PersistentSearchView extends FrameLayout {
         private SavedState(Parcel parcel) {
             super(parcel);
 
-            // Restoring the data
             final Bundle bundle = parcel.readBundle(getClass().getClassLoader());
             this.queryInputHintColor = bundle.getInt(KEY_QUERY_INPUT_HINT_COLOR);
             this.queryInputTextColor = bundle.getInt(KEY_QUERY_INPUT_TEXT_COLOR);
@@ -3016,7 +2649,6 @@ public class PersistentSearchView extends FrameLayout {
         public void writeToParcel(Parcel parcel, int flags) {
             super.writeToParcel(parcel, flags);
 
-            // Saving the data inside the bundle
             final Bundle bundle = new Bundle();
             bundle.putInt(KEY_QUERY_INPUT_HINT_COLOR, this.queryInputHintColor);
             bundle.putInt(KEY_QUERY_INPUT_TEXT_COLOR, this.queryInputTextColor);
@@ -3064,8 +2696,6 @@ public class PersistentSearchView extends FrameLayout {
 
 
     }
-
-
 
 
 }

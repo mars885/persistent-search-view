@@ -37,51 +37,44 @@ import androidx.annotation.NonNull;
 public final class BackgroundDimmingAnimation {
 
 
-    private int mDimColor;
+    private boolean isRecycled;
 
-    private float mFromAlpha;
-    private float mToAlpha;
+    private int dimColor;
 
-    private View mView;
+    private float fromAlpha;
+    private float toAlpha;
 
-    private ValueAnimator mAnimator;
+    private View view;
 
-    private boolean mIsRecycled;
-
-
+    private ValueAnimator animator;
 
 
-    public BackgroundDimmingAnimation(@NonNull View view,
-                                      @ColorInt int dimColor,
-                                      float fromAlpha,
-                                      float toAlpha) {
-        mView = view;
-        mDimColor = dimColor;
-        mFromAlpha = fromAlpha;
-        mToAlpha = toAlpha;
-        mIsRecycled = false;
+    public BackgroundDimmingAnimation(
+        @NonNull View view,
+        @ColorInt int dimColor,
+        float fromAlpha,
+        float toAlpha
+    ) {
+        this.view = view;
+        this.dimColor = dimColor;
+        this.fromAlpha = fromAlpha;
+        this.toAlpha = toAlpha;
+        this.isRecycled = false;
 
         initAnimator();
     }
 
 
-
-
     private void initAnimator() {
-        mAnimator = ValueAnimator.ofFloat(mFromAlpha, mToAlpha);
-        mAnimator.setInterpolator(new LinearInterpolator());
-        mAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                mView.setBackgroundColor(Utils.adjustColorAlpha(
-                    mDimColor,
-                    ((Float) valueAnimator.getAnimatedValue())
-                ));
-            }
-        });
+        animator = ValueAnimator.ofFloat(fromAlpha, toAlpha);
+        animator.setInterpolator(new LinearInterpolator());
+        animator.addUpdateListener(valueAnimator -> view.setBackgroundColor(
+            Utils.adjustColorAlpha(
+                dimColor,
+                ((Float) valueAnimator.getAnimatedValue())
+            )
+        ));
     }
-
-
 
 
     /**
@@ -92,11 +85,9 @@ public final class BackgroundDimmingAnimation {
      * @return this
      */
     public BackgroundDimmingAnimation setDimColor(@ColorInt int dimColor) {
-        mDimColor = dimColor;
+        this.dimColor = dimColor;
         return this;
     }
-
-
 
 
     /**
@@ -107,11 +98,9 @@ public final class BackgroundDimmingAnimation {
      * @return this
      */
     public BackgroundDimmingAnimation setFromAlpha(float fromAlpha) {
-        mFromAlpha = fromAlpha;
+        this.fromAlpha = fromAlpha;
         return this;
     }
-
-
 
 
     /**
@@ -122,11 +111,9 @@ public final class BackgroundDimmingAnimation {
      * @return this
      */
     public BackgroundDimmingAnimation setToAlpha(float toAlpha) {
-        mToAlpha = toAlpha;
+        this.toAlpha = toAlpha;
         return this;
     }
-
-
 
 
     /**
@@ -139,12 +126,10 @@ public final class BackgroundDimmingAnimation {
     public BackgroundDimmingAnimation setInterpolator(@NonNull Interpolator interpolator) {
         Preconditions.nonNull(interpolator);
 
-        mAnimator.setInterpolator(interpolator);
+        animator.setInterpolator(interpolator);
 
         return this;
     }
-
-
 
 
     /**
@@ -155,11 +140,9 @@ public final class BackgroundDimmingAnimation {
      * @return this
      */
     public BackgroundDimmingAnimation setDuration(long duration) {
-        mAnimator.setDuration(duration);
+        animator.setDuration(duration);
         return this;
     }
-
-
 
 
     /**
@@ -171,10 +154,8 @@ public final class BackgroundDimmingAnimation {
         }
 
         stop();
-        mAnimator.start();
+        animator.start();
     }
-
-
 
 
     /**
@@ -182,11 +163,9 @@ public final class BackgroundDimmingAnimation {
      */
     public void stop() {
         if(!isRecycled() && isRunning()) {
-            mAnimator.cancel();
+            animator.cancel();
         }
     }
-
-
 
 
     /**
@@ -195,26 +174,22 @@ public final class BackgroundDimmingAnimation {
      * @return true if running; false otherwise
      */
     public boolean isRunning() {
-        return mAnimator.isRunning();
+        return animator.isRunning();
     }
-
-
 
 
     /**
      * Recycles the animation by releasing all underlying resources.
      */
     public void recycle() {
-        if(mIsRecycled) {
+        if(isRecycled) {
             return;
         }
 
-        mView = null;
-        mAnimator = null;
-        mIsRecycled = true;
+        view = null;
+        animator = null;
+        isRecycled = true;
     }
-
-
 
 
     /**
@@ -223,10 +198,8 @@ public final class BackgroundDimmingAnimation {
      * @return true if recycled; false otherwise
      */
     public boolean isRecycled() {
-        return mIsRecycled;
+        return isRecycled;
     }
-
-
 
 
 }
