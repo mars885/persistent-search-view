@@ -4,16 +4,16 @@ project.ext {
     targetSdk = 29
     minSdk = 21
 
-    appCompatLibraryVersion = "1.1.0"
+    appCompatLibraryVersion = "1.2.0"
     cardViewLibraryVersion = "1.0.0"
-    browserLibraryVersion = "1.0.0"
+    browserLibraryVersion = "1.2.0"
     recyclerViewLibraryVersion = "1.1.0"
     annotationLibraryVersion = "1.0.0"
-    adapsterLibraryVersion = "1.0.12"
+    adapsterLibraryVersion = "1.0.13"
 
     coreKtxLibraryVersion = "1.0.1"
-    jUnitVersion = "4.12"
-    testRunnerVersion = "1.1.0"
+    jUnitVersion = "4.13"
+    testRunnerVersion = "1.2.0"
 
     releaseRepoName = "maven"
     releaseGroupId = "com.paulrybitskyi.persistentsearchview"
@@ -21,7 +21,7 @@ project.ext {
     releaseDescription = " Android library designed to simplify the process of implementing search-related functionality."
     releaseVersion = "1.1.2"
     releaseVersionCode = 5
-    releaseWebsite = "https://github.com/mars885/persistentsearchview"
+    releaseWebsite = "https://github.com/mars885/persistent-search-view"
     releaseLicense = ["Apache-2.0"]
 
     licenseName = "The Apache Software License, Version 2.0"
@@ -32,9 +32,9 @@ project.ext {
     developerName = "Paul Rybitskyi"
     developerEmail = "paul.rybitskyi.work@gmail.com"
 
-    siteUrl = "https://github.com/mars885/persistentsearchview"
-    issueTracker = "https://github.com/mars885/persistentsearchview/issues"
-    gitUrl = "https://github.com/mars885/persistentsearchview.git"
+    siteUrl = "https://github.com/mars885/persistent-search-view"
+    issueTracker = "https://github.com/mars885/persistent-search-view/issues"
+    gitUrl = "https://github.com/mars885/persistent-search-view.git"
     releaseNotesFile = "CHANGELOG.md"
 
 }
