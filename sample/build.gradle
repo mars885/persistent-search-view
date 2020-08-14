@@ -48,6 +48,8 @@ dependencies {
     implementation deps.browser
     implementation deps.recyclerView
     implementation deps.adapster
+    implementation deps.coreKtx
+    implementation deps.commonsKtx
 
     testImplementation deps.jUnit
     androidTestImplementation deps.testRunner

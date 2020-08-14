@@ -2,8 +2,7 @@
 <resources>
 
 
-    <color name="colorLinkNormalBackground">#529ecc</color>
-    <color name="colorLinkSelectedBackground">#30529ecc</color>
+    <color name="colorLinkText">#529ecc</color>
 
     <color name="blue">#529ecc</color>
     <color name="blue_dark">#4986bc</color>

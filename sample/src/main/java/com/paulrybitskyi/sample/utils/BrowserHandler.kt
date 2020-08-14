@@ -2,15 +2,15 @@ package com.paulrybitskyi.sample.utils
 
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import androidx.browser.customtabs.CustomTabsIntent
+import androidx.core.net.toUri
+import com.paulrybitskyi.commons.ktx.getCompatColor
 import com.paulrybitskyi.sample.R
-import com.paulrybitskyi.sample.utils.extensions.getCompatColor
 
 /**
  * A helper class used for providing browser-related functionality.
  */
-class BrowserHandler(private val customTabsProvider: CustomTabsProvider) {
+internal class BrowserHandler(private val customTabsProvider: CustomTabsProvider) {
 
 
     /**
@@ -20,7 +20,7 @@ class BrowserHandler(private val customTabsProvider: CustomTabsProvider) {
      * @param url The url to view
      */
     fun launchBrowser(context: Context, url: String) {
-        val uri = Uri.parse(url)
+        val uri = url.toUri()
 
         if(customTabsProvider.hasSupportForCustomTabs()) {
             val intentBuilder = CustomTabsIntent.Builder()

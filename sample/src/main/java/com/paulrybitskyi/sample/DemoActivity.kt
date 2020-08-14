@@ -6,12 +6,13 @@ import android.os.Bundle
 import android.os.Handler
 import android.view.Gravity
 import android.view.View
-import android.view.WindowManager
+import android.view.WindowManager.LayoutParams.*
 import android.view.animation.LinearInterpolator
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.arthurivanets.adapster.listeners.OnItemClickListener
+import com.paulrybitskyi.commons.ktx.*
 import com.paulrybitskyi.persistentsearchview.adapters.model.SuggestionItem
 import com.paulrybitskyi.persistentsearchview.listeners.OnSearchConfirmedListener
 import com.paulrybitskyi.persistentsearchview.listeners.OnSearchQueryChangeListener
@@ -20,18 +21,15 @@ import com.paulrybitskyi.persistentsearchview.utils.SuggestionCreationUtil
 import com.paulrybitskyi.persistentsearchview.utils.VoiceRecognitionDelegate
 import com.paulrybitskyi.sample.adapters.UsersRecyclerViewAdapter
 import com.paulrybitskyi.sample.adapters.model.UserItem
-import com.paulrybitskyi.sample.model.DemoModes
+import com.paulrybitskyi.sample.model.DemoMode
 import com.paulrybitskyi.sample.utils.AnimationUtils
 import com.paulrybitskyi.sample.utils.DataProvider
 import com.paulrybitskyi.sample.utils.HeaderedRecyclerViewListener
 import com.paulrybitskyi.sample.utils.VerticalSpacingItemDecorator
-import com.paulrybitskyi.sample.utils.extensions.dpToPx
-import com.paulrybitskyi.sample.utils.extensions.makeGone
-import com.paulrybitskyi.sample.utils.extensions.makeVisible
 import kotlinx.android.synthetic.main.demo_activity_layout.*
 import java.io.Serializable
 
-class DemoActivity : AppCompatActivity(), View.OnClickListener {
+internal class DemoActivity : AppCompatActivity(), View.OnClickListener {
 
 
     companion object {
@@ -43,34 +41,32 @@ class DemoActivity : AppCompatActivity(), View.OnClickListener {
         private const val SAVED_STATE_ITEMS = "items"
 
 
-        fun newInstance(context: Context, mode: DemoModes): Intent {
-            return Intent(context, DemoActivity::class.java).apply {
-                putExtra(SAVED_STATE_DEMO, mode)
-            }
+        fun newInstance(context: Context, mode: DemoMode): Intent {
+            return context.intentFor<DemoActivity>()
+                .apply { putExtra(SAVED_STATE_DEMO, mode) }
         }
 
     }
 
 
-    private var mMode: DemoModes = DemoModes.WITHOUT_SUGGESTIONS
+    private var mode = DemoMode.WITHOUT_SUGGESTIONS
 
+    private var dataProvider = DataProvider()
 
-    private var mDataProvider: DataProvider = DataProvider()
+    private var items: MutableList<UserItem> = mutableListOf()
 
-
-    private var mItems: MutableList<UserItem> = mutableListOf()
-
-
-    private lateinit var mAdapter: UsersRecyclerViewAdapter
-
-
+    private lateinit var adapter: UsersRecyclerViewAdapter
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.demo_activity_layout)
         onRestoreState(savedInstanceState)
+        init()
+    }
 
+
+    private fun init() {
         initProgressBar()
         initSearchView()
         initEmptyView()
@@ -83,55 +79,71 @@ class DemoActivity : AppCompatActivity(), View.OnClickListener {
     }
 
 
-    private fun initSearchView() {
-        with(persistentSearchView) {
-            setOnLeftBtnClickListener(this@DemoActivity)
-            setOnClearInputBtnClickListener(this@DemoActivity)
-            setOnRightBtnClickListener(this@DemoActivity)
-            showRightButton()
-            setVoiceRecognitionDelegate(VoiceRecognitionDelegate(this@DemoActivity))
-            setOnSearchConfirmedListener(mOnSearchConfirmedListener)
-            setOnSearchQueryChangeListener(mOnSearchQueryChangeListener)
-            setOnSuggestionChangeListener(mOnSuggestionChangeListener)
-            setDismissOnTouchOutside(true)
-            setDimBackground(true)
-            setProgressBarEnabled(true)
-            setVoiceInputButtonEnabled(true)
-            setClearInputButtonEnabled(true)
-            setSuggestionsDisabled(mMode == DemoModes.WITHOUT_SUGGESTIONS)
-            setQueryInputGravity(Gravity.START or Gravity.CENTER)
-        }
+    private fun initSearchView() = with(persistentSearchView) {
+        setOnLeftBtnClickListener(this@DemoActivity)
+        setOnClearInputBtnClickListener(this@DemoActivity)
+        setOnRightBtnClickListener(this@DemoActivity)
+        showRightButton()
+        setVoiceRecognitionDelegate(VoiceRecognitionDelegate(this@DemoActivity))
+        setOnSearchConfirmedListener(mOnSearchConfirmedListener)
+        setOnSearchQueryChangeListener(mOnSearchQueryChangeListener)
+        setOnSuggestionChangeListener(mOnSuggestionChangeListener)
+        setDismissOnTouchOutside(true)
+        setDimBackground(true)
+        isProgressBarEnabled = true
+        isVoiceInputButtonEnabled = true
+        isClearInputButtonEnabled = true
+        setSuggestionsDisabled(mode == DemoMode.WITHOUT_SUGGESTIONS)
+        setQueryInputGravity(Gravity.START or Gravity.CENTER)
     }
 
 
     private fun initEmptyView() {
-        if(mItems.isNotEmpty()) {
-            emptyViewLl.visibility = if(mItems.isEmpty()) {
-                View.VISIBLE
-            } else {
-                View.GONE
-            }
-        }
+        emptyViewLl.isVisible = items.isEmpty()
     }
 
 
-    private fun initRecyclerView() {
-        recyclerView.layoutManager = LinearLayoutManager(this)
-        recyclerView.addItemDecoration(VerticalSpacingItemDecorator(dpToPx(2), dpToPx(2)))
+    private fun initRecyclerView() = with(recyclerView) {
+        layoutManager = initLayoutManager()
+        adapter = initAdapter()
 
-        mAdapter = UsersRecyclerViewAdapter(this, mItems)
-        mAdapter.mOnItemClickListener = OnItemClickListener { _, item, _ ->
-            showToast("Username: ${item.itemModel.username}.")
-        }
-        mAdapter.mOnFirstButtonClickListener = OnItemClickListener { _, _, _ ->
-            showToast("First button clicked.")
-        }
-        mAdapter.mOnSecondButtonClickListener = OnItemClickListener { _, _, _ ->
-            showToast("Second button clicked.")
-        }
+        addItemDecoration(initVerticalSpacingItemDecorator())
+        addOnScrollListener(initHeaderedRecyclerViewListener())
+    }
 
-        recyclerView.adapter = mAdapter
-        recyclerView.addOnScrollListener(object : HeaderedRecyclerViewListener(this@DemoActivity) {
+
+    private fun initLayoutManager(): LinearLayoutManager {
+        return LinearLayoutManager(this)
+    }
+
+
+    private fun initAdapter(): UsersRecyclerViewAdapter {
+        return UsersRecyclerViewAdapter(this, items)
+            .apply {
+                mOnItemClickListener = OnItemClickListener { _, item, _ ->
+                    showToast("Username: ${item.itemModel.username}.")
+                }
+                mOnFirstButtonClickListener = OnItemClickListener { _, _, _ ->
+                    showToast("First button clicked.")
+                }
+                mOnSecondButtonClickListener = OnItemClickListener { _, _, _ ->
+                    showToast("Second button clicked.")
+                }
+            }
+            .also { adapter = it }
+    }
+
+
+    private fun initVerticalSpacingItemDecorator(): VerticalSpacingItemDecorator {
+        return VerticalSpacingItemDecorator(
+            verticalSpacing = 2.dpToPx(this),
+            verticalSpacingCompensation = 2.dpToPx(this)
+        )
+    }
+
+
+    private fun initHeaderedRecyclerViewListener(): HeaderedRecyclerViewListener {
+        return object : HeaderedRecyclerViewListener(this@DemoActivity) {
 
             override fun showHeader() {
                 AnimationUtils.showHeader(persistentSearchView)
@@ -141,24 +153,19 @@ class DemoActivity : AppCompatActivity(), View.OnClickListener {
                 AnimationUtils.hideHeader(persistentSearchView)
             }
 
-        })
-    }
-
-
-    private fun showToast(message: String) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+        }
     }
 
 
     private fun loadInitialDataIfNecessary() {
-        if(mMode == DemoModes.WITHOUT_SUGGESTIONS) {
+        if(mode == DemoMode.WITHOUT_SUGGESTIONS) {
             return
         }
 
         val searchQueries = if(persistentSearchView.isInputQueryEmpty) {
-            mDataProvider.getInitialSearchQueries()
+            dataProvider.getInitialSearchQueries()
         } else {
-            mDataProvider.getSuggestionsForQuery(persistentSearchView.inputQuery)
+            dataProvider.getSuggestionsForQuery(persistentSearchView.inputQuery)
         }
 
         setSuggestions(searchQueries, false)
@@ -169,23 +176,23 @@ class DemoActivity : AppCompatActivity(), View.OnClickListener {
         emptyViewLl.makeGone()
         recyclerView.alpha = 0f
         progressBar.makeVisible()
-        mAdapter.clear()
+        adapter.clear()
 
-        mItems = mDataProvider.generateUsers(query, 100)
-                .map { UserItem(it) }
+        items = dataProvider.generateUsers(query, 100)
+                .map(::UserItem)
                 .toMutableList()
 
         val runnable = Runnable {
             persistentSearchView.hideProgressBar(false)
             persistentSearchView.showLeftButton()
 
-            mAdapter.items = mItems
+            adapter.items = items
             progressBar.makeGone()
             recyclerView.animate()
-                    .alpha(1f)
-                    .setInterpolator(LinearInterpolator())
-                    .setDuration(300L)
-                    .start()
+                .alpha(1f)
+                .setInterpolator(LinearInterpolator())
+                .setDuration(300L)
+                .start()
         }
 
         Handler().postDelayed(runnable, 1000L)
@@ -197,19 +204,19 @@ class DemoActivity : AppCompatActivity(), View.OnClickListener {
 
     private fun saveSearchQueryIfNecessary(query: String) {
         if(canSaveQuery()) {
-            mDataProvider.saveSearchQuery(query)
+            dataProvider.saveSearchQuery(query)
         }
     }
 
 
     private fun setSuggestions(queries: List<String>, expandIfNecessary: Boolean) {
-        if(mMode == DemoModes.WITHOUT_SUGGESTIONS) {
+        if(mode == DemoMode.WITHOUT_SUGGESTIONS) {
             return
         }
 
-        val suggestions: List<SuggestionItem> = when(mMode) {
-            DemoModes.RECENT_SUGGESTIONS -> SuggestionCreationUtil.asRecentSearchSuggestions(queries)
-            DemoModes.REGULAR_SUGGESTIONS -> SuggestionCreationUtil.asRegularSearchSuggestions(queries)
+        val suggestions: List<SuggestionItem> = when(mode) {
+            DemoMode.RECENT_SUGGESTIONS -> SuggestionCreationUtil.asRecentSearchSuggestions(queries)
+            DemoMode.REGULAR_SUGGESTIONS -> SuggestionCreationUtil.asRegularSearchSuggestions(queries)
 
             else -> throw IllegalStateException()
         }
@@ -219,8 +226,8 @@ class DemoActivity : AppCompatActivity(), View.OnClickListener {
 
 
     private fun canSaveQuery(): Boolean {
-        return when(mMode) {
-            DemoModes.RECENT_SUGGESTIONS -> true
+        return when(mode) {
+            DemoMode.RECENT_SUGGESTIONS -> true
 
             else -> false
         }
@@ -232,12 +239,20 @@ class DemoActivity : AppCompatActivity(), View.OnClickListener {
 
         loadInitialDataIfNecessary()
 
-        if((persistentSearchView.isInputQueryEmpty && (mAdapter.itemCount == 0)) || persistentSearchView.isExpanded) {
+        if(shouldExpandSearchView()) {
             persistentSearchView.expand(false)
-            window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE or WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
+            window.setSoftInputMode(SOFT_INPUT_STATE_VISIBLE or SOFT_INPUT_ADJUST_NOTHING)
         } else {
-            window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN or WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
+            window.setSoftInputMode(SOFT_INPUT_STATE_HIDDEN or SOFT_INPUT_ADJUST_NOTHING)
         }
+    }
+
+
+    private fun shouldExpandSearchView(): Boolean {
+        return (
+            (persistentSearchView.isInputQueryEmpty && (adapter.itemCount == 0)) ||
+            persistentSearchView.isExpanded
+        )
     }
 
 
@@ -253,11 +268,9 @@ class DemoActivity : AppCompatActivity(), View.OnClickListener {
 
     override fun onClick(view: View) {
         when(view.id) {
-
             R.id.leftBtnIv -> onLeftButtonClicked()
             R.id.clearInputBtnIv -> onClearInputButtonClicked()
             R.id.rightBtnIv -> onRightButtonClicked()
-
         }
     }
 
@@ -286,11 +299,14 @@ class DemoActivity : AppCompatActivity(), View.OnClickListener {
 
 
     private val mOnSearchQueryChangeListener = OnSearchQueryChangeListener { searchView, oldQuery, newQuery ->
-        setSuggestions(if(newQuery.isBlank()) {
-            mDataProvider.getInitialSearchQueries()
-        } else {
-            mDataProvider.getSuggestionsForQuery(newQuery)
-        }, true)
+        setSuggestions(
+            if(newQuery.isBlank()) {
+                dataProvider.getInitialSearchQueries()
+            } else {
+                dataProvider.getSuggestionsForQuery(newQuery)
+            },
+            true
+        )
     }
 
 
@@ -300,12 +316,12 @@ class DemoActivity : AppCompatActivity(), View.OnClickListener {
             val query = suggestion.itemModel.text
 
             saveSearchQueryIfNecessary(query)
-            setSuggestions(mDataProvider.getSuggestionsForQuery(query), false)
+            setSuggestions(dataProvider.getSuggestionsForQuery(query), false)
             performSearch(query)
         }
 
         override fun onSuggestionRemoved(suggestion: SuggestionItem) {
-            mDataProvider.removeSearchQuery(suggestion.itemModel.text)
+            dataProvider.removeSearchQuery(suggestion.itemModel.text)
         }
 
     }
@@ -320,11 +336,11 @@ class DemoActivity : AppCompatActivity(), View.OnClickListener {
     @Suppress("UNCHECKED_CAST")
     private fun onRestoreState(savedState: Bundle?) {
         if(savedState != null) {
-            mMode = (savedState.getSerializable(SAVED_STATE_DEMO) as DemoModes)
-            mDataProvider = (savedState.getSerializable(SAVED_STATE_DATA_PROVIDER) as DataProvider)
-            mItems = (savedState.getSerializable(SAVED_STATE_ITEMS) as MutableList<UserItem>)
+            mode = savedState.getSerializableOrThrow(SAVED_STATE_DEMO)
+            dataProvider = savedState.getSerializableOrThrow(SAVED_STATE_DATA_PROVIDER)
+            items = savedState.getSerializableOrThrow(SAVED_STATE_ITEMS)
         } else {
-            mMode = (intent.getSerializableExtra(EXTRA_DEMO) as DemoModes)
+            mode = intent.getSerializableExtraOrThrow(EXTRA_DEMO)
         }
     }
 
@@ -333,9 +349,9 @@ class DemoActivity : AppCompatActivity(), View.OnClickListener {
         super.onSaveInstanceState(savedState)
 
         with(savedState) {
-            putSerializable(SAVED_STATE_DEMO, mMode)
-            putSerializable(SAVED_STATE_DATA_PROVIDER, mDataProvider)
-            putSerializable(SAVED_STATE_ITEMS, (mItems as Serializable))
+            putSerializable(SAVED_STATE_DEMO, mode)
+            putSerializable(SAVED_STATE_DATA_PROVIDER, dataProvider)
+            putSerializable(SAVED_STATE_ITEMS, (items as Serializable))
         }
     }
 

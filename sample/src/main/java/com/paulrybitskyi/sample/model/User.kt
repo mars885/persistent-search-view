@@ -2,7 +2,7 @@ package com.paulrybitskyi.sample.model
 
 import java.io.Serializable
 
-data class User(
+internal data class User(
     val id: Int,
     val username: String,
     val fullName: String,

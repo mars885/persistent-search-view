@@ -7,13 +7,13 @@ import com.arthurivanets.adapster.recyclerview.TrackableRecyclerViewAdapter
 import com.paulrybitskyi.sample.adapters.model.UserItem
 import com.paulrybitskyi.sample.adapters.resources.UserResources
 
-class UsersRecyclerViewAdapter(
+internal class UsersRecyclerViewAdapter(
     context: Context,
     items: MutableList<UserItem>
 ) : TrackableRecyclerViewAdapter<Int, UserItem, UserItem.ViewHolder>(context, items) {
 
 
-    private val mResources: UserResources = UserResources.init(context)
+    private val resources = UserResources.init(context)
 
     var mOnItemClickListener: OnItemClickListener<UserItem>? = null
 
@@ -35,7 +35,7 @@ class UsersRecyclerViewAdapter(
 
 
     override fun getResources(): ItemResources? {
-        return mResources
+        return resources
     }
 
 

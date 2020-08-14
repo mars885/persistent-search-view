@@ -4,21 +4,26 @@ import android.os.Bundle
 import android.text.SpannableString
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import com.paulrybitskyi.sample.model.DemoModes
+import com.paulrybitskyi.commons.ktx.getCompatColor
+import com.paulrybitskyi.commons.ktx.set
+import com.paulrybitskyi.sample.model.DemoMode
 import com.paulrybitskyi.sample.utils.BrowserHandler
 import com.paulrybitskyi.sample.utils.CustomLinkMovementMethod
 import com.paulrybitskyi.sample.utils.CustomTabsProvider
 import com.paulrybitskyi.sample.utils.SelectorSpan
-import com.paulrybitskyi.sample.utils.extensions.getCompatColor
 import kotlinx.android.synthetic.main.main_activity_layout.*
 
-class MainActivity : AppCompatActivity() {
+internal class MainActivity : AppCompatActivity() {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_activity_layout)
+        init()
+    }
 
+
+    private fun init() {
         initButtons()
         initUserIconsAcknowledgement()
     }
@@ -26,15 +31,15 @@ class MainActivity : AppCompatActivity() {
 
     private fun initButtons() {
         withoutSuggestions.setOnClickListener {
-            launchActivity(DemoModes.WITHOUT_SUGGESTIONS)
+            launchActivity(DemoMode.WITHOUT_SUGGESTIONS)
         }
 
         recentSuggestions.setOnClickListener {
-            launchActivity(DemoModes.RECENT_SUGGESTIONS)
+            launchActivity(DemoMode.RECENT_SUGGESTIONS)
         }
 
         regularSuggestions.setOnClickListener {
-            launchActivity(DemoModes.REGULAR_SUGGESTIONS)
+            launchActivity(DemoMode.REGULAR_SUGGESTIONS)
         }
     }
 
@@ -42,34 +47,38 @@ class MainActivity : AppCompatActivity() {
     private fun initUserIconsAcknowledgement() {
         val author = "Freepik"
         val text = "User icons designed by $author"
+        val startIndex = text.indexOf(author)
+        val endIndex = (startIndex + author.length)
 
-        val spannableString = SpannableString(text)
-        spannableString.setSpan(
-            object : SelectorSpan(
-                getCompatColor(R.color.colorLinkNormalBackground),
-                getCompatColor(R.color.colorLinkSelectedBackground)
-            ) {
-
-                override fun onClick(view: View) {
-                    val browserHandler = BrowserHandler(CustomTabsProvider(this@MainActivity))
-                    browserHandler.launchBrowser(
-                            this@MainActivity,
-                            "https://www.flaticon.com/authors/freepik"
-                    )
-                }
-
-            },
-            text.indexOf(author),
-            text.indexOf(author) + author.length,
-            SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE
-        )
+        val spannableString = SpannableString(text).apply {
+            set(
+                startIndex,
+                endIndex,
+                initUserIconsAcknowledgementSpan()
+            )
+        }
 
         authorTv.movementMethod = CustomLinkMovementMethod()
         authorTv.text = spannableString
     }
 
 
-    private fun launchActivity(mode: DemoModes) {
+    private fun initUserIconsAcknowledgementSpan(): SelectorSpan {
+        return object : SelectorSpan(getCompatColor(R.color.colorLinkText)) {
+
+            override fun onClick(view: View) {
+                val browserHandler = BrowserHandler(CustomTabsProvider(this@MainActivity))
+                browserHandler.launchBrowser(
+                    this@MainActivity,
+                    "https://www.flaticon.com/authors/freepik"
+                )
+            }
+
+        }
+    }
+
+
+    private fun launchActivity(mode: DemoMode) {
         startActivity(DemoActivity.newInstance(this, mode))
     }
 

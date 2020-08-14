@@ -1,12 +1,12 @@
 package com.paulrybitskyi.sample.adapters.model
 
+import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.arthurivanets.adapster.Adapter
 import com.arthurivanets.adapster.listeners.ItemClickListener
@@ -17,10 +17,8 @@ import com.arthurivanets.adapster.model.Item
 import com.paulrybitskyi.sample.R
 import com.paulrybitskyi.sample.adapters.resources.UserResources
 import com.paulrybitskyi.sample.model.User
-import com.paulrybitskyi.sample.utils.extensions.getCompatDrawable
-import com.paulrybitskyi.sample.utils.extensions.setBackgroundDrawableCompat
 
-class UserItem(itemModel: User): BaseItem<User, UserItem.ViewHolder, UserResources>(itemModel) {
+internal class UserItem(itemModel: User): BaseItem<User, UserItem.ViewHolder, UserResources>(itemModel) {
 
 
     companion object {
@@ -30,73 +28,108 @@ class UserItem(itemModel: User): BaseItem<User, UserItem.ViewHolder, UserResourc
     }
 
 
-
-
-    override fun init(adapter: Adapter<out Item<RecyclerView.ViewHolder, ItemResources>>?,
-                      parent: ViewGroup, inflater: LayoutInflater, resources: UserResources?): ViewHolder {
-        return ViewHolder(inflater.inflate(
-            MAIN_LAYOUT,
-            parent,
-            false
-        ))
+    override fun init(
+        adapter: Adapter<out Item<RecyclerView.ViewHolder, ItemResources>>?,
+        parent: ViewGroup, inflater: LayoutInflater,
+        resources: UserResources?
+    ): ViewHolder {
+        return ViewHolder(
+            inflater.inflate(
+                MAIN_LAYOUT,
+                parent,
+                false
+            )
+        )
     }
 
 
-    override fun bind(adapter: Adapter<out Item<RecyclerView.ViewHolder, ItemResources>>?,
-                      viewHolder: ViewHolder, resources: UserResources?) {
+    override fun bind(
+        adapter: Adapter<out Item<RecyclerView.ViewHolder, ItemResources>>?,
+        viewHolder: ViewHolder,
+        resources: UserResources?
+    ) {
         super.bind(adapter, viewHolder, resources)
 
-        val user = itemModel
-        val context = viewHolder.itemView.context
-        val drawables = resources!!.drawables
+        viewHolder.bindProfileImage(itemModel)
+        viewHolder.bindUsername(itemModel)
+        viewHolder.bindFullName(itemModel)
+        viewHolder.bindButtons(
+            itemModel,
+            resources!!.buttonDrawables
+        )
+    }
 
-        viewHolder.profileImageIv.setImageDrawable(ContextCompat.getDrawable(context, user.profileImageId))
 
-        viewHolder.usernameTv.text = user.username
-        viewHolder.fullNameTv.text = user.fullName
+    private fun ViewHolder.bindProfileImage(user: User) {
+        profileImageIv.setImageResource(user.profileImageId)
+    }
 
-        with(viewHolder.firstButtonIv) {
-            if(user.firstState) {
-                setImageDrawable(drawables[UserResources.DRAWABLE_FIRST_BUTTON_ACTIVE])
-                setBackgroundDrawableCompat(context.getCompatDrawable(
-                    R.drawable.user_action_button_activated_selector
-                ))
-            } else {
-                setImageDrawable(drawables[UserResources.DRAWABLE_FIRST_BUTTON_IDLE])
-                setBackgroundDrawableCompat(context.getCompatDrawable(
-                    R.drawable.user_action_button_idle_selector
-                ))
-            }
+
+    private fun ViewHolder.bindUsername(user: User) {
+        usernameTv.text = user.username
+    }
+
+
+    private fun ViewHolder.bindFullName(user: User) {
+        fullNameTv.text = user.fullName
+    }
+
+
+    private fun ViewHolder.bindButtons(
+        user: User,
+        buttonDrawables: List<Drawable?>
+    ) {
+        bindFirstButton(user, buttonDrawables)
+        bindSecondButton(user, buttonDrawables)
+    }
+
+
+    private fun ViewHolder.bindFirstButton(
+        user: User,
+        drawables: List<Drawable?>
+    ) = with(firstButtonIv) {
+        if(user.firstState) {
+            setImageDrawable(drawables[UserResources.DRAWABLE_FIRST_BUTTON_ACTIVE])
+            setBackgroundResource(R.drawable.user_action_button_activated_selector)
+        } else {
+            setImageDrawable(drawables[UserResources.DRAWABLE_FIRST_BUTTON_IDLE])
+            setBackgroundResource(R.drawable.user_action_button_idle_selector)
         }
+    }
 
-        with(viewHolder.secondButtonIv) {
-            if(user.secondState) {
-                setImageDrawable(drawables[UserResources.DRAWABLE_SECOND_BUTTON_ACTIVE])
-                setBackgroundDrawableCompat(context.getCompatDrawable(
-                    R.drawable.user_action_button_activated_selector
-                ))
-            } else {
-                setImageDrawable(drawables[UserResources.DRAWABLE_SECOND_BUTTON_IDLE])
-                setBackgroundDrawableCompat(context.getCompatDrawable(
-                    R.drawable.user_action_button_idle_selector
-                ))
-            }
+
+    private fun ViewHolder.bindSecondButton(
+        user: User,
+        drawables: List<Drawable?>
+    ) = with(secondButtonIv) {
+        if(user.secondState) {
+            setImageDrawable(drawables[UserResources.DRAWABLE_SECOND_BUTTON_ACTIVE])
+            setBackgroundResource(R.drawable.user_action_button_activated_selector)
+        } else {
+            setImageDrawable(drawables[UserResources.DRAWABLE_SECOND_BUTTON_IDLE])
+            setBackgroundResource(R.drawable.user_action_button_idle_selector)
         }
     }
 
 
     fun setOnItemClickListener(viewHolder: ViewHolder, onItemClickListener: OnItemClickListener<UserItem>?) {
-        viewHolder.contentContainerRl.setOnClickListener(ItemClickListener(this, 0, onItemClickListener))
+        viewHolder.contentContainerRl.setOnClickListener(
+            ItemClickListener(this, 0, onItemClickListener)
+        )
     }
 
 
     fun setOnFirstButtonClickListener(viewHolder: ViewHolder, onItemClickListener: OnItemClickListener<UserItem>?) {
-        viewHolder.firstButtonIv.setOnClickListener(ItemClickListener(this, 0, onItemClickListener))
+        viewHolder.firstButtonIv.setOnClickListener(
+            ItemClickListener(this, 0, onItemClickListener)
+        )
     }
 
 
     fun setOnSecondButtonClickListener(viewHolder: ViewHolder, onItemClickListener: OnItemClickListener<UserItem>?) {
-        viewHolder.secondButtonIv.setOnClickListener(ItemClickListener(this, 0, onItemClickListener))
+        viewHolder.secondButtonIv.setOnClickListener(
+            ItemClickListener(this, 0, onItemClickListener)
+        )
     }
 
 

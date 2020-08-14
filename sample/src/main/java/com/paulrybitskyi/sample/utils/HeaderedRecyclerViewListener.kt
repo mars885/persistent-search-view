@@ -2,24 +2,23 @@ package com.paulrybitskyi.sample.utils
 
 import android.content.Context
 import androidx.recyclerview.widget.RecyclerView
-import com.paulrybitskyi.sample.utils.extensions.dpToPx
+import com.paulrybitskyi.commons.ktx.dpToPx
+import kotlin.math.abs
 
-abstract class HeaderedRecyclerViewListener(context: Context) : RecyclerView.OnScrollListener() {
+internal abstract class HeaderedRecyclerViewListener(context: Context) : RecyclerView.OnScrollListener() {
 
 
     companion object {
 
-        private const val SWIPE_DETECTION_DISTANCE = 10
+        private const val SWIPE_DETECTION_DISTANCE_IN_DP = 10
 
     }
 
 
-    private var mScrollDetectionDistance: Int = context.dpToPx(SWIPE_DETECTION_DISTANCE)
+    private var scrollDetectionDistance = SWIPE_DETECTION_DISTANCE_IN_DP.dpToPx(context)
 
-    private var mFirstVisiblePosition: Int = 0
-    private var mPreviousFirstVisiblePosition: Int = 0
-
-
+    private var firstVisiblePosition = 0
+    private var previousFirstVisiblePosition = 0
 
 
     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -32,26 +31,41 @@ abstract class HeaderedRecyclerViewListener(context: Context) : RecyclerView.OnS
 
 
     private fun onScrolledUpwards(recyclerView: RecyclerView, deltaY: Int) {
-        mFirstVisiblePosition = recyclerView.getChildAdapterPosition(recyclerView.getChildAt(0))
-        val isFirstItem = (mFirstVisiblePosition == 0)
+        firstVisiblePosition = recyclerView.getChildAdapterPosition(recyclerView.getChildAt(0))
+        val isFirstItem = (firstVisiblePosition == 0)
 
-        if((Math.abs(deltaY) >= mScrollDetectionDistance) || (isFirstItem && (mFirstVisiblePosition != mPreviousFirstVisiblePosition))) {
+        if(shouldShowHeader(deltaY, isFirstItem)) {
             showHeader()
         }
 
-        mPreviousFirstVisiblePosition = mFirstVisiblePosition
+        previousFirstVisiblePosition = firstVisiblePosition
+    }
+
+
+    private fun shouldShowHeader(deltaY: Int, isFirstItem: Boolean): Boolean {
+        return (
+            (abs(deltaY) >= scrollDetectionDistance) ||
+            (isFirstItem && (firstVisiblePosition != previousFirstVisiblePosition))
+        )
     }
 
 
     private fun onScrolledDownwards(recyclerView: RecyclerView, deltaY: Int) {
-        mFirstVisiblePosition = recyclerView.getChildAdapterPosition(recyclerView.getChildAt(0))
+        firstVisiblePosition = recyclerView.getChildAdapterPosition(recyclerView.getChildAt(0))
 
-        if((mFirstVisiblePosition > 0)
-            && ((Math.abs(deltaY) >= mScrollDetectionDistance) || (mFirstVisiblePosition > mPreviousFirstVisiblePosition))) {
+        if(shouldHideHeader(deltaY)) {
             hideHeader()
         }
 
-        mPreviousFirstVisiblePosition = mFirstVisiblePosition
+        previousFirstVisiblePosition = firstVisiblePosition
+    }
+
+
+    private fun shouldHideHeader(deltaY: Int): Boolean {
+        return (
+            (firstVisiblePosition > 0) &&
+            ((abs(deltaY) >= scrollDetectionDistance) || (firstVisiblePosition > previousFirstVisiblePosition))
+        )
     }
 
 

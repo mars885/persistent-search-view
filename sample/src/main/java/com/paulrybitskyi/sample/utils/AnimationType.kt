@@ -1,6 +1,6 @@
 package com.paulrybitskyi.sample.utils
 
-enum class AnimationTypes {
+internal enum class AnimationType {
 
     ENTER,
     EXIT,

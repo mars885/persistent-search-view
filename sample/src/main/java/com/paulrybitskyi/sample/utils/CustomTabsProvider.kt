@@ -2,13 +2,14 @@ package com.paulrybitskyi.sample.utils
 
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ResolveInfo
 import android.net.Uri
 import androidx.browser.customtabs.CustomTabsService
 
 /**
  * A helper class used for providing custom tabs functionality.
  */
-class CustomTabsProvider(context: Context) {
+internal class CustomTabsProvider(context: Context) {
 
 
     companion object {
@@ -21,15 +22,13 @@ class CustomTabsProvider(context: Context) {
     }
 
 
-    private val context: Context = context.applicationContext
+    private val context = context.applicationContext
 
 
     /**
      * A package name to use for resolving custom tabs activity.
      */
     private var packageNameToUse: String? = null
-
-
 
 
     /**
@@ -41,31 +40,45 @@ class CustomTabsProvider(context: Context) {
      */
     fun getPackageNameToUse(): String? {
         if(packageNameToUse != null) {
-            return packageNameToUse!!
+            return checkNotNull(packageNameToUse)
         }
 
         val packageManager = context.packageManager
+        val viewIntentResolveInfoList = getViewIntentResolveInfoList()
+        val packagesSupportingCustomTabs = mutableListOf<String>()
 
-        // Get default VIEW intent handler
-        val activityIntent = Intent(Intent.ACTION_VIEW, Uri.parse("http://www.example.com"))
-
-        // Get all apps that an handle VIEW intents
-        val resolvedActivityList = packageManager.queryIntentActivities(activityIntent, 0)
-        val packagesSupportingCustomTabs: MutableList<String> = mutableListOf()
-
-        for(info in resolvedActivityList) {
-            val serviceIntent = Intent()
-            serviceIntent.action = CustomTabsService.ACTION_CUSTOM_TABS_CONNECTION
-            serviceIntent.`package` = info.activityInfo.packageName
+        for(resolveInfo in viewIntentResolveInfoList) {
+            val serviceIntent = composeServiceIntent(resolveInfo)
 
             if(packageManager.resolveService(serviceIntent, 0) != null) {
-                packagesSupportingCustomTabs.add(info.activityInfo.packageName)
+                packagesSupportingCustomTabs.add(resolveInfo.activityInfo.packageName)
             }
         }
 
-        // Now packagesSupportingCustomTabs contains all apps that can handle
-        // both VIEW intents and service calls
-        packageNameToUse = when {
+        return findPackageNameToUse(packagesSupportingCustomTabs)
+            .also { packageNameToUse = it }
+    }
+
+
+    private fun getViewIntentResolveInfoList(): List<ResolveInfo> {
+        val packageManager = context.packageManager
+        val viewIntent = Intent(Intent.ACTION_VIEW, Uri.parse("http://www.example.com"))
+
+        return packageManager.queryIntentActivities(viewIntent, 0)
+    }
+
+
+    private fun composeServiceIntent(resolveInfo: ResolveInfo): Intent {
+        return Intent()
+            .apply {
+                action = CustomTabsService.ACTION_CUSTOM_TABS_CONNECTION
+                `package` = resolveInfo.activityInfo.packageName
+            }
+    }
+
+
+    private fun findPackageNameToUse(packagesSupportingCustomTabs: List<String>): String? {
+        return when {
             (packagesSupportingCustomTabs.size == 1) -> packagesSupportingCustomTabs[0]
             packagesSupportingCustomTabs.contains(STABLE_PACKAGE) -> STABLE_PACKAGE
             packagesSupportingCustomTabs.contains(BETA_PACKAGE) -> BETA_PACKAGE
@@ -74,8 +87,6 @@ class CustomTabsProvider(context: Context) {
 
             else -> null
         }
-
-        return packageNameToUse
     }
 
 

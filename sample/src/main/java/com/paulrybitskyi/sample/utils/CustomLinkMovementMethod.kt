@@ -9,88 +9,97 @@ import android.widget.TextView
 /**
  * A custom link movement method to enable selecting text.
  */
-class CustomLinkMovementMethod : LinkMovementMethod() {
+internal class CustomLinkMovementMethod : LinkMovementMethod() {
 
 
-    private var mSelectedSpan: SelectorSpan? = null
-
-
+    private var selectedSpan: SelectorSpan? = null
 
 
     override fun onTouchEvent(textView: TextView, spannable: Spannable, event: MotionEvent): Boolean {
-        val action = event.action
+        when(event.action) {
+            MotionEvent.ACTION_DOWN -> onActionDownEvent(textView, spannable, event)
+            MotionEvent.ACTION_MOVE -> onActionMoveEvent(textView, spannable, event)
 
-        if (action == MotionEvent.ACTION_DOWN) {
-            mSelectedSpan = getSelectedSpan(textView, spannable, event)
-
-            if (mSelectedSpan != null) {
-                mSelectedSpan!!.isSelected = true
-
-                // Selecting the pressed span
-                Selection.setSelection(
-                    spannable,
-                    spannable.getSpanStart(mSelectedSpan),
-                    spannable.getSpanEnd(mSelectedSpan)
-                )
-            }
-        } else if (action == MotionEvent.ACTION_MOVE) {
-            val selectedSpan = getSelectedSpan(textView, spannable, event)
-
-            // Removing the selection if the finger is moved outside the currently selected span
-            if ((mSelectedSpan != null) && (selectedSpan !== mSelectedSpan)) {
-                mSelectedSpan!!.isSelected = false
-                mSelectedSpan = null
-
-                // Removing the selection from the spannable
-                Selection.removeSelection(spannable)
-            }
-        } else {
-            if (mSelectedSpan != null) {
-                mSelectedSpan!!.isSelected = false
-                mSelectedSpan = null
-
-                // Allowing the necessary spans to handle click event
-                super.onTouchEvent(textView, spannable, event)
-            }
-
-            // Removing the selection from the spannable
-            Selection.removeSelection(spannable)
+            else -> onActionOtherEvent(textView, spannable, event)
         }
 
         return true
     }
 
 
-    private fun getSelectedSpan(textView: TextView, spannable: Spannable, event: MotionEvent): SelectorSpan? {
-        // Fetching the coordinates of the event
+    private fun onActionDownEvent(textView: TextView, spannable: Spannable, event: MotionEvent) {
+        selectedSpan = getSelectedSpan(textView, spannable, event)
+            ?.also { selectPressedSpan(spannable) }
+    }
+
+
+    private fun getSelectedSpan(
+        textView: TextView,
+        spannable: Spannable,
+        event: MotionEvent
+    ): SelectorSpan? {
         var x = event.x.toInt()
         var y = event.y.toInt()
 
-        // Adjusting the coordinates
         x -= textView.totalPaddingLeft
         x += textView.scrollX
-
         y -= textView.totalPaddingTop
         y += textView.scrollY
 
-        // Obtaining the text layout from the text view
-        val layout = textView.layout
+        val textLayout = textView.layout
+        val verticalLineIndex = textLayout.getLineForVertical(y)
+        val horizontalCharOffset = textLayout.getOffsetForHorizontal(verticalLineIndex, x.toFloat())
 
-        // Fetching the line index and the horizontal offset
-        val line = layout.getLineForVertical(y)
-        val offset = layout.getOffsetForHorizontal(line, x.toFloat())
+        return spannable.findSpans(horizontalCharOffset, horizontalCharOffset)
+            .takeIf { it.isNotEmpty() }
+            ?.firstOrNull()
+    }
 
-        // Fetching all the SelectorSpans that are available in the specified range
-        val spans = spannable.getSpans(offset, offset, SelectorSpan::class.java)
 
-        var selectedSpan: SelectorSpan? = null
+    private fun Spannable.findSpans(start: Int, end: Int): Array<SelectorSpan> {
+        return getSpans(start, end, SelectorSpan::class.java)
+    }
 
-        // Retrieving the selected span (if there is one)
-        if (spans.isNotEmpty()) {
-            selectedSpan = spans[0]
+
+    private fun selectPressedSpan(spannable: Spannable) {
+        selectedSpan?.isSelected = true
+
+        Selection.setSelection(
+            spannable,
+            spannable.getSpanStart(selectedSpan),
+            spannable.getSpanEnd(selectedSpan)
+        )
+    }
+
+
+    private fun onActionMoveEvent(textView: TextView, spannable: Spannable, event: MotionEvent) {
+        val currentSpan = getSelectedSpan(textView, spannable, event)
+
+        if(isFingerMovedOutsideSelectedSpan(currentSpan)) {
+            deselectPressedSpan(spannable)
         }
+    }
 
-        return selectedSpan
+
+    private fun isFingerMovedOutsideSelectedSpan(currentSpan: SelectorSpan?): Boolean {
+        return ((selectedSpan != null) && (currentSpan != selectedSpan))
+    }
+
+
+    private fun deselectPressedSpan(spannable: Spannable) {
+        selectedSpan?.isSelected = false
+        selectedSpan = null
+
+        Selection.removeSelection(spannable)
+    }
+
+
+    private fun onActionOtherEvent(textView: TextView, spannable: Spannable, event: MotionEvent) {
+        if (selectedSpan != null) {
+            deselectPressedSpan(spannable)
+
+            super.onTouchEvent(textView, spannable, event)
+        }
     }
 
 

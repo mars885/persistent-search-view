@@ -1,6 +1,6 @@
 package com.paulrybitskyi.sample.model
 
-enum class DemoModes {
+internal enum class DemoMode {
 
     WITHOUT_SUGGESTIONS,
     RECENT_SUGGESTIONS,

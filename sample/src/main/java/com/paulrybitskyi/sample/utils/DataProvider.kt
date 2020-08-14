@@ -6,10 +6,10 @@ import com.paulrybitskyi.sample.utils.extensions.random
 import java.io.Serializable
 import java.util.*
 
-class DataProvider : Serializable {
+internal class DataProvider : Serializable {
 
 
-    private val PROFILE_IMAGE_RESOURCE_IDS: List<Int> = listOf(
+    private val PROFILE_IMAGE_RESOURCE_IDS = listOf(
         R.drawable.ic_astronaut,    R.drawable.ic_businessman,
         R.drawable.ic_captain,      R.drawable.ic_cashier,
         R.drawable.ic_concierge,    R.drawable.ic_cooker,
@@ -28,7 +28,7 @@ class DataProvider : Serializable {
     )
 
 
-    private var mInitialSearchQueries: MutableList<String> = mutableListOf(
+    private var initialSearchQueries: MutableList<String> = mutableListOf(
         "dinosoaring",
         "liquidathor",
         "cobrawl",
@@ -40,8 +40,6 @@ class DataProvider : Serializable {
         "froghurt",
         "rangerman"
     )
-
-
 
 
     fun generateUsers(query: String, count: Int): List<User> {
@@ -60,17 +58,17 @@ class DataProvider : Serializable {
 
 
     fun getInitialSearchQueries(): List<String> {
-        return mInitialSearchQueries
+        return initialSearchQueries
     }
 
 
     fun getSuggestionsForQuery(query: String): List<String> {
-        val pickedSuggestions: MutableList<String> = mutableListOf()
+        val pickedSuggestions = mutableListOf<String>()
 
         if(query.isEmpty()) {
-            pickedSuggestions.addAll(mInitialSearchQueries)
+            pickedSuggestions.addAll(initialSearchQueries)
         } else {
-            mInitialSearchQueries.forEach {
+            initialSearchQueries.forEach {
                 if(it.toLowerCase().startsWith(query.toLowerCase())) {
                     pickedSuggestions.add(it)
                 }
@@ -82,7 +80,7 @@ class DataProvider : Serializable {
 
 
     fun saveSearchQuery(searchQuery: String) {
-        with(mInitialSearchQueries) {
+        with(initialSearchQueries) {
             remove(searchQuery)
             add(0, searchQuery)
         }
@@ -90,7 +88,7 @@ class DataProvider : Serializable {
 
 
     fun removeSearchQuery(searchQuery: String) {
-        mInitialSearchQueries.remove(searchQuery)
+        initialSearchQueries.remove(searchQuery)
     }
 
 
