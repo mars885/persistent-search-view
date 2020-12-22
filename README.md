@@ -88,7 +88,22 @@ dependencies {
 }
 //...
 ````
-6. Proceed with the implementation of your own search view.
+6. If your `targetSdk` is **30** and you want to use the voice search feature, add these lines to your app's `AndroidManifest.xml`:
+
+````xml
+<manifest ...>
+
+    //...
+    <queries>
+        <intent>
+            <action android:name="android.speech.RecognitionService"/>
+        </intent>
+    </queries>
+    //...
+
+</manifest>
+````
+7. Proceed with the implementation of your own search view.
 
 ## Basic Implementation
 
