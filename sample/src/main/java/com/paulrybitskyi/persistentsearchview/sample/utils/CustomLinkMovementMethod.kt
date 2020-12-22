@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.paulrybitskyi.sample.utils
+package com.paulrybitskyi.persistentsearchview.sample.utils
 
 import android.text.Selection
 import android.text.Spannable

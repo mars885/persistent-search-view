@@ -15,7 +15,7 @@
 -->
 
 <manifest
-    package="com.paulrybitskyi.sample"
+    package="com.paulrybitskyi.persistentsearchview.sample"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <application

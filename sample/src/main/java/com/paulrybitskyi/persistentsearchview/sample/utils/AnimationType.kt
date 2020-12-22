@@ -14,25 +14,12 @@
  * limitations under the License.
  */
 
-package com.paulrybitskyi.sample.utils
+package com.paulrybitskyi.persistentsearchview.sample.utils
 
-import android.text.TextPaint
-import android.text.style.ClickableSpan
+internal enum class AnimationType {
 
-/**
- * A custom clickable span with support for background coloring
- * when clicked.
- */
-internal abstract class SelectorSpan(private val textColor: Int) : ClickableSpan() {
-
-
-    var isSelected = false
-
-
-    override fun updateDrawState(drawState: TextPaint) = with(drawState) {
-        color = textColor
-        isUnderlineText = false
-    }
-
+    ENTER,
+    EXIT,
+    NONE
 
 }

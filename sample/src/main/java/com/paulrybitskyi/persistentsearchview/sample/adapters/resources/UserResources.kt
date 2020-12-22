@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package com.paulrybitskyi.sample.adapters.resources
+package com.paulrybitskyi.persistentsearchview.sample.adapters.resources
 
 import android.content.Context
 import android.graphics.drawable.Drawable
 import com.arthurivanets.adapster.markers.ItemResources
 import com.paulrybitskyi.commons.ktx.getCompatDrawable
-import com.paulrybitskyi.sample.R
+import com.paulrybitskyi.persistentsearchview.sample.R
 
 internal class UserResources(
     val buttonDrawables: List<Drawable?>

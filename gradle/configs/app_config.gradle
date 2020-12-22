@@ -20,7 +20,7 @@ ext {
         targetSdkVersion: 29,
         minSdkVersion: 21,
         buildToolsVersion: "29.0.2",
-        applicationId: "com.paulrybitskyi.sample",
+        applicationId: "com.paulrybitskyi.persistentsearchview.sample",
         versionCode: 1,
         versionName: "1.0.0",
         javaCompatibilityVersion: JavaVersion.VERSION_1_8,

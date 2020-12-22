@@ -1,4 +1,4 @@
-package com.paulrybitskyi.sample;
+package com.paulrybitskyi.persistentsearchview.sample;
 
 import org.junit.Test;
 

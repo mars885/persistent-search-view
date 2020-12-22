@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package com.paulrybitskyi.sample.utils.extensions
+package com.paulrybitskyi.persistentsearchview.sample.utils.extensions
 
 import android.view.View
 import androidx.core.view.isVisible
-import com.paulrybitskyi.sample.R
+import com.paulrybitskyi.persistentsearchview.sample.R
 
 
 internal fun View.setVisibilityMarker(isVisible: Boolean) {

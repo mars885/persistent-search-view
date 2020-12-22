@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package com.paulrybitskyi.sample.utils
+package com.paulrybitskyi.persistentsearchview.sample.utils
 
-import com.paulrybitskyi.sample.R
-import com.paulrybitskyi.sample.model.User
-import com.paulrybitskyi.sample.utils.extensions.random
+import com.paulrybitskyi.persistentsearchview.sample.R
+import com.paulrybitskyi.persistentsearchview.sample.model.User
+import com.paulrybitskyi.persistentsearchview.sample.utils.extensions.random
 import java.io.Serializable
 import java.util.*
 

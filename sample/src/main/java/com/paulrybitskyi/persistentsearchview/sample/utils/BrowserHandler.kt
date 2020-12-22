@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package com.paulrybitskyi.sample.utils
+package com.paulrybitskyi.persistentsearchview.sample.utils
 
 import android.content.Context
 import android.content.Intent
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.net.toUri
 import com.paulrybitskyi.commons.ktx.getCompatColor
-import com.paulrybitskyi.sample.R
+import com.paulrybitskyi.persistentsearchview.sample.R
 
 /**
  * A helper class used for providing browser-related functionality.

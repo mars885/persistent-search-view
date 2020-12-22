@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.paulrybitskyi.sample
+package com.paulrybitskyi.persistentsearchview.sample
 
 import android.content.Context
 import android.content.Intent
@@ -35,13 +35,13 @@ import com.paulrybitskyi.persistentsearchview.listeners.OnSearchQueryChangeListe
 import com.paulrybitskyi.persistentsearchview.listeners.OnSuggestionChangeListener
 import com.paulrybitskyi.persistentsearchview.utils.SuggestionCreationUtil
 import com.paulrybitskyi.persistentsearchview.utils.VoiceRecognitionDelegate
-import com.paulrybitskyi.sample.adapters.UsersRecyclerViewAdapter
-import com.paulrybitskyi.sample.adapters.model.UserItem
-import com.paulrybitskyi.sample.model.DemoMode
-import com.paulrybitskyi.sample.utils.AnimationUtils
-import com.paulrybitskyi.sample.utils.DataProvider
-import com.paulrybitskyi.sample.utils.HeaderedRecyclerViewListener
-import com.paulrybitskyi.sample.utils.VerticalSpacingItemDecorator
+import com.paulrybitskyi.persistentsearchview.sample.adapters.UsersRecyclerViewAdapter
+import com.paulrybitskyi.persistentsearchview.sample.adapters.model.UserItem
+import com.paulrybitskyi.persistentsearchview.sample.model.DemoMode
+import com.paulrybitskyi.persistentsearchview.sample.utils.AnimationUtils
+import com.paulrybitskyi.persistentsearchview.sample.utils.DataProvider
+import com.paulrybitskyi.persistentsearchview.sample.utils.HeaderedRecyclerViewListener
+import com.paulrybitskyi.persistentsearchview.sample.utils.VerticalSpacingItemDecorator
 import kotlinx.android.synthetic.main.demo_activity_layout.*
 import java.io.Serializable
 

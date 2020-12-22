@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.paulrybitskyi.sample.adapters.model
+package com.paulrybitskyi.persistentsearchview.sample.adapters.model
 
 import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
@@ -30,9 +30,9 @@ import com.arthurivanets.adapster.listeners.OnItemClickListener
 import com.arthurivanets.adapster.markers.ItemResources
 import com.arthurivanets.adapster.model.BaseItem
 import com.arthurivanets.adapster.model.Item
-import com.paulrybitskyi.sample.R
-import com.paulrybitskyi.sample.adapters.resources.UserResources
-import com.paulrybitskyi.sample.model.User
+import com.paulrybitskyi.persistentsearchview.sample.R
+import com.paulrybitskyi.persistentsearchview.sample.adapters.resources.UserResources
+import com.paulrybitskyi.persistentsearchview.sample.model.User
 
 internal class UserItem(itemModel: User): BaseItem<User, UserItem.ViewHolder, UserResources>(itemModel) {
 

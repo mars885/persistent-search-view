@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.paulrybitskyi.sample
+package com.paulrybitskyi.persistentsearchview.sample
 
 import android.os.Bundle
 import android.text.SpannableString
@@ -22,11 +22,11 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.paulrybitskyi.commons.ktx.getCompatColor
 import com.paulrybitskyi.commons.ktx.set
-import com.paulrybitskyi.sample.model.DemoMode
-import com.paulrybitskyi.sample.utils.BrowserHandler
-import com.paulrybitskyi.sample.utils.CustomLinkMovementMethod
-import com.paulrybitskyi.sample.utils.CustomTabsProvider
-import com.paulrybitskyi.sample.utils.SelectorSpan
+import com.paulrybitskyi.persistentsearchview.sample.model.DemoMode
+import com.paulrybitskyi.persistentsearchview.sample.utils.BrowserHandler
+import com.paulrybitskyi.persistentsearchview.sample.utils.CustomLinkMovementMethod
+import com.paulrybitskyi.persistentsearchview.sample.utils.CustomTabsProvider
+import com.paulrybitskyi.persistentsearchview.sample.utils.SelectorSpan
 import kotlinx.android.synthetic.main.main_activity_layout.*
 
 internal class MainActivity : AppCompatActivity() {

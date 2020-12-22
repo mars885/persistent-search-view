@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.paulrybitskyi.sample.utils
+package com.paulrybitskyi.persistentsearchview.sample.utils
 
 import android.animation.Animator
 import android.view.View
@@ -22,7 +22,7 @@ import android.view.animation.DecelerateInterpolator
 import com.paulrybitskyi.commons.ktx.makeGone
 import com.paulrybitskyi.commons.ktx.makeVisible
 import com.paulrybitskyi.persistentsearchview.listeners.AnimatorListenerAdapter
-import com.paulrybitskyi.sample.utils.extensions.*
+import com.paulrybitskyi.persistentsearchview.sample.utils.extensions.*
 
 internal object AnimationUtils {
 

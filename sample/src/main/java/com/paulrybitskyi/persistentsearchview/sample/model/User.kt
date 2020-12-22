@@ -14,11 +14,15 @@
  * limitations under the License.
  */
 
-package com.paulrybitskyi.sample.utils.extensions
+package com.paulrybitskyi.persistentsearchview.sample.model
 
-import java.util.*
+import java.io.Serializable
 
-
-internal fun <E> List<E>.random(random: Random): E? {
-    return (if (size > 0) get(random.nextInt(size)) else null)
-}
+internal data class User(
+    val id: Int,
+    val username: String,
+    val fullName: String,
+    val profileImageId: Int,
+    val firstState: Boolean,
+    val secondState: Boolean
+) : Serializable

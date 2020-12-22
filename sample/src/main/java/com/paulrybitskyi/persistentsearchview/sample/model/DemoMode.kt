@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.paulrybitskyi.sample.model
+package com.paulrybitskyi.persistentsearchview.sample.model
 
 internal enum class DemoMode {
 

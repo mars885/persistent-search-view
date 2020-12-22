@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package com.paulrybitskyi.sample.adapters
+package com.paulrybitskyi.persistentsearchview.sample.adapters
 
 import android.content.Context
 import com.arthurivanets.adapster.listeners.OnItemClickListener
 import com.arthurivanets.adapster.markers.ItemResources
 import com.arthurivanets.adapster.recyclerview.TrackableRecyclerViewAdapter
-import com.paulrybitskyi.sample.adapters.model.UserItem
-import com.paulrybitskyi.sample.adapters.resources.UserResources
+import com.paulrybitskyi.persistentsearchview.sample.adapters.model.UserItem
+import com.paulrybitskyi.persistentsearchview.sample.adapters.resources.UserResources
 
 internal class UsersRecyclerViewAdapter(
     context: Context,
