@@ -24,7 +24,7 @@ An android library designed to simplify the process of implementing search-relat
 ## Demo (YouTube)
 
 <a href="https://www.youtube.com/watch?v=t6AgY0hYJHU">
-<img src="https://farm2.staticflickr.com/1834/43887730932_e834c4de7c_h.jpg" width="200" height="356"/>
+<img src="/media/video_thumbnail.jpg" width="200" height="356"/>
 </a>
 
 ## Getting Started
@@ -451,10 +451,10 @@ For example, here are screenshots of recent suggestions compared to regular:
 		</tr>
 		<tr>
 			<td align="center">
-				<img src="https://farm2.staticflickr.com/1780/43231286544_50d547b9ee_b.jpg" width="341" height="326"/>
+				<img src="/media/recent_suggestions.jpg" width="341" height="326"/>
 			</td>
 			<td align="center">
-				<img src="https://farm2.staticflickr.com/1815/30081446258_dc4bc1b301_b.jpg" width="341" height="326"/>
+				<img src="/media/regular_suggestions.jpg" width="341" height="326"/>
 			</td>
 		</tr>
 	</tbody>
