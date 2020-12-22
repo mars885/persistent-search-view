@@ -55,6 +55,10 @@
         <intent>
             <action android:name="android.speech.RecognitionService"/>
         </intent>
+
+        <intent>
+            <action android:name="android.support.customtabs.action.CustomTabsService"/>
+        </intent>
     </queries>
 
 </manifest>
