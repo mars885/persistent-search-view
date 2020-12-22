@@ -1,5 +1,5 @@
 # PersistentSearchView
-Android library designed to simplify the process of implementing search-related functionality.
+An android library designed to simplify the process of implementing search-related functionality.
 
 [ ![Download](https://api.bintray.com/packages/mars885/maven/persistentsearchview/images/download.svg) ](https://bintray.com/mars885/maven/persistentsearchview/_latestVersion)
 [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-PersistentSearchView-brightgreen.svg?style=flat)](https://android-arsenal.com/details/1/7102)
