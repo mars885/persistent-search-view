@@ -1,12 +1,12 @@
 # PersistentSearchView
 An android library designed to simplify the process of implementing search-related functionality.
 
-[ ![Download](https://api.bintray.com/packages/mars885/maven/persistentsearchview/images/download.svg) ](https://bintray.com/mars885/maven/persistentsearchview/_latestVersion)
-[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-PersistentSearchView-brightgreen.svg?style=flat)](https://android-arsenal.com/details/1/7102)
-![](https://travis-ci.org/mars885/persistent-search-view.svg?branch=master)
 ![](https://img.shields.io/badge/API-21%2B-orange.svg?style=flat)
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Platform](https://img.shields.io/badge/platform-Android-green.svg)](http://developer.android.com/index.html)
+[![Download](https://api.bintray.com/packages/mars885/maven/persistentsearchview/images/download.svg)](https://bintray.com/mars885/maven/persistentsearchview/_latestVersion)
+[![Build](https://github.com/mars885/persistent-search-view/workflows/Build/badge.svg?branch=master)](https://github.com/mars885/persistent-search-view/actions)
+[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-PersistentSearchView-brightgreen.svg?style=flat)](https://android-arsenal.com/details/1/7102)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 ## Contents
 
