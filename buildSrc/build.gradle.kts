@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Paul Rybitskyi, paul.rybitskyi.work@gmail.com
+ * Copyright 2021 Paul Rybitskyi, paul.rybitskyi.work@gmail.com
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,11 +14,21 @@
  * limitations under the License.
  */
 
-ext {
-    libraryConfig = [
-        versionCode: 6,
-        versionName: "1.1.3",
-        artifactName: "persistentsearchview",
-        artifactDescription: "An android library designed to simplify the process of implementing search-related functionality.",
-    ]
+plugins {
+    `kotlin-dsl`
+}
+
+kotlinDslPluginOptions {
+    experimentalWarning.set(false)
+}
+
+repositories {
+    mavenCentral()
+    google()
+    jcenter()
+}
+
+dependencies {
+    implementation("com.android.tools.build:gradle:4.1.1")
+    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.32")
 }

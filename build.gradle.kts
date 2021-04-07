@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Paul Rybitskyi, paul.rybitskyi.work@gmail.com
+ * Copyright 2021 Paul Rybitskyi, paul.rybitskyi.work@gmail.com
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,35 +14,32 @@
  * limitations under the License.
  */
 
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
-apply plugin: "com.github.ben-manes.versions"
+plugins {
+    gradleVersions()
+}
 
 buildscript {
-    apply from: "gradle/configs/app_config.gradle"
-    apply from: "gradle/configs/publishing_config.gradle"
-
     repositories {
+        mavenCentral()
         google()
         jcenter()
     }
 
     dependencies {
-        classpath deps.androidGradlePlugin
-        classpath deps.kotlinGradlePlugin
-        classpath deps.gradleVersionsPlugin
-        classpath deps.mavenGradlePlugin
-        classpath deps.bintrayUploadPlugin
+        classpath(deps.plugins.androidGradle)
+        classpath(deps.plugins.kotlinGradle)
+        classpath(deps.plugins.gradleVersions)
     }
 }
 
 allprojects {
     repositories {
+        mavenCentral()
         google()
         jcenter()
-        maven { url 'https://jitpack.io' }
     }
 }
 
-task clean(type: Delete) {
-    delete rootProject.buildDir
+val clean by tasks.registering(Delete::class) {
+    delete(buildDir)
 }
