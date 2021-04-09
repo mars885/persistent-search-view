@@ -45,50 +45,12 @@ buildscript {
 2. Add the library dependency to your module-level `build.gradle` file. 
 
 ````groovy
-ext {
-    //...
-    psvVersion = "1.1.3"
-}
-
 dependencies {
-    //...
-    implementation "com.paulrybitskyi.persistentsearchview:persistentsearchview:$psvVersion"
+    implementation "com.paulrybitskyi.persistentsearchview:persistentsearchview:1.1.3"
 }
 ````
 
-3. Enable the **jetifier** and **androidX** support in the top-level `gradle.properties` file.
-
-````groovy
-//...
-android.enableJetifier=true
-android.useAndroidX=true
-//....
-````
-
-4. Update your `compileSdkVersion` in the module-level `build.gradle` file to **29**.
-
-````groovy
-//...
-android {
-    //...
-    compileSdkVersion 29
-    //...
-}
-//...
-````
-
-5. Update your `com.android.support.appcompat.*` dependency to the new `androidx.appcompat.*` alternative.
-
-````groovy
-//...
-dependencies {
-    //...
-    implementation "androidx.appcompat:appcompat:1.1.0"
-    //...
-}
-//...
-````
-6. If your `targetSdk` is **30** and you want to use the voice search feature, add these lines to your app's `AndroidManifest.xml`:
+3. If your `targetSdk` is **30** and you want to use the voice search feature, add these lines to your app's `AndroidManifest.xml`:
 
 ````xml
 <manifest ...>
@@ -103,7 +65,7 @@ dependencies {
 
 </manifest>
 ````
-7. Proceed with the implementation of your own search view.
+4. Proceed with the implementation of your own search view.
 
 ## Basic Implementation
 
