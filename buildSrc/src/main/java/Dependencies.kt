@@ -60,19 +60,19 @@ object publishingConfig {
 
 object versions {
 
-    const val kotlin = "1.4.21"
-    const val gradlePlugin = "4.1.1"
-    const val gradleVersionsPlugin = "0.36.0"
+    const val kotlin = "1.4.32" // also in buildSrc build.gradle.kts file
+    const val gradlePlugin = "4.1.3" // also in buildSrc build.gradle.kts file
+    const val gradleVersionsPlugin = "0.38.0"
     const val appCompat = "1.2.0"
     const val cardView = "1.0.0"
     const val browser = "1.3.0"
-    const val recyclerView = "1.1.0"
+    const val recyclerView = "1.2.0"
     const val adapster = "1.0.13"
-    const val annotations = "1.0.0"
-    const val coreKtx = "1.3.1"
-    const val commonsKtx = "1.0.1"
-    const val jUnit = "4.13"
-    const val testRunner = "1.2.0"
+    const val annotations = "1.2.0"
+    const val coreKtx = "1.3.2"
+    const val commonsKtx = "1.0.2"
+    const val jUnit = "4.13.2"
+    const val testRunner = "1.3.0"
 
 }
 
