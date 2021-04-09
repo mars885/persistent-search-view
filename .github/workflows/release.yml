@@ -30,7 +30,10 @@ jobs:
           path: |
             ~/.gradle/caches/
             ~/.gradle/wrapper/
-          key: ${{ runner.os }}-gradle-${{ hashFiles('checksum.txt') }}
+          key: cache-gradle-${{ runner.os }}-${{ hashFiles('checksum.txt') }}
+          restore-keys: |
+            cache-gradle-${{ runner.os }}-
+            cache-gradle-
 
       - name: Build Debug APK
         run: ./gradlew assembleDebug
