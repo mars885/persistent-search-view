@@ -51,7 +51,7 @@ object publishingConfig {
     const val hostRepoUrl = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
 
     const val artifactName = "persistentsearchview"
-    const val artifactVersion = "1.1.3"
+    const val artifactVersion = "1.1.4"
     const val artifactDescription = "An android library designed to simplify the process of implementing search-related functionality."
 
 }
