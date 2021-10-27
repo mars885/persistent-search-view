@@ -23,7 +23,6 @@ const val PLUGIN_GRADLE_VERSIONS = "com.github.ben-manes.versions"
 const val PLUGIN_ANDROID_APPLICATION = "com.android.application"
 const val PLUGIN_ANDROID_LIBRARY = "com.android.library"
 const val PLUGIN_KOTLIN_ANDROID = "kotlin-android"
-const val PLUGIN_KOTLIN_ANDROID_EXTENSIONS = "kotlin-android-extensions"
 const val PLUGIN_MAVEN_PUBLISH = "maven-publish"
 const val PLUGIN_SIGNING = "org.gradle.signing"
 
@@ -45,9 +44,4 @@ fun PluginDependenciesSpec.androidLibrary(): PluginDependencySpec {
 
 fun PluginDependenciesSpec.kotlinAndroid(): PluginDependencySpec {
     return id(PLUGIN_KOTLIN_ANDROID)
-}
-
-
-fun PluginDependenciesSpec.kotlinAndroidExtensions(): PluginDependencySpec {
-    return id(PLUGIN_KOTLIN_ANDROID_EXTENSIONS)
 }

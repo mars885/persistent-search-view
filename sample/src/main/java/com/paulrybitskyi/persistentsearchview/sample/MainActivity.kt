@@ -22,19 +22,23 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.paulrybitskyi.commons.ktx.getCompatColor
 import com.paulrybitskyi.commons.ktx.set
+import com.paulrybitskyi.persistentsearchview.sample.databinding.ActivityMainBinding
 import com.paulrybitskyi.persistentsearchview.sample.model.DemoMode
 import com.paulrybitskyi.persistentsearchview.sample.utils.BrowserHandler
 import com.paulrybitskyi.persistentsearchview.sample.utils.CustomLinkMovementMethod
 import com.paulrybitskyi.persistentsearchview.sample.utils.CustomTabsProvider
 import com.paulrybitskyi.persistentsearchview.sample.utils.SelectorSpan
-import kotlinx.android.synthetic.main.main_activity_layout.*
 
 internal class MainActivity : AppCompatActivity() {
 
 
+    private lateinit var viewBinding: ActivityMainBinding
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.main_activity_layout)
+        viewBinding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(viewBinding.root)
         init()
     }
 
@@ -45,7 +49,7 @@ internal class MainActivity : AppCompatActivity() {
     }
 
 
-    private fun initButtons() {
+    private fun initButtons() = with(viewBinding) {
         withoutSuggestions.setOnClickListener {
             launchActivity(DemoMode.WITHOUT_SUGGESTIONS)
         }
@@ -74,8 +78,10 @@ internal class MainActivity : AppCompatActivity() {
             )
         }
 
-        authorTv.movementMethod = CustomLinkMovementMethod()
-        authorTv.text = spannableString
+        with(viewBinding) {
+            authorTv.movementMethod = CustomLinkMovementMethod()
+            authorTv.text = spannableString
+        }
     }
 
 
