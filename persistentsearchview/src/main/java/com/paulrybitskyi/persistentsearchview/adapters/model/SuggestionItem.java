@@ -56,7 +56,7 @@ public class SuggestionItem extends BaseItem<
     /**
      * A constant holding a layout resource ID for the suggestion item.
      */
-    public static final int MAIN_LAYOUT_ID = R.layout.persistent_search_view_suggestion_item_layout;
+    public static final int MAIN_LAYOUT_ID = R.layout.view_persistent_search_suggestion_item;
 
 
     /**

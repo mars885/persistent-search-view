@@ -39,7 +39,7 @@ internal class UserItem(itemModel: User): BaseItem<User, UserItem.ViewHolder, Us
 
     companion object {
 
-        const val MAIN_LAYOUT = R.layout.user_item_layout
+        const val MAIN_LAYOUT = R.layout.item_user
 
     }
 

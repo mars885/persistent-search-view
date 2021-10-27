@@ -216,7 +216,7 @@ public class PersistentSearchView extends FrameLayout {
 
     @SuppressWarnings("NewApi")
     private void init(AttributeSet attrs) {
-        View.inflate(getContext(), R.layout.persistent_search_view_layout, this);
+        View.inflate(getContext(), R.layout.view_persistent_search, this);
 
         initDefaults();
         initResources(attrs);

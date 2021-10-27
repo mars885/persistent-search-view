@@ -29,6 +29,7 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.arthurivanets.adapster.listeners.OnItemClickListener
 import com.paulrybitskyi.commons.ktx.*
+import com.paulrybitskyi.persistentsearchview.PersistentSearchView
 import com.paulrybitskyi.persistentsearchview.adapters.model.SuggestionItem
 import com.paulrybitskyi.persistentsearchview.listeners.OnSearchConfirmedListener
 import com.paulrybitskyi.persistentsearchview.listeners.OnSearchQueryChangeListener
@@ -37,12 +38,12 @@ import com.paulrybitskyi.persistentsearchview.utils.SuggestionCreationUtil
 import com.paulrybitskyi.persistentsearchview.utils.VoiceRecognitionDelegate
 import com.paulrybitskyi.persistentsearchview.sample.adapters.UsersRecyclerViewAdapter
 import com.paulrybitskyi.persistentsearchview.sample.adapters.model.UserItem
+import com.paulrybitskyi.persistentsearchview.sample.databinding.ActivityDemoBinding
 import com.paulrybitskyi.persistentsearchview.sample.model.DemoMode
 import com.paulrybitskyi.persistentsearchview.sample.utils.AnimationUtils
 import com.paulrybitskyi.persistentsearchview.sample.utils.DataProvider
 import com.paulrybitskyi.persistentsearchview.sample.utils.HeaderedRecyclerViewListener
 import com.paulrybitskyi.persistentsearchview.sample.utils.VerticalSpacingItemDecorator
-import kotlinx.android.synthetic.main.demo_activity_layout.*
 import java.io.Serializable
 
 internal class DemoActivity : AppCompatActivity(), View.OnClickListener {
@@ -71,18 +72,24 @@ internal class DemoActivity : AppCompatActivity(), View.OnClickListener {
 
     private var items: MutableList<UserItem> = mutableListOf()
 
+    private lateinit var viewBinding: ActivityDemoBinding
+    private lateinit var persistentSearchView: PersistentSearchView
+
     private lateinit var adapter: UsersRecyclerViewAdapter
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.demo_activity_layout)
+        viewBinding = ActivityDemoBinding.inflate(layoutInflater)
+        setContentView(viewBinding.root)
         onRestoreState(savedInstanceState)
         init()
     }
 
 
     private fun init() {
+        persistentSearchView = viewBinding.persistentSearchView
+
         initProgressBar()
         initSearchView()
         initEmptyView()
@@ -91,7 +98,7 @@ internal class DemoActivity : AppCompatActivity(), View.OnClickListener {
 
 
     private fun initProgressBar() {
-        progressBar.makeGone()
+        viewBinding.progressBar.makeGone()
     }
 
 
@@ -115,11 +122,11 @@ internal class DemoActivity : AppCompatActivity(), View.OnClickListener {
 
 
     private fun initEmptyView() {
-        emptyViewLl.isVisible = items.isEmpty()
+        viewBinding.emptyViewLl.isVisible = items.isEmpty()
     }
 
 
-    private fun initRecyclerView() = with(recyclerView) {
+    private fun initRecyclerView() = with(viewBinding.recyclerView) {
         layoutManager = initLayoutManager()
         adapter = initAdapter()
 
@@ -188,7 +195,7 @@ internal class DemoActivity : AppCompatActivity(), View.OnClickListener {
     }
 
 
-    private fun performSearch(query: String) {
+    private fun performSearch(query: String) = with(viewBinding) {
         emptyViewLl.makeGone()
         recyclerView.alpha = 0f
         progressBar.makeVisible()
