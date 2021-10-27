@@ -24,7 +24,6 @@ object appConfig {
     const val compileSdkVersion = 30
     const val targetSdkVersion = 30
     const val minSdkVersion = 21
-    const val buildToolsVersion = "29.0.3"
     const val applicationId = "com.paulrybitskyi.persistentsearchview.sample"
 
     val javaCompatibilityVersion = JavaVersion.VERSION_1_8
