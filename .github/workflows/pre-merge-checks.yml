@@ -1,4 +1,4 @@
-name: Build
+name: Pre-Merge Checks
 
 on:
   push:
@@ -7,18 +7,20 @@ on:
     branches: [ master ]
 
 jobs:
-  check:
-    runs-on: [ubuntu-latest]
+  static-analysis:
+    name: Static Analysis
+    runs-on: [ ubuntu-latest ]
     if: ${{ !contains(github.event.head_commit.message, '[ci skip]') }}
 
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v2
 
-      - name: Set up JDK 1.8
-        uses: actions/setup-java@v1
+      - name: Set up JDK 11
+        uses: actions/setup-java@v2
         with:
-          java-version: 1.8
+          distribution: 'temurin'
+          java-version: '11'
 
       - name: Generate a Cache Key
         run: ./checksum.sh checksum.txt
@@ -37,8 +39,42 @@ jobs:
             cache-gradle-${{ runner.os }}-
             cache-gradle-
 
-      - name: Test Application
-        run: ./gradlew check
+      - name: Run Static Analysis Tools
+        run: ./gradlew lint --continue
+
+  test:
+    runs-on: [ubuntu-latest]
+    if: ${{ !contains(github.event.head_commit.message, '[ci skip]') }}
+
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v2
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'temurin'
+          java-version: '11'
+
+      - name: Generate a Cache Key
+        run: ./checksum.sh checksum.txt
+
+      - name: Copy CI Gradle Properties
+        run: mkdir -p ~/.gradle ; cp .github/ci-gradle.properties ~/.gradle/gradle.properties
+
+      - name: Cache Gradle Folders
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches/
+            ~/.gradle/wrapper/
+          key: cache-gradle-${{ runner.os }}-${{ hashFiles('checksum.txt') }}
+          restore-keys: |
+            cache-gradle-${{ runner.os }}-
+            cache-gradle-
+
+      - name: Run Unit Tests
+        run: ./gradlew test
 
   assemble:
     runs-on: [ubuntu-latest]
@@ -48,10 +84,11 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v2
 
-      - name: Set up JDK 1.8
-        uses: actions/setup-java@v1
+      - name: Set up JDK 11
+        uses: actions/setup-java@v2
         with:
-          java-version: 1.8
+          distribution: 'temurin'
+          java-version: '11'
 
       - name: Generate a Cache Key
         run: ./checksum.sh checksum.txt
