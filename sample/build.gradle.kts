@@ -21,13 +21,12 @@ plugins {
 }
 
 android {
-    compileSdkVersion(appConfig.compileSdkVersion)
-    buildToolsVersion(appConfig.buildToolsVersion)
+    compileSdk = appConfig.compileSdkVersion
 
     defaultConfig {
         applicationId = appConfig.applicationId
-        minSdkVersion(appConfig.minSdkVersion)
-        targetSdkVersion(appConfig.targetSdkVersion)
+        minSdk = appConfig.minSdkVersion
+        targetSdk = appConfig.targetSdkVersion
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -39,7 +38,7 @@ android {
         }
     }
 
-    lintOptions {
+    lint {
         isAbortOnError = false
     }
 
