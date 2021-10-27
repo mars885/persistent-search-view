@@ -42,10 +42,11 @@ android {
 }
 
 dependencies {
+    api(deps.adapster)
+
     implementation(deps.appCompat)
     implementation(deps.cardView)
     implementation(deps.recyclerView)
-    implementation(deps.adapster)
     implementation(deps.annotations)
 
     testImplementation(deps.jUnit)
