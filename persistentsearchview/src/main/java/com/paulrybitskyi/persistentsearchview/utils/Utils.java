@@ -16,6 +16,7 @@
 
 package com.paulrybitskyi.persistentsearchview.utils;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -105,6 +106,7 @@ public final class Utils {
      * @param editText The edit text
      * @param cursorDrawable The cursor drawable to set
      */
+    @SuppressLint("SoonBlockedPrivateApi")
     public static void setCursorDrawable(EditText editText, Drawable cursorDrawable) {
         if((editText != null) && (cursorDrawable != null)) {
             // Reflection based on the declared fields in original AOSP file
