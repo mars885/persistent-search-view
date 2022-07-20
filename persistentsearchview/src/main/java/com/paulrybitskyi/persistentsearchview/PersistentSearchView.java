@@ -2383,8 +2383,9 @@ public class PersistentSearchView extends FrameLayout {
         public boolean onEditorAction(TextView view, int actionId, KeyEvent event) {
             if((actionId == EditorInfo.IME_ACTION_SEARCH) && (onSearchConfirmedListener != null)) {
                 onSearchConfirmedListener.onSearchConfirmed(PersistentSearchView.this, getInputQuery());
+            } else if (event.getAction() == KeyEvent.ACTION_DOWN && event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
+                onSearchConfirmedListener.onSearchConfirmed(PersistentSearchView.this, getInputQuery());
             }
-
             return true;
         }
 
