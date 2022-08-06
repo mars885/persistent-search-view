@@ -35,7 +35,8 @@ allprojects {
     repositories {
         mavenCentral()
         google()
-        jcenter() // adapster library has not migrated yet
+        maven { url = uri("https://jitpack.io") }
+        //jcenter() // adapster library has not migrated yet
     }
 }
 
