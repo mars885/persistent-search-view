@@ -20,6 +20,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.view.Gravity
 import android.view.View
 import android.view.WindowManager.LayoutParams.*
@@ -321,7 +322,7 @@ internal class DemoActivity : AppCompatActivity(), View.OnClickListener {
     }
 
 
-    private val mOnSearchQueryChangeListener = OnSearchQueryChangeListener { searchView, oldQuery, newQuery ->
+    private val mOnSearchQueryChangeListener = OnSearchQueryChangeListener { _, _, newQuery ->
         setSuggestions(
             if(newQuery.isBlank()) {
                 dataProvider.getInitialSearchQueries()

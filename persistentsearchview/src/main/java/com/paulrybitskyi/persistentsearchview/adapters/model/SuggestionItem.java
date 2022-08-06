@@ -96,6 +96,7 @@ public class SuggestionItem extends BaseItem<
 
 
     @Override
+    @NonNull
     public ViewHolder init(
         Adapter adapter,
         ViewGroup parent,
@@ -239,6 +240,7 @@ public class SuggestionItem extends BaseItem<
 
 
     @Override
+    @NonNull
     public Long getTrackKey() {
         final Suggestion suggestion = getItemModel();
         return (suggestion.hasValidId() ? suggestion.getId() : ((long) suggestion.getText().hashCode()));

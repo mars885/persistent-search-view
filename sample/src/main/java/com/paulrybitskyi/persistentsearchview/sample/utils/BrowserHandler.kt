@@ -18,6 +18,7 @@ package com.paulrybitskyi.persistentsearchview.sample.utils
 
 import android.content.Context
 import android.content.Intent
+import androidx.browser.customtabs.CustomTabColorSchemeParams
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.net.toUri
 import com.paulrybitskyi.commons.ktx.getCompatColor
@@ -40,8 +41,12 @@ internal class BrowserHandler(private val customTabsProvider: CustomTabsProvider
 
         if(customTabsProvider.hasSupportForCustomTabs()) {
             val intentBuilder = CustomTabsIntent.Builder()
-            intentBuilder.setToolbarColor(context.getCompatColor(R.color.colorPrimary))
-            intentBuilder.setSecondaryToolbarColor(context.getCompatColor(R.color.colorPrimaryDark))
+            intentBuilder.setDefaultColorSchemeParams(
+                CustomTabColorSchemeParams.Builder()
+                    .setToolbarColor(context.getCompatColor(R.color.colorPrimary))
+                    .setSecondaryToolbarColor(context.getCompatColor(R.color.colorPrimaryDark))
+                    .build()
+            )
             intentBuilder.setShowTitle(true)
 
             val customTabsIntent = intentBuilder.build()

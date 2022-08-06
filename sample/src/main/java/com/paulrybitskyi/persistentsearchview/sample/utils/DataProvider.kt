@@ -60,14 +60,17 @@ internal class DataProvider : Serializable {
 
     fun generateUsers(query: String, count: Int): List<User> {
         val random = Random()
+        val firstName = query.replaceFirstChar { char -> char.titlecase() }
+        val lastName = query.replaceFirstChar { char -> char.titlecase() }
 
         return MutableList(count) {
-            User(it,
-                "@$query$it",
-                "${query.capitalize()} ${query.capitalize()}",
-                (PROFILE_IMAGE_RESOURCE_IDS.random(random) ?: -1),
-                random.nextBoolean(),
-                random.nextBoolean()
+            User(
+                id = it,
+                username = "@$query$it",
+                fullName = "$firstName $lastName",
+                profileImageId = (PROFILE_IMAGE_RESOURCE_IDS.random(random) ?: -1),
+                firstState = random.nextBoolean(),
+                secondState = random.nextBoolean()
             )
         }
     }
@@ -85,7 +88,7 @@ internal class DataProvider : Serializable {
             pickedSuggestions.addAll(initialSearchQueries)
         } else {
             initialSearchQueries.forEach {
-                if(it.toLowerCase().startsWith(query.toLowerCase())) {
+                if(it.lowercase().startsWith(query.lowercase())) {
                     pickedSuggestions.add(it)
                 }
             }
