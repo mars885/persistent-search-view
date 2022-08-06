@@ -1691,7 +1691,7 @@ public class PersistentSearchView extends FrameLayout {
      */
     public final void setQueryInputCursorDrawable(Drawable drawable) {
         queryInputCursorDrawable = drawable;
-
+        
         Utils.setCursorDrawable(inputEt, drawable);
     }
 
