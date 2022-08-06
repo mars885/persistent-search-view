@@ -54,6 +54,7 @@ public final class Utils {
     public static final boolean IS_AT_LEAST_LOLLIPOP = (API_VERSION >= Build.VERSION_CODES.LOLLIPOP);
     public static final boolean IS_AT_LEAST_MARSHMALLOW = (API_VERSION >= Build.VERSION_CODES.M);
     public static final boolean IS_AT_LEAST_NOUGAT = (API_VERSION >= Build.VERSION_CODES.N);
+    public static final boolean IS_AT_LEAST_PIE = (API_VERSION >= Build.VERSION_CODES.P);
 
     public static final Typeface TOOLBAR_TITLE_TYPEFACE = Typeface.create("sans-serif-medium", Typeface.NORMAL);
 
@@ -103,11 +104,17 @@ public final class Utils {
     /**
      * Sets a cursor drawable of the specified {@link EditText}.
      *
+     * Note: This solution won't work on PIE devices.
+     *
      * @param editText The edit text
      * @param cursorDrawable The cursor drawable to set
      */
-    @SuppressLint("SoonBlockedPrivateApi")
+    @SuppressLint({"SoonBlockedPrivateApi", "BlockedPrivateApi", "DiscouragedPrivateApi"})
     public static void setCursorDrawable(EditText editText, Drawable cursorDrawable) {
+        if (IS_AT_LEAST_PIE) {
+            return;
+        }
+
         if((editText != null) && (cursorDrawable != null)) {
             // Reflection based on the declared fields in original AOSP file
             // https://github.com/android/platform_frameworks_base/blob/kitkat-release/core/java/android/widget/TextView.java#L562-564

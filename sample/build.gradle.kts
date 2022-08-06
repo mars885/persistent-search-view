@@ -41,10 +41,6 @@ android {
         viewBinding = true
     }
 
-    lint {
-        isAbortOnError = false
-    }
-
     compileOptions {
         sourceCompatibility = appConfig.javaCompatibilityVersion
         targetCompatibility = appConfig.javaCompatibilityVersion
