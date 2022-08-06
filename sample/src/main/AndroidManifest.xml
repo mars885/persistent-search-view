@@ -27,7 +27,8 @@
         android:theme="@style/AppTheme">
 
         <activity
-            android:name=".MainActivity">
+            android:name=".MainActivity"
+            android:exported="true">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -39,7 +40,8 @@
 
         <activity
             android:name=".DemoActivity"
-            android:windowSoftInputMode="adjustNothing">
+            android:windowSoftInputMode="adjustNothing"
+            android:exported="false">
 
             <intent-filter>
                 <action android:name="com.paulrybitskyi.sample.DEMOACTIVITY"/>
