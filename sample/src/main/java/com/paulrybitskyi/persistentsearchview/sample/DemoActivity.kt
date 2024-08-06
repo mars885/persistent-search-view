@@ -31,6 +31,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.arthurivanets.adapster.listeners.OnItemClickListener
 import com.paulrybitskyi.commons.ktx.*
 import com.paulrybitskyi.persistentsearchview.PersistentSearchView
+import com.paulrybitskyi.persistentsearchview.R
 import com.paulrybitskyi.persistentsearchview.adapters.model.SuggestionItem
 import com.paulrybitskyi.persistentsearchview.listeners.OnSearchConfirmedListener
 import com.paulrybitskyi.persistentsearchview.listeners.OnSearchQueryChangeListener

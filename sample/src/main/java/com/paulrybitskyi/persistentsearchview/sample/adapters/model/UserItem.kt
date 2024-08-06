@@ -37,13 +37,6 @@ import com.paulrybitskyi.persistentsearchview.sample.model.User
 internal class UserItem(itemModel: User): BaseItem<User, UserItem.ViewHolder, UserResources>(itemModel) {
 
 
-    companion object {
-
-        const val MAIN_LAYOUT = R.layout.item_user
-
-    }
-
-
     override fun init(
         adapter: Adapter<out Item<RecyclerView.ViewHolder, ItemResources>>?,
         parent: ViewGroup, inflater: LayoutInflater,
@@ -51,7 +44,7 @@ internal class UserItem(itemModel: User): BaseItem<User, UserItem.ViewHolder, Us
     ): ViewHolder {
         return ViewHolder(
             inflater.inflate(
-                MAIN_LAYOUT,
+                layout,
                 parent,
                 false
             )
@@ -149,7 +142,7 @@ internal class UserItem(itemModel: User): BaseItem<User, UserItem.ViewHolder, Us
     }
 
 
-    override fun getLayout(): Int = MAIN_LAYOUT
+    override fun getLayout(): Int = R.layout.item_user
 
 
     class ViewHolder(itemView: View) : BaseItem.ViewHolder<User>(itemView) {
