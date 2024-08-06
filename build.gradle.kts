@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
+
 plugins {
     gradleVersions()
 }
@@ -31,12 +33,19 @@ buildscript {
     }
 }
 
+tasks.withType<DependencyUpdatesTask> {
+    rejectVersionIf {
+        listOf("alpha", "beta", "rc").any { keyword ->
+            candidate.version.lowercase().contains(keyword)
+        }
+    }
+}
+
 allprojects {
     repositories {
         mavenCentral()
         google()
         maven { url = uri("https://jitpack.io") }
-        //jcenter() // adapster library has not migrated yet
     }
 }
 
