@@ -46,7 +46,7 @@ buildscript {
 
 ````groovy
 dependencies {
-    implementation "com.paulrybitskyi.persistentsearchview:persistentsearchview:1.1.4"
+    implementation "com.paulrybitskyi.persistentsearchview:persistentsearchview:1.1.5"
 }
 ````
 
