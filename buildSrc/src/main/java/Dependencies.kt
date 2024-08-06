@@ -69,7 +69,7 @@ object versions {
     const val coreKtx = "1.13.1"
     const val commonsKtx = "1.0.4"
     const val jUnit = "4.13.2"
-    const val testRunner = "1.3.0"
+    const val testRunner = "1.6.1"
 }
 
 
