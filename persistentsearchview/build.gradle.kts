@@ -22,6 +22,7 @@ android {
     compileSdk = appConfig.compileSdkVersion
 
     defaultConfig {
+        namespace = "com.paulrybitskyi.persistentsearchview"
         minSdk = appConfig.minSdkVersion
         targetSdk = appConfig.targetSdkVersion
 
