@@ -220,7 +220,7 @@ internal class DemoActivity : AppCompatActivity(), View.OnClickListener {
                 .start()
         }
 
-        Handler().postDelayed(runnable, 1000L)
+        Handler(Looper.getMainLooper()).postDelayed(runnable, 1000L)
 
         persistentSearchView.hideLeftButton(false)
         persistentSearchView.showProgressBar()
