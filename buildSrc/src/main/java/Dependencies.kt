@@ -21,14 +21,13 @@ import org.gradle.api.JavaVersion
 
 object appConfig {
 
-    const val compileSdkVersion = 32
-    const val targetSdkVersion = 32
+    const val compileSdkVersion = 34
+    const val targetSdkVersion = 34
     const val minSdkVersion = 21
     const val applicationId = "com.paulrybitskyi.persistentsearchview.sample"
 
     val javaCompatibilityVersion = JavaVersion.VERSION_1_8
     val kotlinCompatibilityVersion = JavaVersion.VERSION_1_8
-
 }
 
 
@@ -53,26 +52,24 @@ object publishingConfig {
     const val artifactName = "persistentsearchview"
     const val artifactVersion = "1.1.4"
     const val artifactDescription = "An android library designed to simplify the process of implementing search-related functionality."
-
 }
 
 
 object versions {
 
-    const val kotlin = "1.7.0" // also in buildSrc build.gradle.kts file
-    const val gradlePlugin = "7.2.2" // also in buildSrc build.gradle.kts file
-    const val gradleVersionsPlugin = "0.42.0"
-    const val appCompat = "1.4.2"
+    const val kotlin = "2.0.0" // also in buildSrc build.gradle.kts file
+    const val androidPlugin = "8.3.1" // also in buildSrc build.gradle.kts file
+    const val gradleVersionsPlugin = "0.51.0"
+    const val appCompat = "1.7.0"
     const val cardView = "1.0.0"
-    const val browser = "1.4.0"
-    const val recyclerView = "1.2.1"
+    const val browser = "1.8.0"
+    const val recyclerView = "1.3.2"
     const val adapster = "1.0.13"
-    const val annotations = "1.4.0"
-    const val coreKtx = "1.8.0"
+    const val annotations = "1.8.1"
+    const val coreKtx = "1.13.1"
     const val commonsKtx = "1.0.4"
     const val jUnit = "4.13.2"
-    const val testRunner = "1.3.0"
-
+    const val testRunner = "1.6.1"
 }
 
 
@@ -80,16 +77,14 @@ object deps {
 
     object plugins {
 
-        const val androidGradle = "com.android.tools.build:gradle:${versions.gradlePlugin}"
+        const val androidGradle = "com.android.tools.build:gradle:${versions.androidPlugin}"
         const val kotlinGradle = "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}"
         const val gradleVersions = "com.github.ben-manes:gradle-versions-plugin:${versions.gradleVersionsPlugin}"
 
     }
 
     object local {
-
         const val persistentSearchView = ":persistentsearchview"
-
     }
 
     const val appCompat = "androidx.appcompat:appcompat:${versions.appCompat}"
@@ -102,5 +97,4 @@ object deps {
     const val commonsKtx = "com.paulrybitskyi.commons:commons-ktx:${versions.commonsKtx}"
     const val jUnit = "junit:junit:${versions.jUnit}"
     const val testRunner = "androidx.test:runner:${versions.testRunner}"
-
 }
