@@ -19,17 +19,13 @@ import org.gradle.plugin.use.PluginDependenciesSpec
 import org.gradle.plugin.use.PluginDependencySpec
 
 
-const val PLUGIN_GRADLE_VERSIONS = "com.github.ben-manes.versions"
 const val PLUGIN_ANDROID_APPLICATION = "com.android.application"
 const val PLUGIN_ANDROID_LIBRARY = "com.android.library"
 const val PLUGIN_KOTLIN_ANDROID = "kotlin-android"
+const val PLUGIN_FAT_AAR = "com.kezong.fat-aar"
+const val PLUGIN_GRADLE_VERSIONS = "com.github.ben-manes.versions"
 const val PLUGIN_MAVEN_PUBLISH = "maven-publish"
 const val PLUGIN_SIGNING = "org.gradle.signing"
-
-
-fun PluginDependenciesSpec.gradleVersions(): PluginDependencySpec {
-    return (id(PLUGIN_GRADLE_VERSIONS) version versions.gradleVersionsPlugin)
-}
 
 
 fun PluginDependenciesSpec.androidApplication(): PluginDependencySpec {
@@ -44,4 +40,14 @@ fun PluginDependenciesSpec.androidLibrary(): PluginDependencySpec {
 
 fun PluginDependenciesSpec.kotlinAndroid(): PluginDependencySpec {
     return id(PLUGIN_KOTLIN_ANDROID)
+}
+
+
+fun PluginDependenciesSpec.fatAar(): PluginDependencySpec {
+    return id(PLUGIN_FAT_AAR)
+}
+
+
+fun PluginDependenciesSpec.gradleVersions(): PluginDependencySpec {
+    return (id(PLUGIN_GRADLE_VERSIONS) version versions.gradleVersionsPlugin)
 }

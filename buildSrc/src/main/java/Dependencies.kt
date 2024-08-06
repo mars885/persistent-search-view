@@ -59,6 +59,7 @@ object versions {
 
     const val kotlin = "2.0.0" // also in buildSrc build.gradle.kts file
     const val androidPlugin = "8.3.1" // also in buildSrc build.gradle.kts file
+    const val fatAarPlugin = "1.4.1"
     const val gradleVersionsPlugin = "0.51.0"
     const val appCompat = "1.7.0"
     const val cardView = "1.0.0"
@@ -78,6 +79,7 @@ object deps {
 
         const val androidGradle = "com.android.tools.build:gradle:${versions.androidPlugin}"
         const val kotlinGradle = "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}"
+        const val fatAar = "com.github.aasitnikov:fat-aar-android:${versions.fatAarPlugin}"
         const val gradleVersions = "com.github.ben-manes:gradle-versions-plugin:${versions.gradleVersionsPlugin}"
 
     }

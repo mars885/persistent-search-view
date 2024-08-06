@@ -20,53 +20,6 @@ apply(plugin = PLUGIN_SIGNING)
 project.group = publishingConfig.artifactGroupId
 project.version = publishingConfig.artifactVersion
 
-val sourcesJar by tasks.registering(Jar::class) {
-    archiveClassifier.set("sources")
-
-    if(project.plugins.hasPlugin(PLUGIN_ANDROID_LIBRARY)) {
-        val libExt = checkNotNull(project.extensions.findByType(com.android.build.gradle.LibraryExtension::class.java))
-        val libMainSourceSet = libExt.sourceSets.getByName("main")
-
-        from(libMainSourceSet.java.srcDirs)
-    } else {
-        val sourceSetExt = checkNotNull(project.extensions.findByType(SourceSetContainer::class.java))
-        val mainSourceSet = sourceSetExt.getByName("main")
-
-        from(mainSourceSet.java.srcDirs)
-    }
-}
-
-// https://gist.github.com/Robyer/a6578e60127418b380ca133a1291f017#file-maven-publish-helper-gradle-L14
-val javadoc by tasks.registering(Javadoc::class) {
-    if(project.plugins.hasPlugin(PLUGIN_ANDROID_LIBRARY)) {
-        val libExt = checkNotNull(project.extensions.findByType(com.android.build.gradle.LibraryExtension::class.java))
-        val libMainSourceSet = libExt.sourceSets.getByName("main")
-
-        source = libMainSourceSet.java.getSourceFiles()
-        classpath += project.files(libExt.bootClasspath.joinToString(java.io.File.pathSeparator))
-
-        libExt.libraryVariants.forEach { variant ->
-            if(variant.name == "release") {
-                classpath += variant.javaCompileProvider.get().classpath
-            }
-        }
-    } else {
-        val sourceSetExt = checkNotNull(project.extensions.findByType(SourceSetContainer::class.java))
-        val mainSourceSet = sourceSetExt.getByName("main")
-
-        source = mainSourceSet.java
-    }
-}
-
-val javadocJar by tasks.registering(Jar::class) {
-    archiveClassifier.set("javadoc")
-
-    val javadocTask = tasks.getByName("javadoc")
-
-    from(javadocTask)
-    dependsOn(javadocTask)
-}
-
 afterEvaluate {
     configure<PublishingExtension> {
         publications {
@@ -80,9 +33,6 @@ afterEvaluate {
                 } else {
                     from(components["java"])
                 }
-
-                artifact(sourcesJar.get())
-                artifact(javadocJar.get())
 
                 pom {
                     name.set(publishingConfig.artifactName)
