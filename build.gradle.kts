@@ -24,11 +24,20 @@ buildscript {
     repositories {
         mavenCentral()
         google()
+
+        // FatAar plugin
+        maven {
+            setUrl("https://jitpack.io")
+            content {
+                includeGroup("com.github.aasitnikov")
+            }
+        }
     }
 
     dependencies {
         classpath(deps.plugins.androidGradle)
         classpath(deps.plugins.kotlinGradle)
+        classpath(deps.plugins.fatAar)
         classpath(deps.plugins.gradleVersions)
     }
 }

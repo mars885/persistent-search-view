@@ -16,6 +16,7 @@
 
 plugins {
     androidLibrary()
+    fatAar()
 }
 
 android {
@@ -49,7 +50,7 @@ android {
 }
 
 dependencies {
-    api(project(deps.local.adapster))
+    embed(project(deps.local.adapster))
 
     implementation(deps.appCompat)
     implementation(deps.cardView)
