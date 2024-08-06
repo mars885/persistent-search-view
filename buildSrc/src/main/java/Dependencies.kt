@@ -65,7 +65,7 @@ object versions {
     const val browser = "1.8.0"
     const val recyclerView = "1.3.2"
     const val adapster = "1.0.13"
-    const val annotations = "1.4.0"
+    const val annotations = "1.8.1"
     const val coreKtx = "1.8.0"
     const val commonsKtx = "1.0.4"
     const val jUnit = "4.13.2"
