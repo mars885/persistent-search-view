@@ -62,7 +62,7 @@ object versions {
     const val gradleVersionsPlugin = "0.51.0"
     const val appCompat = "1.7.0"
     const val cardView = "1.0.0"
-    const val browser = "1.4.0"
+    const val browser = "1.8.0"
     const val recyclerView = "1.2.1"
     const val adapster = "1.0.13"
     const val annotations = "1.4.0"
