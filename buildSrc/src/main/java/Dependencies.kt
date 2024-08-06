@@ -58,7 +58,7 @@ object publishingConfig {
 object versions {
 
     const val kotlin = "2.0.0" // also in buildSrc build.gradle.kts file
-    const val gradlePlugin = "7.2.2" // also in buildSrc build.gradle.kts file
+    const val gradlePlugin = "8.3.1" // also in buildSrc build.gradle.kts file
     const val gradleVersionsPlugin = "0.42.0"
     const val appCompat = "1.4.2"
     const val cardView = "1.0.0"
