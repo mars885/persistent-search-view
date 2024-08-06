@@ -1,4 +1,5 @@
 rootProject.name = "PersistentSearchView"
 
-include(":sample")
+include(":adapster")
 include(":persistentsearchview")
+include(":sample")

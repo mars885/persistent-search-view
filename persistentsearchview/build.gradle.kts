@@ -19,25 +19,17 @@ plugins {
 }
 
 android {
+    namespace = "com.paulrybitskyi.persistentsearchview"
     compileSdk = appConfig.compileSdkVersion
 
-    publishing {
-        singleVariant(publishingConfig.mavenPublicationName) {
-            withJavadocJar()
-            withSourcesJar()
-        }
-    }
-
     defaultConfig {
-        namespace = "com.paulrybitskyi.persistentsearchview"
         minSdk = appConfig.minSdkVersion
-        targetSdk = appConfig.targetSdkVersion
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
-        getByName("release") {
+        release {
             isMinifyEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
@@ -47,10 +39,17 @@ android {
         sourceCompatibility = appConfig.javaCompatibilityVersion
         targetCompatibility = appConfig.javaCompatibilityVersion
     }
+
+    publishing {
+        singleVariant(publishingConfig.mavenPublicationName) {
+            withJavadocJar()
+            withSourcesJar()
+        }
+    }
 }
 
 dependencies {
-    api(deps.adapster)
+    api(project(deps.local.adapster))
 
     implementation(deps.appCompat)
     implementation(deps.cardView)
