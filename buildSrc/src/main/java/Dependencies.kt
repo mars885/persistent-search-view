@@ -21,8 +21,8 @@ import org.gradle.api.JavaVersion
 
 object appConfig {
 
-    const val compileSdkVersion = 32
-    const val targetSdkVersion = 32
+    const val compileSdkVersion = 34
+    const val targetSdkVersion = 34
     const val minSdkVersion = 21
     const val applicationId = "com.paulrybitskyi.persistentsearchview.sample"
 
