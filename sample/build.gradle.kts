@@ -20,11 +20,11 @@ plugins {
 }
 
 android {
+    namespace = appConfig.applicationId
     compileSdk = appConfig.compileSdkVersion
 
     defaultConfig {
         applicationId = appConfig.applicationId
-        namespace = appConfig.applicationId
         minSdk = appConfig.minSdkVersion
         targetSdk = appConfig.targetSdkVersion
 
@@ -32,7 +32,7 @@ android {
     }
 
     buildTypes {
-        getByName("release") {
+        release {
             isMinifyEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
@@ -59,7 +59,6 @@ dependencies {
     implementation(deps.cardView)
     implementation(deps.browser)
     implementation(deps.recyclerView)
-    implementation(deps.adapster)
     implementation(deps.coreKtx)
     implementation(deps.commonsKtx)
 

@@ -64,7 +64,6 @@ object versions {
     const val cardView = "1.0.0"
     const val browser = "1.8.0"
     const val recyclerView = "1.3.2"
-    const val adapster = "1.0.13"
     const val annotations = "1.8.1"
     const val coreKtx = "1.13.1"
     const val commonsKtx = "1.0.4"
@@ -84,6 +83,8 @@ object deps {
     }
 
     object local {
+
+        const val adapster = ":adapster"
         const val persistentSearchView = ":persistentsearchview"
     }
 
@@ -91,7 +92,6 @@ object deps {
     const val cardView = "androidx.cardview:cardview:${versions.cardView}"
     const val browser = "androidx.browser:browser:${versions.browser}"
     const val recyclerView = "androidx.recyclerview:recyclerview:${versions.recyclerView}"
-    const val adapster = "com.github.arthur3486.adapster:adapster:${versions.adapster}"
     const val annotations = "androidx.annotation:annotation:${versions.annotations}"
     const val coreKtx = "androidx.core:core-ktx:${versions.coreKtx}"
     const val commonsKtx = "com.paulrybitskyi.commons:commons-ktx:${versions.commonsKtx}"
