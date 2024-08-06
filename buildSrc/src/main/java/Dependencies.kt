@@ -96,7 +96,7 @@ object deps {
     const val cardView = "androidx.cardview:cardview:${versions.cardView}"
     const val browser = "androidx.browser:browser:${versions.browser}"
     const val recyclerView = "androidx.recyclerview:recyclerview:${versions.recyclerView}"
-    const val adapster = "com.arthurivanets.adapster:adapster:${versions.adapster}"
+    const val adapster = "com.github.arthur3486.adapster:adapster:${versions.adapster}"
     const val annotations = "androidx.annotation:annotation:${versions.annotations}"
     const val coreKtx = "androidx.core:core-ktx:${versions.coreKtx}"
     const val commonsKtx = "com.paulrybitskyi.commons:commons-ktx:${versions.commonsKtx}"
