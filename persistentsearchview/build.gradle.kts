@@ -21,6 +21,13 @@ plugins {
 android {
     compileSdk = appConfig.compileSdkVersion
 
+    publishing {
+        singleVariant(publishingConfig.mavenPublicationName) {
+            withJavadocJar()
+            withSourcesJar()
+        }
+    }
+
     defaultConfig {
         namespace = "com.paulrybitskyi.persistentsearchview"
         minSdk = appConfig.minSdkVersion
