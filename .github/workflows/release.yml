@@ -5,47 +5,37 @@ on:
     tags:
       - 'v*'
 
+env:
+  JDK_JAVA_DISTRIBUTION: 'temurin'
+  JDK_JAVA_VERSION: '17'
+
 jobs:
   release:
+    name: Create a GitHub Release
     runs-on: [ubuntu-latest]
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
-      - name: Set up JDK 17
-        uses: actions/setup-java@v2
+      - name: Set up JDK
+        uses: actions/setup-java@v4
         with:
-          distribution: 'temurin'
-          java-version: '17'
+          distribution: ${{ env.JDK_JAVA_DISTRIBUTION }}
+          java-version: ${{ env.JDK_JAVA_VERSION }}
 
-      - name: Generate a Cache Key
-        run: ./checksum.sh checksum.txt
-
-      - name: Copy CI Gradle Properties
-        run: mkdir -p ~/.gradle ; cp .github/ci-gradle.properties ~/.gradle/gradle.properties
-
-      - name: Cache Gradle Folders
-        uses: actions/cache@v2
-        with:
-          path: |
-            ~/.gradle/caches/
-            ~/.gradle/wrapper/
-          key: cache-gradle-${{ runner.os }}-${{ hashFiles('checksum.txt') }}
-          restore-keys: |
-            cache-gradle-${{ runner.os }}-
-            cache-gradle-
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
 
       - name: Build Debug APK
         run: ./gradlew assembleDebug
 
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
+          name: Release ${{ github.ref }}
           draft: true
           prerelease: false
           files: app/build/outputs/apk/debug/sample-debug.apk
