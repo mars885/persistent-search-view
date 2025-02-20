@@ -456,7 +456,7 @@ See the [CONTRIBUTING.md](CONTRIBUTING.md) file.
     </tbody>
 </table>
 
-> Using PersistentSearchView in your app and want it to get listed here? Email me at paul.rybitskyi.work@gmail.com!
+> Using PersistentSearchView in your app and want it to get listed here? Email me at github@paulrybitskyi.com!
 
 ## License
 
